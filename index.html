@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IMU-CET CBT Simulator</title>
+<style>
+:root{--bg:#e8eef7;--surface:#fff;--surface2:#f5f8fc;--surface3:#f0f4f8;--primary:#003366;--primary2:#004a99;--accent:#0057b3;--text:#222;--text2:#555;--text3:#888;--border:#dde4ef;--border2:#d0dcea;--green:#1b5e20;--red:#c62828;--purple:#6a1b9a;--orange:#e65100;--shadow:rgba(0,0,0,.1)}
+[data-theme=dark]{--bg:#0f1624;--surface:#1a2438;--surface2:#1e2a40;--surface3:#243050;--primary:#4a9eff;--primary2:#3a7fd4;--accent:#5aafff;--text:#e8eef7;--text2:#a8c4e0;--text3:#6a8ab0;--border:#2a3a5e;--border2:#233050;--green:#4caf50;--red:#ef5350;--purple:#ab47bc;--orange:#ffa726;--shadow:rgba(0,0,0,.4)}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);transition:background .3s,color .3s;min-height:100svh}
+.screen{display:none}
+.screen.active{display:block}
+/* ── NAV BAR ── */
+.topnav{background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff;padding:0 16px;height:54px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px var(--shadow)}
+.topnav-brand{font-size:17px;font-weight:800;letter-spacing:.5px;display:flex;align-items:center;gap:8px}
+.topnav-brand span{font-size:12px;font-weight:400;opacity:.75;display:block;margin-top:-2px}
+.topnav-right{display:flex;gap:8px;align-items:center}
+.nav-btn{background:rgba(255,255,255,.15);border:none;color:#fff;padding:7px 13px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;touch-action:manipulation;white-space:nowrap;transition:.15s}
+.nav-btn:active,.nav-btn.active{background:rgba(255,255,255,.35)}
+/* ── CARDS ── */
+.page-body{padding:20px;max-width:1100px;margin:0 auto}
+.page-title{font-size:20px;font-weight:800;color:var(--primary);margin-bottom:4px}
+.page-sub{font-size:13px;color:var(--text3);margin-bottom:20px}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-bottom:28px}
+.card{background:var(--surface);border-radius:14px;border:2px solid var(--border);box-shadow:0 3px 12px var(--shadow);overflow:hidden;transition:all .2s;cursor:pointer;touch-action:manipulation}
+.card:active,.card:hover{transform:translateY(-3px);box-shadow:0 8px 24px var(--shadow);border-color:var(--accent)}
+.card-header{background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;padding:16px 18px}
+.card-header h3{font-size:17px;font-weight:800;margin-bottom:2px}
+.card-header p{font-size:11px;opacity:.8}
+.card-body{padding:14px 18px}
+.card-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px}
+.stat{text-align:center;background:var(--surface3);border-radius:8px;padding:8px 4px}
+.stat-num{font-size:18px;font-weight:800;color:var(--primary)}
+.stat-lbl{font-size:10px;color:var(--text3);margin-top:2px}
+.card-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.tag{font-size:11px;padding:3px 9px;border-radius:10px;font-weight:600}
+.tag-blue{background:#e3f2fd;color:#0d47a1}[data-theme=dark] .tag-blue{background:#1a3a6e;color:#90caf9}
+.tag-green{background:#e8f5e9;color:#1b5e20}[data-theme=dark] .tag-green{background:#1a4a1a;color:#a5d6a7}
+.tag-orange{background:#fff8e1;color:#e65100}[data-theme=dark] .tag-orange{background:#4a2a00;color:#ffcc80}
+.tag-purple{background:#f3e5f5;color:#6a1b9a}[data-theme=dark] .tag-purple{background:#3a1a5e;color:#ce93d8}
+.card-footer{border-top:1px solid var(--border);padding:10px 18px;display:flex;align-items:center;justify-content:space-between}
+.last-attempt{font-size:11px;color:var(--text3)}
+.start-btn{background:var(--primary);color:#fff;border:none;padding:8px 18px;border-radius:6px;font-size:13px;font-weight:700;cursor:pointer;touch-action:manipulation;transition:.15s}
+.start-btn:active{background:var(--accent)}
+.sparkbar-wrap{display:flex;align-items:flex-end;gap:3px;height:28px;margin:8px 0}
+.sparkbar{background:var(--primary);border-radius:2px 2px 0 0;width:16px;min-height:3px;transition:.3s;cursor:default;position:relative}
+.sparkbar:hover::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 4px);left:50%;transform:translateX(-50%);background:#333;color:#fff;font-size:10px;white-space:nowrap;padding:2px 6px;border-radius:3px;pointer-events:none}
+/* ── BUTTONS ── */
+.btn{padding:9px 14px;border:none;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600;transition:.15s;white-space:nowrap;touch-action:manipulation;min-height:42px;display:inline-flex;align-items:center;gap:6px}
+.btn:active{filter:brightness(.82);transform:scale(.97)}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-green{background:var(--green);color:#fff}
+.btn-red{background:var(--red);color:#fff}
+.btn-purple{background:var(--purple);color:#fff}
+.btn-outline{background:var(--surface);color:var(--text);border:1.5px solid var(--border)}
+.btn-lg{padding:12px 28px;font-size:15px}
+/* ── CONFIG SCREEN ── */
+.config-wrap{max-width:680px;margin:0 auto;padding:24px 20px}
+.config-box{background:var(--surface);border-radius:14px;border:1px solid var(--border);padding:24px;margin-bottom:16px;box-shadow:0 2px 8px var(--shadow)}
+.config-box h3{font-size:15px;font-weight:700;color:var(--primary);margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.timer-modes{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:0}
+.tmode{border:2px solid var(--border);border-radius:10px;padding:14px 10px;text-align:center;cursor:pointer;touch-action:manipulation;transition:.15s;background:var(--surface)}
+.tmode:active,.tmode.sel{border-color:var(--primary);background:var(--surface3)}
+.tmode-icon{font-size:24px;margin-bottom:6px}
+.tmode-label{font-size:12px;font-weight:700;color:var(--primary)}
+.tmode-desc{font-size:10px;color:var(--text3);margin-top:3px;line-height:1.4}
+.time-inputs{margin-top:16px;display:flex;flex-direction:column;gap:10px}
+.time-row{display:flex;align-items:center;gap:12px;background:var(--surface3);border-radius:8px;padding:10px 14px}
+.time-row label{flex:1;font-size:13px;font-weight:600;color:var(--text)}
+.time-row input[type=range]{flex:2;accent-color:var(--primary)}
+.time-val{font-size:14px;font-weight:800;color:var(--primary);min-width:60px;text-align:right}
+.config-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
+/* ── EXAM SCREEN ── */
+#examApp{display:none;flex-direction:column;height:100svh;position:fixed;inset:0;background:var(--surface2);z-index:200}
+.exam-hdr{background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff;padding:8px 16px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+.exam-hdr-left h1{font-size:14px;font-weight:700}
+.exam-hdr-left p{font-size:10px;opacity:.75;margin-top:1px}
+.timer-block{display:flex;flex-direction:column;align-items:center}
+.timer-lbl{font-size:9px;opacity:.75;letter-spacing:1px;text-transform:uppercase;margin-bottom:2px}
+.timer{background:#c62828;padding:5px 14px;border-radius:6px;font-size:20px;font-weight:bold;letter-spacing:3px;font-family:'Courier New',monospace;min-width:100px;text-align:center}
+.timer.warn{background:#e65100}
+.timer.crit{background:#b71c1c;animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
+.sec-tabs{display:flex;background:var(--border2);border-bottom:2px solid var(--primary);flex-shrink:0;overflow-x:auto}
+.sec-tab{padding:7px 14px;cursor:pointer;font-size:11px;white-space:nowrap;border-right:1px solid var(--border2);touch-action:manipulation;line-height:1.4;color:var(--text);transition:.15s}
+.sec-tab b{display:block;font-size:10px;opacity:.65}
+.sec-tab.act{background:var(--primary);color:#fff}
+.sec-tab.locked{opacity:.5;cursor:not-allowed}
+.exam-body{display:flex;flex:1;overflow:hidden}
+.q-area{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.q-content{flex:1;overflow-y:auto;padding:14px 18px;-webkit-overflow-scrolling:touch}
+.q-meta{display:flex;gap:8px;flex-wrap:wrap;font-size:11px;color:var(--text3);margin-bottom:10px;padding:6px 10px;background:var(--surface);border-radius:5px;border:1px solid var(--border)}
+.q-meta span{color:var(--primary);font-weight:bold}
+.q-box{background:var(--surface);border-left:4px solid var(--primary);border-radius:6px;padding:14px 16px;font-size:15px;line-height:1.8;margin-bottom:14px;box-shadow:0 1px 4px var(--shadow)}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;background:var(--surface);border:2px solid var(--border);border-radius:7px;cursor:pointer;transition:border-color .1s,background .1s;font-size:14px;line-height:1.6;touch-action:manipulation;min-height:48px;color:var(--text)}
+.opt:active{border-color:var(--primary);background:var(--surface3)}
+.opt.sel{border-color:var(--primary);background:var(--surface3);font-weight:500}
+.opt.bkm{border-left:4px solid gold}
+.opt-lbl{font-weight:bold;color:var(--primary);min-width:22px;font-size:15px;padding-top:1px}
+.q-nav-bar{border-top:2px solid var(--border2);padding:8px 10px;display:flex;gap:5px;flex-wrap:wrap;background:var(--surface);flex-shrink:0;align-items:center}
+/* ── RIGHT PANEL ── */
+.right-panel{width:235px;background:var(--surface);border-left:2px solid var(--border2);display:flex;flex-direction:column;flex-shrink:0}
+.rp-hdr{background:var(--primary);color:#fff;padding:9px;font-size:13px;font-weight:700;text-align:center}
+.legend{padding:7px 10px;border-bottom:1px solid var(--border);background:var(--surface2)}
+.leg-row{display:flex;align-items:center;gap:7px;font-size:11px;margin-bottom:4px;color:var(--text2)}
+.leg-dot{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:bold;flex-shrink:0;color:#fff}
+.rp-counts{padding:6px 10px;font-size:11px;display:grid;grid-template-columns:1fr 1fr;gap:3px;border-bottom:1px solid var(--border);background:var(--surface2)}
+.rp-count{display:flex;align-items:center;gap:5px;color:var(--text2)}
+.palette{padding:8px;display:flex;flex-wrap:wrap;gap:5px;overflow-y:auto;flex:1;align-content:flex-start;touch-action:pan-y;-webkit-overflow-scrolling:touch}
+.pb{width:40px;height:40px;border-radius:50%;border:none;cursor:pointer;font-size:11px;font-weight:bold;color:#fff;display:flex;align-items:center;justify-content:center;transition:.1s;position:relative;touch-action:manipulation}
+.pb:active{transform:scale(1.12)}
+.pb.cur{box-shadow:0 0 0 3px #000,0 0 0 5px #fff}
+.pb.bkm::before{content:'★';position:absolute;top:-3px;right:-3px;font-size:9px;background:gold;color:#333;width:13px;height:13px;border-radius:50%;display:flex;align-items:center;justify-content:center;line-height:13px}
+.s0{background:#8b9eb5}.s1{background:#c62828}.s2{background:#2e7d32}.s3{background:#6a1b9a}.s4{background:#6a1b9a}
+/* ── RESULTS ── */
+#results{display:none;position:fixed;inset:0;background:var(--bg);overflow-y:auto;z-index:300;padding:20px;-webkit-overflow-scrolling:touch}
+.res-card{background:var(--surface);border-radius:12px;max-width:960px;margin:0 auto;padding:24px;box-shadow:0 4px 20px var(--shadow)}
+.res-banner{background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;border-radius:8px;padding:18px;text-align:center;margin-bottom:18px}
+.res-banner h1{font-size:20px;margin-bottom:4px}
+.res-banner p{font-size:12px;opacity:.85}
+.score-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}
+.sc{border-radius:10px;padding:12px;text-align:center;border:2px solid transparent}
+.sc-num{font-size:26px;font-weight:bold}
+.sc-lbl{font-size:11px;color:var(--text3);margin-top:3px}
+.sc.blue{background:var(--surface3);border-color:var(--primary)}.sc.blue .sc-num{color:var(--primary)}
+.sc.green{background:#e8f5e9;border-color:#2e7d32}.sc.green .sc-num{color:#1b5e20}
+.sc.red{background:#ffebee;border-color:#c62828}.sc.red .sc-num{color:#b71c1c}
+.sc.purple{background:#f3e5f5;border-color:#7b1fa2}.sc.purple .sc-num{color:#6a1b9a}
+[data-theme=dark] .sc.green{background:#1a3a1a}
+[data-theme=dark] .sc.red{background:#3a1a1a}
+[data-theme=dark] .sc.purple{background:#2a1a3a}
+.sec-table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:18px}
+.sec-table th{background:var(--primary);color:#fff;padding:9px 12px;text-align:center}
+.sec-table td{padding:8px 12px;border:1px solid var(--border);text-align:center;background:var(--surface);color:var(--text)}
+.sec-table tr:nth-child(even) td{background:var(--surface2)}
+.sec-table tfoot td{font-weight:bold;background:var(--surface3)}
+.review-btns{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;justify-content:center}
+.q-review{margin-bottom:10px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px;font-size:13px}
+.q-review.bookmarked{border-left:4px solid gold}
+.qr-top{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.qr-num{font-weight:bold;color:var(--primary)}
+.badge{font-size:11px;padding:3px 9px;border-radius:3px;font-weight:bold}
+.badge.correct{background:#e8f5e9;color:#1b5e20}
+.badge.wrong{background:#ffebee;color:#b71c1c}
+.badge.skip{background:var(--surface3);color:var(--text3)}
+.qr-q{margin-bottom:8px;color:var(--text);line-height:1.6}
+.qr-opts-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:6px}
+.qr-opt{font-size:12px;padding:5px 9px;border-radius:4px;border:1px solid var(--border);background:var(--surface);color:var(--text)}
+.qr-opt.ca{background:#e8f5e9;border-color:#2e7d32;color:#1b5e20;font-weight:bold}
+.qr-opt.ua{background:#fff3e0;border-color:#e65100;color:#b71c1c;font-weight:bold}
+.qr-opt.both{background:#e8f5e9;border-color:#2e7d32;color:#1b5e20;font-weight:bold}
+.bkm-btn{margin-left:auto;background:none;border:1px solid var(--border);color:var(--text3);padding:3px 8px;border-radius:4px;cursor:pointer;font-size:12px;touch-action:manipulation}
+.bkm-btn.active{background:gold;border-color:gold;color:#333}
+/* ── HISTORY ── */
+.hist-filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;align-items:center}
+.hist-filter{background:var(--surface);border:1.5px solid var(--border);color:var(--text);padding:7px 14px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;touch-action:manipulation}
+.hist-filter.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.hist-list{display:flex;flex-direction:column;gap:10px}
+.hist-item{background:var(--surface);border-radius:10px;border:1px solid var(--border);overflow:hidden;box-shadow:0 2px 6px var(--shadow)}
+.hist-item-hdr{display:flex;align-items:center;gap:10px;padding:12px 16px;cursor:pointer;touch-action:manipulation}
+.hist-item-hdr:active{background:var(--surface2)}
+.hi-date{font-size:11px;color:var(--text3);min-width:90px}
+.hi-paper{font-size:13px;font-weight:700;color:var(--primary);flex:1}
+.hi-score{font-size:18px;font-weight:800;color:var(--primary);min-width:60px;text-align:right}
+.hi-pct{font-size:11px;color:var(--text3);text-align:right;min-width:40px}
+.hi-badge{font-size:10px;padding:2px 7px;border-radius:8px;font-weight:700}
+.hi-badge.full{background:#e3f2fd;color:#0d47a1}
+.hi-badge.section{background:#f3e5f5;color:#6a1b9a}
+.hi-badge.practice{background:#e8f5e9;color:#1b5e20}
+.hist-detail{display:none;border-top:1px solid var(--border);padding:12px 16px;background:var(--surface2)}
+.hist-detail.open{display:block}
+.hist-sec-row{display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:4px 0;border-bottom:1px solid var(--border)}
+.hist-sec-row:last-child{border:none}
+.hist-sec-bar{height:6px;background:var(--border);border-radius:3px;overflow:hidden;flex:1;margin:0 12px}
+.hist-sec-fill{height:100%;background:var(--primary);border-radius:3px;transition:.5s}
+.del-btn{background:none;border:none;color:var(--red);cursor:pointer;font-size:12px;padding:2px 6px;touch-action:manipulation;opacity:.7}
+.del-btn:active{opacity:1}
+.no-history{text-align:center;padding:40px;color:var(--text3)}
+/* ── MODAL ── */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:500;justify-content:center;align-items:center}
+.modal-bg.show{display:flex}
+.modal{background:var(--surface);border-radius:10px;padding:22px;max-width:420px;width:92%;box-shadow:0 8px 32px rgba(0,0,0,.3)}
+.modal h3{color:var(--primary);margin-bottom:10px;font-size:16px}
+.modal-body{font-size:13px;color:var(--text2);line-height:1.8;margin-bottom:14px}
+.modal-btns{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
+/* ── PALETTE TOGGLE ── */
+#palBtn{display:none;position:fixed;right:14px;bottom:68px;z-index:201;width:48px;height:48px;border-radius:50%;background:var(--primary);color:#fff;font-size:20px;border:none;box-shadow:0 3px 12px rgba(0,0,0,.35);cursor:pointer;touch-action:manipulation;align-items:center;justify-content:center}
+/* ── RESPONSIVE ── */
+@media(max-width:700px){
+  .right-panel{display:none;position:fixed;right:0;top:0;bottom:0;z-index:202;width:230px;box-shadow:-4px 0 20px rgba(0,0,0,.3)}
+  .right-panel.open{display:flex}
+  #palBtn{display:flex}
+  .q-nav-bar{padding:6px 8px;gap:3px}
+  .btn{padding:8px 10px;font-size:11px;min-height:38px}
+  .exam-hdr-left h1{font-size:12px}
+  .exam-hdr-left p{display:none}
+  .score-grid{grid-template-columns:1fr 1fr}
+  .timer-modes{grid-template-columns:1fr}
+  .card-stats{grid-template-columns:1fr 1fr}
+}
+@media(min-width:701px) and (max-width:1024px){
+  .right-panel{width:210px}
+  .pb{width:38px;height:38px}
+}
+</style>
+</head>
+<body>
+
+<!-- ── TOP NAV (shown on non-exam screens) ── -->
+<nav class="topnav" id="topNav">
+  <div class="topnav-brand">
+    🎓 <div><div>IMU-CET CBT</div><span>Practice Simulator</span></div>
+  </div>
+  <div class="topnav-right">
+    <button class="nav-btn" onclick="buildDashboard();showScreen('dashboard')" id="navDash">🏠 Dashboard</button>
+    <button class="nav-btn" onclick="openHistory()" id="navHist">📊 History</button>
+    <button class="nav-btn" id="themeBtn" onclick="toggleTheme()">🌙</button>
+  </div>
+</nav>
+
+<!-- ════════ DASHBOARD ════════ -->
+<div class="screen active" id="dashboard">
+  <div class="page-body">
+    <div class="page-title">📚 Your Exam Bank</div>
+    <div class="page-sub">Select a paper to start practising. Your progress and history are saved automatically.</div>
+    <div class="card-grid" id="paperGrid"></div>
+  </div>
+</div>
+
+<!-- ════════ CONFIG SCREEN ════════ -->
+<div class="screen" id="config">
+  <div class="config-wrap">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px">
+      <button class="btn btn-outline" onclick="buildDashboard();showScreen('dashboard')">← Back</button>
+      <h2 style="color:var(--primary);font-size:18px" id="configTitle">Configure Exam</h2>
+    </div>
+    <div class="config-box">
+      <h3>⏱ Timer Mode</h3>
+      <div class="timer-modes">
+        <div class="tmode sel" data-mode="full" onclick="setTimerMode('full')">
+          <div class="tmode-icon">🕐</div>
+          <div class="tmode-label">Full Exam</div>
+          <div class="tmode-desc">One countdown for the entire paper</div>
+        </div>
+        <div class="tmode" data-mode="section" onclick="setTimerMode('section')">
+          <div class="tmode-icon">📑</div>
+          <div class="tmode-label">Section Timer</div>
+          <div class="tmode-desc">Each section gets its own countdown</div>
+        </div>
+        <div class="tmode" data-mode="practice" onclick="setTimerMode('practice')">
+          <div class="tmode-icon">⚡</div>
+          <div class="tmode-label">Practice Mode</div>
+          <div class="tmode-desc">No timer — review at your pace</div>
+        </div>
+      </div>
+    </div>
+    <div class="config-box">
+      <h3>🎚 Adjust Time</h3>
+      <div class="time-inputs" id="timeInputs"></div>
+    </div>
+    <div class="config-box" id="resumeBox" style="display:none">
+      <h3>⟳ Saved Progress</h3>
+      <p style="font-size:13px;color:var(--text2);margin-bottom:14px">You have a saved session for this paper. Resume where you left off?</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn btn-green" onclick="startExam(true)">⟳ Resume Session</button>
+        <button class="btn btn-outline" onclick="startExam(false)">▶ Start Fresh</button>
+      </div>
+    </div>
+    <div class="config-actions" id="configActions">
+      <button class="btn btn-primary btn-lg" onclick="checkAndStart()">▶ Start Exam</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ HISTORY ════════ -->
+<div class="screen" id="history">
+  <div class="page-body">
+    <div class="page-title">📊 Attempt History</div>
+    <div class="page-sub">Review your past performance. Click any attempt to expand section details.</div>
+    <div class="hist-filters" id="histFilters"></div>
+    <div class="hist-list" id="histList"></div>
+  </div>
+</div>
+
+<!-- ════════ RESULTS ════════ -->
+<div class="screen" id="results" style="display:block;padding:20px;background:var(--bg);overflow-y:auto"></div>
+
+<!-- ════════ EXAM APP (fixed overlay) ════════ -->
+<div id="examApp">
+  <div class="exam-hdr">
+    <div class="exam-hdr-left">
+      <h1 id="examTitle">IMU-CET CBT</h1>
+      <p id="examSubtitle">All Sections</p>
+    </div>
+    <div class="timer-block">
+      <div class="timer-lbl" id="timerLbl">Time Remaining</div>
+      <div class="timer" id="timer">03:00:00</div>
+    </div>
+    <div style="display:flex;gap:6px">
+      <button class="nav-btn" id="themeBtn2" onclick="toggleTheme()" style="padding:6px 10px">🌙</button>
+      <button class="nav-btn" style="background:rgba(198,40,40,.5);padding:6px 10px" onclick="confirmSubmit()">⏹</button>
+    </div>
+  </div>
+  <div class="sec-tabs" id="secTabs"></div>
+  <div class="exam-body">
+    <div class="q-area">
+      <div class="q-content" id="qContent"></div>
+      <div class="q-nav-bar">
+        <button class="btn btn-outline" onclick="clearResponse()">✕ Clear</button>
+        <button class="btn btn-purple" onclick="markReview()">🔖 Mark</button>
+        <button class="btn btn-primary" onclick="saveNext()">💾 Save &amp; Next</button>
+        <button class="btn btn-outline" onclick="prevQ()">◀</button>
+        <button class="btn btn-primary" onclick="nextQ()">▶</button>
+        <button class="btn btn-red ml-auto" onclick="confirmSubmit()">⏹ Submit</button>
+      </div>
+    </div>
+    <div class="right-panel" id="rightPanel">
+      <div class="rp-hdr">Question Palette</div>
+      <div class="legend">
+        <div class="leg-row"><div class="leg-dot s0" style="font-size:8px">—</div> Not Visited</div>
+        <div class="leg-row"><div class="leg-dot s1">✕</div> Not Answered</div>
+        <div class="leg-row"><div class="leg-dot s2">✓</div> Answered</div>
+        <div class="leg-row"><div class="leg-dot s3">M</div> Marked</div>
+        <div class="leg-row"><div class="leg-dot s4">M</div> Answered+Marked</div>
+        <div class="leg-row"><div style="font-size:14px;width:22px;text-align:center">★</div> Bookmarked</div>
+      </div>
+      <div class="rp-counts" id="rpCounts"></div>
+      <div class="palette" id="palette"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Floating palette toggle -->
+<button id="palBtn" onclick="togglePalette()">☰</button>
+
+<!-- ════════ MODALS ════════ -->
+<div class="modal-bg" id="submitModal">
+  <div class="modal">
+    <h3>⚠ Submit Examination</h3>
+    <div class="modal-body" id="submitMsg"></div>
+    <div class="modal-btns">
+      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-red" onclick="submitExam()">Submit Now</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="sectionTimeUpModal">
+  <div class="modal" style="text-align:center">
+    <div style="font-size:40px;margin-bottom:10px">⏰</div>
+    <h3>Section Time Up!</h3>
+    <div class="modal-body" id="sectionTimeUpMsg">Time is up for this section.</div>
+  </div>
+</div>
+
+<script>
+
+// ╔════════════════════════════════════════════════════════════════╗
+// ║  PAPERS — paste new paper blocks here when Claude gives them  ║
+// ╚════════════════════════════════════════════════════════════════╝
+const PAPERS = [
+{
+  id:'imucet_2025',
+  title:'IMU-CET 2025',
+  subtitle:'Previous Year Question Paper',
+  duration:180*60,
+  marking:{correct:1,wrong:-0.25},
+  sections:{English:30,General_Aptitude:30,Mathematics:60,Physics:30,Chemistry:30},
+  questions:[
+
+// ── SECTION 1: ENGLISH (Q1–40) ──────────────────────────────
+{s:'English',q:'The team\'s performance was so ____________ that they were awarded the championship.',o:['Competent','Exceptional','Outstanding','Commendable'],a:2},
+{s:'English',q:'After the long hike, we were all feeling quite ____________ and needed a rest.',o:['Fatigued','Exhausted','Depleted','Drained'],a:1},
+{s:'English',q:'The detective had ____________ for solving complex cases.',o:['An aptitude','An instinct','A talent','An inclination'],a:1},
+{s:'English',q:'The politician made an ____________ speech that left the audience speechless.',o:['Articulate','Eloquent','Elaborate','Impactful'],a:1},
+{s:'English',q:'The old house was filled with ____________ furniture and dusty artifacts.',o:['Historical','Contemporary','Antique','Archaic'],a:2},
+{s:'English',q:"The scientist's ____________ research led to a breakthrough in medicine.",o:['Arbitrary','Meticulous','Systematic','Haphazard'],a:1},
+{s:'English',q:'<b>One-word Substitution:</b> A person who composes or writes a dictionary.',o:['Cartographer','Lexicographer','Stenographer','Calligrapher'],a:1},
+{s:'English',q:'<b>One-word Substitution:</b> A book published after the death of the author.',o:['Premortem','Post-mortem','Posthumous','Manuscript'],a:2},
+{s:'English',q:'<b>One-word Substitution:</b> One who studies the evolution of mankind.',o:['Anthropologist','Geologist','Sociologist','Archaeologist'],a:0},
+{s:'English',q:'<b>One-word Substitution:</b> A person who is talkative.',o:['Reticent','Chatty','Taciturn','Loquacious'],a:3},
+{s:'English',q:'<b>One-word Substitution:</b> A group of three novels or plays with a common theme.',o:['Series','Trilogy','Anthology','Chronicle'],a:1},
+{s:'English',q:'<b>One-word Substitution:</b> A statement that is seemingly contradictory but may be true.',o:['Hyperbole','Oxymoron','Paradox','Epigram'],a:2},
+{s:'English',q:'<b>Synonym:</b> The <u>serendipitous</u> discovery led to a breakthrough.',o:['Deliberate','Intentional','Accidental','Planned'],a:2},
+{s:'English',q:'<b>Synonym:</b> Our professor\'s lecture was quite <u>verbose</u>.',o:['Concise','Brief','Lengthy','Longish'],a:2},
+{s:'English',q:'<b>Synonym:</b> The company\'s profits began to <u>dwindle</u>.',o:['Increase','Fluctuate','Diminish','Stabilize'],a:2},
+{s:'English',q:"<b>Synonym:</b> The artist's work was considered <u>eccentric</u>.",o:['Typical','Conventional','Common','Unusual'],a:3},
+{s:'English',q:"<b>Synonym:</b> Today the politician's speech was full of <u>rhetoric</u>.",o:['Factual language','Persuasive language','Figurative language','Incoherent'],a:1},
+{s:'English',q:'<b>Synonym:</b> She was <u>fastidious</u> about her work and never compromised on the quality.',o:['Careless','Painstaking','Lazy','Indifferent'],a:1},
+{s:'English',q:'<b>Synonym:</b> The <u>inadvertent</u> mistake led to a huge loss.',o:['Intentional','Unintentional','Predictable','Miscalculated'],a:1},
+{s:'English',q:"<b>Antonym:</b> The artist's use of colour was <u>subdued</u>, creating a happy mood.",o:['Expressive','Muted','Vibrant','Restless'],a:2},
+{s:'English',q:'<b>Antonym:</b> The <u>preamble</u> to the constitution outlines the fundamental principles.',o:['Conclusion','Introduction','Amendment','Article'],a:0},
+{s:'English',q:'<b>Antonym:</b> The <u>visible</u> signs of wear and tear on the building needed repair.',o:['Obvious','Concealed','Noticeable','Unnoticeable'],a:1},
+{s:'English',q:"<b>Antonym:</b> The billionaire's <u>grandiose</u> plans for a luxury skyscraper were met with skepticism by city officials.",o:['Ambitious','Lavish','Extravagant','Modest'],a:3},
+{s:'English',q:'<b>Antonym:</b> The instructions were <u>vague</u>, making it difficult to assemble the furniture.',o:['Ambiguous','Incomplete','Confusing','Clear'],a:3},
+{s:'English',q:"<b>Antonym:</b> The tech company's product was at the <u>cutting edge</u> of industry trends.",o:['State of the art','Traditional','Behind the times','Obsolete'],a:2},
+{s:'English',q:"<b>Antonym:</b> The researcher's <u>assertion</u> that climate change is irreversible has sparked intense debate.",o:['Claim','Denial','Hypothesis','Concession'],a:1},
+{s:'English',q:'<b>Active/Passive:</b> Change the voice — The chef cooks the meal.',o:['The meal is cooked by the chef.','The meal cooks by the chef.','The chef is cooking the meal.','The meal is being cooked by the chef.'],a:0},
+{s:'English',q:'<b>Active/Passive:</b> Change the voice — The professor grades the papers.',o:['The papers is being graded by the professor.','The papers are graded by the professor.','The professor is grading the papers.','The papers have been graded.'],a:1},
+{s:'English',q:'<b>Active/Passive:</b> Change the voice — The company has hired new employees.',o:['New employees are hired by the company.','New employees have been hired by the company.','The company is hiring new employees.','New employees are being hired.'],a:1},
+{s:'English',q:'<b>Active/Passive:</b> Change the voice — The play was written by John Donne.',o:['John Donne wrote the play.','The play is written by John Donne.','John Donne is writing the play.','The play has been written by John Donne.'],a:0},
+{s:'English',q:'<b>Active/Passive:</b> Change the voice — The new policy was implemented by the management.',o:['The management implemented the new policy.','The new policy is being implemented by the management.','The management is implementing the new policy.','The new policy has been implemented.'],a:0},
+{s:'English',q:'<b>Fill in the Blank:</b> By the time I arrived, they ____________ their project.',o:['Would have','Ought to have','Should have','Must have'],a:3},
+{s:'English',q:'<b>Fill in the Blank:</b> If I __________ choose between the two options, I would choose the first one.',o:['Should','Had to','Were to','Might'],a:2},
+{s:'English',q:"<b>Fill in the Blank:</b> She __________ have gone to the party, because I didn't see her there.",o:["Can't",'Might not',"Shouldn't","Wouldn't"],a:0},
+{s:'English',q:'<b>Fill in the Blank:</b> They __________ taken the earlier flight, but they missed it.',o:['Would have','Must have','Could have','Should have'],a:2},
+{s:'English',q:'<b>Fill in the Blank:</b> By next year, I __________ Chinese for five years.',o:['Will have been studying','Have been studying','Am studying','Study'],a:0},
+{s:'English',q:'<b>Fill in the Blank:</b> If I __________ the solution, I would tell you.',o:['Knew','Know','Have known','Had known'],a:0},
+{s:'English',q:'<b>Fill in the Blank:</b> By the time I arrived, they ____________ their project.',o:['Have finished','Had finished','Finish','Were finishing'],a:1},
+{s:'English',q:'<b>Fill in the Blank:</b> If it __________ tomorrow, we will stay indoors.',o:['Will rain','Rains','Would rain','Should rains'],a:1},
+{s:'English',q:'<b>Fill in the Blank:</b> I __________ in Dublin for three years now.',o:['Living','Am living','Have been living','Lived'],a:2},
+
+// ── SECTION 2: GENERAL APTITUDE (Q41–80) ────────────────────
+{s:'General Aptitude',q:'<b>Odd One Out:</b> Spot the stranger.',o:['Joy','Happiness','Sorrow','Delight'],a:2},
+{s:'General Aptitude',q:'<b>Odd One Out:</b> Spot the stranger.',o:['Apple','Banana','Carrot','Mango'],a:2},
+{s:'General Aptitude',q:'<b>Odd One Out:</b> Spot the stranger.',o:['Hot','Cold','Warm','Windy'],a:3},
+{s:'General Aptitude',q:'<b>Odd One Out:</b> Spot the stranger.',o:['16','25','37','49'],a:2},
+{s:'General Aptitude',q:'<b>Odd One Out:</b> Spot the stranger.',o:['2','4','6','8'],a:0},
+{s:'General Aptitude',q:'<b>Analogy:</b> Teacher is to classroom as chef is to ____________.',o:['Kitchen','Recipe','Food','Plate'],a:0},
+{s:'General Aptitude',q:'<b>Analogy:</b> Read is to write as listen is to ____________.',o:['Ignore','Speak','Hear','Understand'],a:1},
+{s:'General Aptitude',q:'<b>Analogy:</b> Fast is to slow as __________ is to dark.',o:['Light','Bright','Dim','Shiny'],a:0},
+{s:'General Aptitude',q:'<b>Analogy:</b> Choose the pair in which the relationship DOES NOT match the given pair: <b>Book : Author</b>',o:['Painting and Artist','Song and Actor','Building and Architect','Chef and Dish'],a:1},
+{s:'General Aptitude',q:'<b>Analogy:</b> Choose the pair in which the relationship DOES NOT match the given pair: <b>Car : Driver</b>',o:['Train and Conductor','Ship and Captain','Airplane and Pilot','Ship and Chief Officer'],a:3},
+{s:'General Aptitude',q:'<b>Analogy:</b> Choose the pair in which the relationship DOES NOT match the given pair: <b>Pen : Paper</b>',o:['Keyboard and Monitor','Pencil and Eraser','Brush and Canvas','Keyboard and CPU'],a:3},
+{s:'General Aptitude',q:'<b>Number Series:</b> Write the next number in the series: 2, 4, 6, 8, 10, _______',o:['12','14','16','18'],a:0},
+{s:'General Aptitude',q:'<b>Number Series:</b> Write the next number in the series: 3, 6, 12, 24, _______',o:['36','48','60','72'],a:1},
+{s:'General Aptitude',q:'<b>Number Series:</b> If 23 = 618, 45 = 2030, 36 = 1836, then 57 = ?',o:['3549','3042','3575','3035'],a:3},
+{s:'General Aptitude',q:'<b>Problem:</b> In a 100 m race, A covers the distance in 36 seconds and B in 45 seconds. In this race A beats B by ________.',o:['20 m','25 m','30 m','35 m'],a:0},
+{s:'General Aptitude',q:'<b>Number Series:</b> Choose the response that continues the series: 123, 234, 345, _________',o:['456','567','678','789'],a:0},
+{s:'General Aptitude',q:'<b>Number Series:</b> Choose the response that continues the series: 112, 223, 334, 445, _______',o:['556','667','778','889'],a:0},
+{s:'General Aptitude',q:'<b>Coding-Decoding:</b> If "HELLO" is coded as "IFMMP", what is the code for "WORLD"?',o:['XPSME','XPSMD','XPSMS','XPDMD'],a:0},
+{s:'General Aptitude',q:'<b>Coding-Decoding:</b> If "ZEBRA" is coded as "AEBRZ", what is the code for "LION"?',o:['NLIO','ORIM','MLOI','NOIR'],a:3},
+{s:'General Aptitude',q:'<b>Coding-Decoding:</b> If "CAT" is coded as "DBU", what is the code for "DOG"?',o:['EPH','EPJ','EPI','EPT'],a:0},
+{s:'General Aptitude',q:'Which state is known as the "Land of Five Rivers"?',o:['Punjab','Haryana','Kerala','Maharashtra'],a:0},
+{s:'General Aptitude',q:'Which state is known as the "Rice Bowl of India"?',o:['Punjab','Haryana','Andhra Pradesh','Madhya Pradesh'],a:2},
+{s:'General Aptitude',q:'In which state is the famous Keoladeo National Park located?',o:['Rajasthan','Madhya Pradesh','West Bengal','Odisha'],a:0},
+{s:'General Aptitude',q:'Which country has no river?',o:['Norway','Saudi Arabia','Nepal','Indonesia'],a:1},
+{s:'General Aptitude',q:'Iron ore is an important ore for __________ .',o:['Copper','Zinc','Steel','Aluminium'],a:2},
+{s:'General Aptitude',q:'Which is the planet nearest to the Sun?',o:['Earth','Mars','Mercury','Saturn'],a:2},
+{s:'General Aptitude',q:'Arrange the following planets in <b>ascending order of their distance from the Sun</b>:<br>I. Jupiter &nbsp; II. Venus &nbsp; III. Mercury &nbsp; IV. Mars &nbsp; V. Earth',o:['I, V, IV, II, III','III, II, V, IV, I','III, II, IV, V, I','I, IV, V, II, III'],a:1},
+{s:'General Aptitude',q:'Koyna multipurpose project is in which state?',o:['Maharashtra','Uttar Pradesh','Assam','Nagaland'],a:0},
+{s:'General Aptitude',q:'Guwahati is situated on the bank of which river?',o:['Kaveri','Hooghly','Brahmaputra','Narmada'],a:2},
+{s:'General Aptitude',q:'The Indian Constitution was adopted and enacted by the Constituent Assembly on:',o:['9 December 1946','15 August 1947','26 November 1949','26 January 1950'],a:2},
+{s:'General Aptitude',q:'The oldest port in India is:',o:['Kolkata','Chennai','Lothal','Visakhapatnam'],a:2},
+{s:'General Aptitude',q:'Which is the deepest port in India?',o:['Gangavaram Port','Kandla Port','JNPT (Jawaharlal Nehru Port Trust)','Kochi Port'],a:0},
+{s:'General Aptitude',q:'Which state in India has the least literacy rate?',o:['Andhra Pradesh','Bihar','Kerala','West Bengal'],a:1},
+{s:'General Aptitude',q:'Ghoomar is a famous dance form of:',o:['Karnataka','Andhra Pradesh','Rajasthan','Uttar Pradesh'],a:2},
+{s:'General Aptitude',q:'Which city in India is known as the "Garden City"?',o:['Jabalpur','Ladakh','Jaipur','Bengaluru'],a:3},
+{s:'General Aptitude',q:'The National Institute of Oceanography is headquartered at:',o:['Mumbai','New Delhi','Goa','Hyderabad'],a:2},
+{s:'General Aptitude',q:'Which is the southernmost port in India?',o:['Tuticorin Port','Chennai','Kochi Port','Visakhapatnam Port'],a:0},
+{s:'General Aptitude',q:'Surat is situated on the banks of which river?',o:['Godavari','Tapi','Yamuna','Ganges'],a:1},
+{s:'General Aptitude',q:'Which of the following is a Union Territory?',o:['Lakshadweep','Mizoram','Nagaland','Tamil Nadu'],a:0},
+{s:'General Aptitude',q:'The Digboi oil refinery in India is located in:',o:['Andhra Pradesh','Himachal Pradesh','Uttar Pradesh','Assam'],a:3},
+
+// ── SECTION 3: MATHEMATICS (Q81–100, first 20 of 50) ─────────
+{s:'Mathematics',q:'If A = <code>[[0,3,0],[0,0,3],[0,0,0]]</code>, then A³ is:',o:['4A','12A','27A','81A'],a:2},
+{s:'Mathematics',q:'If A = <code>[[-1,-2,2],[2,1,-2],[2,-2,1]]</code>, then adj(A) is:',o:['A','Aᵀ','3A','3Aᵀ'],a:3},
+{s:'Mathematics',q:'The inverse of a skew-symmetric matrix of odd order:',o:['Is a symmetric matrix','Is a diagonal matrix','Is a skew-symmetric matrix','Does not exist'],a:3},
+{s:'Mathematics',q:'Three points P(2x, x+3), Q(0, x) and R(x+3, x+6) are collinear. The value of x is:',o:['0','2','3','1'],a:3},
+{s:'Mathematics',q:'If AB and BA both exist, then:',o:['A and B are singular','A and B are non-singular','AB need not be equal to BA','AB equals BA'],a:2},
+{s:'Mathematics',q:'If A is a square matrix of order 3 such that A·adj(A) = 10I, then adj(A⁻¹) is equal to:',o:['I','10I','100I','(1/10)I'],a:3},
+{s:'Mathematics',q:'If the determinant of the matrix [[a,h,g],[h,b,f],[g,f,c]] is 0, then ax² + 2hxy + by² + 2gx + 2fy + c = 0 represents:',o:['An ellipse','A parabola','A rectangular hyperbola','A pair of straight lines'],a:3},
+{s:'Mathematics',q:'If R is a relation on the set A = {1, 2, 3} given by R = {(1,1), (2,2), (3,3)}, then R is:',o:['Reflexive only','Symmetric only','Transitive only','An equivalence relation'],a:3},
+{s:'Mathematics',q:'If A = {a, b, c} and B = {−2, −1, 0, 1, 2}, then the number of injections that can be defined from A to B is:',o:['125','243','60','120'],a:2},
+{s:'Mathematics',q:'If f : [2, ∞) → ℝ is defined by f(x) = x² − 4x + 5, then the range of f is:',o:['ℝ','[1, ∞)','[4, ∞)','[5, ∞)'],a:1},
+{s:'Mathematics',q:'The principal value of tan⁻¹(tan(5π/4)) is:',o:['5π/4','π/4','−π/4','5π/3'],a:2},
+{s:'Mathematics',q:'The equation 2cos²x + sin⁴x = 1 has:',o:['No solution','A unique solution','Two solutions','More than two solutions'],a:3},
+{s:'Mathematics',q:'The identity tan⁻¹(3) + tan⁻¹(a) = tan⁻¹((3 + a)/(1 − 3a)) is valid for what value of a?',o:['a ∈ (−∞, 1/3)','a > 1/3','a < 1/3','All real values of a'],a:2},
+{s:'Mathematics',q:'The function f(x) = x|x| at x = 0 is:',o:['Continuous but not differentiable','Differentiable but not continuous','Continuous and differentiable','Neither continuous nor differentiable'],a:2},
+{s:'Mathematics',q:'If x = t² and y = t³, then dy/dx is equal to:',o:['3t²/2t','2t/3t²','3t/2','(3/2)√x'],a:2},
+{s:'Mathematics',q:'The differential of log[log(log(x²))] with respect to x is:',o:['2 / (x · log x² · log(log x²))','1 / (x · log x² · log(log x²))','2 / (x · log x · log(log x))','1 / (x · log x · log(log x))'],a:2},
+{s:'Mathematics',q:"If y = f(x²) and f'(x) = e^√x, then dy/dx is equal to:",o:['2x · e^(2√x)','2x · eˣ','4x · e^(√x)','4x · eˣ'],a:1},
+{s:'Mathematics',q:'A cylinder\'s radius is increasing at 3 cm/s and height decreasing at 4 cm/s. Rate of change of volume when r = 4 cm and h = 6 cm is:',o:['64π cm³/s','144π cm³/s','80π cm³/s','801 cm³/s'],a:2},
+{s:'Mathematics',q:'The function f(x) = tan x − x:',o:['Always increases','Always decreases','Remains constant','Sometimes increases and sometimes decreases'],a:0},
+{s:'Mathematics',q:'If the function f(x) = x² − ax + 5 is strictly increasing on (1, 2), then a lies in the interval:',o:['(2, ∞)','(−∞, 2)','(4, ∞)','(−∞, 4)'],a:1},
+// ── MATHEMATICS continued (Q101–130, Q21–50 of section) ────────
+{s:'Mathematics',q:'The absolute maximum value of the function f(x) = 4x − x² in the interval [0, 4] is:',o:['8','9','6','10'],a:0},
+{s:'Mathematics',q:'The maximum slope of the curve y = −x³ + 3x² + 12x − 5 is:',o:['0','9','12','15'],a:3},
+{s:'Mathematics',q:'The normal at the point (1, 1) on the curve 2y + x² = 3 is:',o:['x + y = 0','x − y = 0','x + y + 1 = 0','x − y = 1'],a:1},
+{s:'Mathematics',q:'∫ dx/(1 + x²) is equal to:',o:['tan(x²) + C','tan x + C','tan⁻¹ x + C','tan⁻¹(2x²) + C'],a:2},
+{s:'Mathematics',q:'∫₀^(π/4) log(1 + tan x) dx is:',o:['log 2','(π/4) log 2','π log 2','4π log 2'],a:1},
+{s:'Mathematics',q:'∫₀^√2 [x²] dx is equal to (where [ ] denotes greatest integer function):',o:['2 − √2','√2 − 1','2(1.5 − √2)','2√2'],a:1},
+{s:'Mathematics',q:'∫ eˣ cot x dx is equal to:',o:['−eˣ tan x + C','eˣ cot x + C','eˣ(cot x − cosec²x) + C','eˣ tan x + C'],a:1},
+{s:'Mathematics',q:'If ∫ f(x) dx = k, then ∫ f(x + 1) dx is equal to:',o:['k − 1 + C','k − 1 − C','k + 1 − C','k + 1 + C'],a:3},
+{s:'Mathematics',q:'The area (in sq. units) of the region bounded by the y-axis, y = sin x, y = cos x and 0 ≤ x ≤ π/2 is:',o:['√2','√2 + 1','√2 − 1','2(√2 − 1)'],a:2},
+{s:'Mathematics',q:'The area (in sq. units) of the region bounded by the x-axis and y = √(16 − x²) is:',o:['8π','20π','16π','256π'],a:0},
+{s:'Mathematics',q:'The solution of the differential equation (1 − x²)(dy/dx) − xy = 1 is:',o:['y√(1 − x²) = sin⁻¹ x + C','x/√(1 − y²) = sin⁻¹ y + C','x sin⁻¹ x = √(1 − x²) + C','x sin⁻¹ x = 1 − y² + C'],a:0},
+{s:'Mathematics',q:'The solution of the differential equation dy/dx = (1 + y²)/(1 + x²) is:',o:['y = tan⁻¹ x + C','x = tan⁻¹ y + C','tan(xy) = C','y − x = C(1 + xy)'],a:3},
+{s:'Mathematics',q:'The order and degree of the differential equation for y = Ax + A³ (A is arbitrary constant) are:',o:['2, 4','1, 3','1, 2','2, 3'],a:1},
+{s:'Mathematics',q:'The area of the triangle whose vertices are A(1, 2, 3), B(2, 3, 4) and C(−2, 1, 0) is:',o:['0','1','2','3'],a:1},
+{s:'Mathematics',q:'The moment of a force about a point is:',o:['r × F','F × r','F · r','r · F'],a:0},
+{s:'Mathematics',q:'The number of unit vectors perpendicular to the vectors a = 2i + j + 2k and b = i + 3j + 2k is:',o:['One','Two','Three','Infinite'],a:1},
+{s:'Mathematics',q:'If a, b and c are unit vectors such that a + b + c = 0, then the value of a·b + a·c + b·c is:',o:['1','1/3','−3/2','2'],a:2},
+{s:'Mathematics',q:'If the lines (y − 2)/(x − 1) = −3/2 and (y − 2)/(x − 3) = k/3 are parallel, then k is equal to:',o:['−10','7','10','17'],a:0},
+{s:'Mathematics',q:'The reflection of the point (a, b, c) on the xy-plane is:',o:['(a, b, 0)','(0, 0, c)','(−a, −b, c)','(a, b, −c)'],a:3},
+{s:'Mathematics',q:'If a line makes angles π/4 and π/3 with the x-axis and y-axis respectively, then the acute angle made by the line with the z-axis is:',o:['π/3','π/4','π/6','5π/12'],a:0},
+{s:'Mathematics',q:'The distance of the point (a, b, c) from the y-axis is:',o:['b','c + b','√(a² + c²)','a² + c²'],a:2},
+{s:'Mathematics',q:'The number of 4-digit numbers greater than 5000 that can be formed out of the digits 3, 4, 5, 6 and 7 (no digit repeated) is:',o:['72','27','70','None of these'],a:0},
+{s:'Mathematics',q:'The number of arrangements of 10 different things taken 4 at a time in which one particular thing always occurs is:',o:['2015','2016','2014','None of these'],a:1},
+{s:'Mathematics',q:'In how many ways can 9 letters be posted in 4 letter boxes?',o:['4⁹','4⁵','3024','126'],a:0},
+{s:'Mathematics',q:'The number of ways in which 8 examination papers can be arranged so that the best and worst papers never come together is:',o:['8! − 2 × 7!','8! − 7!','8!','None of these'],a:0},
+{s:'Mathematics',q:'If P(A) = 0.4, P(A ∪ B) = 0.7 and A and B are mutually exclusive events, then P(B) is:',o:['0.3','0.4','0.5','0.6'],a:0},
+{s:'Mathematics',q:'If A and B are two events such that P(A) = 0.6, P(B) = 0.2 and P(A|B) = 0.5, then P(A\'|B\') is equal to:',o:['1/10','3/10','3/8','6/7'],a:2},
+{s:'Mathematics',q:'A problem in mathematics is given to three students A, B, C and their chances of solving it are 1/2, 1/3 and 1/4 respectively. The probability that the problem is solved is:',o:['3/4','1/2','2/3','5/8'],a:0},
+{s:'Mathematics',q:'Three numbers are chosen at random from 1 to 20. The probability that they are consecutive is:',o:['1/190','1/120','3/190','5/190'],a:2},
+{s:'Mathematics',q:'Which among the following is NOT equal to watt?',o:['joule/second','ampere × volt','(ampere)² × ohm','ampere/volt'],a:3},
+
+// ── SECTION 4: PHYSICS (Q131–180) ──────────────────────────
+{s:'Physics',q:'Which amongst the following is NOT equal to watt?',o:['joule/second','ampere × volt','(ampere)² × ohm','ampere/volt'],a:3},
+{s:'Physics',q:'A body falls from a height h = 200 m. The ratio of distance travelled in each 2 s during t = 0 to t = 6 s of the journey is:',o:['1 : 4 : 9','1 : 2 : 4','1 : 3 : 5','1 : 2 : 3'],a:2},
+{s:'Physics',q:'If two balls are projected at angles 45° and 60° and the maximum heights reached are the same, what is the ratio of their initial velocities?',o:['√2 : √3','√3 : √2','3 : 2','2 : 3'],a:1},
+{s:'Physics',q:'A ball of mass m is moving towards a player with velocity v. If the player stops it, then the impulse applied by the player is:',o:['−mv','+mv','−2mv','+2mv'],a:0},
+{s:'Physics',q:'A block of mass 2 kg is placed on the floor. The coefficient of static friction is 0.4. If a force of 2.8 N is applied on the block parallel to the floor, the force of friction between the block and floor is (g = 10 m/s²):',o:['2.8 N','8 N','2 N','0'],a:0},
+{s:'Physics',q:'A force F = (2i + 3j + 4k) N acting on a body for 4 s produces a displacement d = (3i + 4j + 5k) m. The power used is:',o:['9.5 W','7.5 W','6.5 W','4.5 W'],a:0},
+{s:'Physics',q:'A particle of mass 2 kg is moving along a circular path of radius 1 m. If its angular speed is 2π rad/s, the centripetal force on it is:',o:['4π² N','8π² N','40 N','8π N'],a:1},
+{s:'Physics',q:'In an elastic collision:',o:['Both momentum and kinetic energy are conserved','Only momentum is conserved','Only kinetic energy is conserved','Neither kinetic energy nor momentum is conserved'],a:0},
+{s:'Physics',q:'Two bodies of masses 1 kg and 2 kg are lying in the xy-plane at (−1, 2) and (2, 4) respectively. What are the coordinates of the centre of mass?',o:['(1, 10)','(0, 1)','(1, 10/3)','None of these'],a:3},
+{s:'Physics',q:'A body falling vertically downwards under gravity breaks into two parts of unequal masses. The centre of mass of the two parts taken together shifts horizontally towards:',o:['The heavier piece','The lighter piece','Does not shift horizontally','Depends on the vertical velocity at the time of breaking'],a:2},
+{s:'Physics',q:'The torque of force F = −3i + j + 5k acting at point r = 7i + 3j + k about the origin is:',o:['14i − 38j + 16k','4i + 4j + 6k','−14i + 38j − 16k','−2i + 3j + 5k'],a:0},
+{s:'Physics',q:'If torque is zero, then:',o:['Angular momentum is conserved','Linear momentum is conserved','Energy is conserved','Angular momentum is not conserved'],a:0},
+{s:'Physics',q:'A solid sphere is rotating freely about its symmetry axis in free space. The radius of the sphere is increased keeping its mass the same. Which quantity remains constant?',o:['Rotational kinetic energy','Moment of inertia','Angular velocity','Angular momentum'],a:3},
+{s:'Physics',q:'If the Earth suddenly shrinks (without changing mass) to half of its present radius, then acceleration due to gravity will be:',o:['9g/2','4g','g/4','2g'],a:1},
+{s:'Physics',q:'A body has a weight of 72 N. When it is taken to a height h = R (radius of Earth), it would weigh:',o:['72 N','36 N','18 N','0'],a:2},
+{s:'Physics',q:'The escape velocity for a body of mass 1 kg from the Earth\'s surface is 11.2 km/s. The escape velocity for a body of mass 100 kg would be:',o:['11.2 × 10² km/s','112 km/s','11.2 km/s','11.2 × 10⁻² km/s'],a:2},
+{s:'Physics',q:'A particle is moving with constant angular velocity along the circumference of a circle. Which of the following statements is true?',o:['The particle executes SHM','The projection of the particle on any one of the diameters executes SHM','The projection of the particle on any of the diameters executes SHM','None of the above'],a:2},
+{s:'Physics',q:'A body is executing SHM with an amplitude of 0.1 m. Its velocity while passing through the mean position is 3 m/s. Its frequency (in Hz) is:',o:['15π','15/π','30π','25π'],a:1},
+{s:'Physics',q:'A particle of mass 0.10 kg executes SHM with an amplitude 0.05 m and frequency 20 vibrations/s. Its energy of oscillation is:',o:['2 J','4 J','1 J','0'],a:0},
+{s:'Physics',q:'Two wires of the same material and length but diameter in the ratio 1 : 2 are stretched by the same force. The potential energy per unit volume for the two wires when stretched will be in the ratio:',o:['16 : 1','4 : 1','2 : 1','1 : 1'],a:0},
+{s:'Physics',q:'If Re is the Reynolds number, then which of the following is INCORRECT?',o:['For Re < 1000, flow is laminar','For 1000 < Re < 2000, flow is steady','For Re > 2000, flow is turbulent','All are incorrect'],a:1},
+{s:'Physics',q:'The ratio of the terminal velocities of two drops of radii R and R/2 is:',o:['2','1','1/2','4'],a:3},
+{s:'Physics',q:'A gas has volume V and pressure p. The total translational kinetic energy of all the molecules of the gas is:',o:['(3/2)pV only if the gas is monatomic','(3/2)pV only if the gas is diatomic','(3/2)pV in all cases','None of the above'],a:2},
+{s:'Physics',q:'If a Carnot engine functions at source temperature 127°C and sink temperature 87°C, what is its efficiency?',o:['10%','25%','40%','50%'],a:0},
+{s:'Physics',q:'A string of length 1 m has the mass per unit length 0.1 g/cm. The fundamental frequency of vibration under a tension of 400 N is:',o:['400 Hz','100 Hz','50 Hz','200 Hz'],a:1},
+{s:'Physics',q:'The electric dipole moment of an electron and a proton 4.3 nm apart is:',o:['6.8 × 10⁻²⁸ C·m','2.56 × 10⁻²⁹ C²/m','3.72 × 10⁻¹⁴ C/m','11 × 10⁻⁴⁶ C²/m'],a:0},
+{s:'Physics',q:'A charge Q is enclosed by a Gaussian spherical surface of radius R. If the radius is doubled, then the outward electric flux will:',o:['Be reduced to half','Remain the same','Be doubled','Increase four times'],a:1},
+{s:'Physics',q:'The diameter of a hollow metallic sphere is 60 cm and the sphere carries a charge of 500 μC. The potential at a distance of 100 cm from the centre of the sphere will be:',o:['6 × 10⁷ V','7 × 10⁶ V','4.5 × 10⁶ V','5 × 10⁶ V'],a:2},
+{s:'Physics',q:'Identify the WRONG statement regarding electrical potential energy:',o:['PE of two protons increases if their separation decreases','PE of a proton–electron system increases if their separation decreases','PE of a proton–electron system increases if their separation increases','PE of two electrons increases if their separation decreases'],a:1},
+{s:'Physics',q:'The potentials of two plates of a capacitor are +10 V and −10 V. The charge on one of the plates is 40 C. The capacitance of the capacitor is:',o:['2 F','4 F','0.5 F','0.25 F'],a:0},
+{s:'Physics',q:'A current of 2 A passes through a cell of emf 1.5 V having an internal resistance of 0.15 Ω. The potential difference across the ends of the cell will be:',o:['1.35 V','1.50 V','1.00 V','1.20 V'],a:3},
+{s:'Physics',q:'Some electric bulbs are connected in series across a 220 V supply. If one bulb is fused, then remaining bulbs are connected again in series across the same supply. The illumination in the room will:',o:['Increase','Decrease','Remain the same','Not be continuous'],a:0},
+{s:'Physics',q:'The current through a wire is I = 3t² + 2t + 5. The charge flowing through the cross-section in the time interval t = 0 to t = 2 s is:',o:['22 C','20 C','18 C','5 C'],a:0},
+{s:'Physics',q:'Two ions having masses in the ratio 1:1 and charges in the ratio 1:2 are projected perpendicular to a magnetic field with speeds in the ratio 2:3. The ratio of radii of their circular paths is:',o:['4 : 3','2 : 3','3 : 1','1 : 4'],a:0},
+{s:'Physics',q:'To increase the sensitivity of a moving coil galvanometer, one should decrease:',o:['The strength of its magnet','The torsional constant of its suspension','The number of turns in its coil','The area of its coil'],a:1},
+{s:'Physics',q:'Two pure inductors each of self-inductance L are connected in parallel but are well separated from each other. The total inductance is:',o:['2L','L','L/2','L/4'],a:2},
+{s:'Physics',q:'A current varying at the rate of 3 A/s in a coil generates an emf of 8 mV in a nearby coil. The mutual inductance of the two coils is:',o:['2.66 mH','2.66 × 10⁻³ mH','2.66 H','0.266 H'],a:0},
+{s:'Physics',q:'The output of a step-down transformer is measured to be 24 V when connected to a 12 W light bulb. The value of the peak current is:',o:['(1/2) A','(√2/2) A','2 A','√2 A'],a:3},
+{s:'Physics',q:'The ratio of amplitude of magnetic field to the amplitude of electric field for an electromagnetic wave propagating in vacuum is equal to:',o:['The speed of light in vacuum','Reciprocal of the speed of light in vacuum','The ratio of magnetic permeability to electric susceptibility of vacuum','Unity'],a:1},
+{s:'Physics',q:'An object is placed at 10 cm from a lens and a real image is formed with magnification of 0.5. Then the lens is:',o:['Concave with focal length 10/3 cm','Convex with focal length 10/3 cm','Concave with focal length 10 cm','Convex with focal length 10 cm'],a:1},
+{s:'Physics',q:"In Young's double slit experiment, green light (λ = 5461 Å) is used and 60 fringes were seen. Now sodium light (λ = 5890 Å) is used. The number of fringes observed is:",o:['40','60','50','55'],a:3},
+{s:'Physics',q:'The work functions for Al, K and Pt are 4.28 eV, 2.30 eV and 5.65 eV respectively. Their threshold frequencies would be in the order:',o:['Pt > Al > K','Al > Pt > K','K > Al > Pt','Al > K > Pt'],a:0},
+{s:'Physics',q:'In which of the following transitions will the wavelength be minimum?',o:['n = 5 to n = 4','n = 4 to n = 3','n = 3 to n = 2','n = 2 to n = 1'],a:3},
+{s:'Physics',q:'In a Rutherford scattering experiment, when a projectile of charge Z₁ and mass M₁ approaches a target nucleus of charge Z₂ and mass M₂, the energy of the projectile is:',o:['Directly proportional to M₁ × M₂','Directly proportional to Z₁ × Z₂','Directly proportional to Z₁','Directly proportional to M₂'],a:1},
+{s:'Physics',q:'The mass defect in a particular nuclear reaction is 0.3 g. The amount of energy liberated in kilowatt-hours is (c = 3 × 10⁸ m/s):',o:['1.5 × 10⁶','2.5 × 10⁶','3 × 10⁶','7.5 × 10⁶'],a:3},
+{s:'Physics',q:'Intrinsic semiconductor is electrically neutral. Extrinsic semiconductor having a large number of current carriers would be:',o:['Positively charged','Negatively charged','Positively or negatively charged depending upon the type of impurity','Electrically neutral'],a:3},
+{s:'Physics',q:'Select the correct statement:',o:['In a full wave rectifier, two diodes work alternately','In a full wave rectifier, two diodes work simultaneously','The efficiency of full wave and half wave rectifiers is the same','The full wave rectifier is bi-directional'],a:0},
+{s:'Physics',q:'A circular coil of 20 turns and radius 10 cm is placed in a uniform magnetic field of 0.10 T normal to the plane of the coil. If the current in the coil is 5 A, then the torque acting on the coil will be:',o:['31.4 N·m','3.14 N·m','0.314 N·m','0'],a:2},
+{s:'Physics',q:'Two solid conductors are made of the same material and have the same length and resistance. One has a circular cross-section of area A₁ and the other a square cross-section of area A₂. The ratio A₁/A₂ is:',o:['1.5','1','0.8','2'],a:1},
+{s:'Physics',q:'In a certain region of space with volume 0.2 m³, the electric potential is found to be 5 V throughout. The magnitude of the electric field in this region is:',o:['0.5 N/C','1 N/C','5 N/C','0'],a:3},
+
+// ── SECTION 5: CHEMISTRY (Q181–200) ────────────────────────
+{s:'Chemistry',q:'The pKa of an acid and pKb of a base are 4.28 and 4.27 respectively. The pH of the corresponding salt formed is:',o:['7.050','6.995','11.775','7.005'],a:3},
+{s:'Chemistry',q:'In Apollo spacecraft, the fuel cell used was:',o:['H₂–O₂ fuel cell','CH₄–O₂ fuel cell','Both A and B','None'],a:0},
+{s:'Chemistry',q:'Formaldehyde reacts with which one of the following compounds to give urotropine?',o:['Ammonium chloride','Ammonia','Methylamine','Ammonium hydroxide'],a:1},
+{s:'Chemistry',q:"Glucose is oxidised into gluconic acid by Tollens' reagent. This can be identified through:",o:['Formation of red precipitate','Formation of yellow precipitate','Evolution of a gas','Formation of silver mirror'],a:3},
+{s:'Chemistry',q:'Chloroform on decomposition in the presence of air or light gives HCl along with a poisonous gas having the chemical formula:',o:['CO','COCl₃','COCl₂','CH₃NC'],a:2},
+{s:'Chemistry',q:'Which shows the correct order of increasing boiling point?',o:['Propanal < methoxymethane < propan-1-ol','Methoxymethane < propan-1-ol < propanal','Propanal < propan-1-ol < methoxymethane','Methoxymethane < propanal < propan-1-ol'],a:3},
+{s:'Chemistry',q:'Nitrogenous bases found in RNA are:',o:['Cytosine, Adenine, Thymine, Guanine','Cytosine, Adenine, Uracil, Guanine','Cytosine, Adenine, Thymine, Uracil','Cytosine, Adenine, Guanine, Uracil'],a:1},
+{s:'Chemistry',q:'Haloalkanes react with AgCN to form:',o:['Alkyl cyanide','Alkyl aryl cyanide','Alkyl isocyanide','Alkyl aryl isocyanide'],a:2},
+{s:'Chemistry',q:'32 g of methanol contains as many molecules as contained in:',o:['32 g of oxygen gas','32 g of sulphuric acid','32 g of water','32 g of ammonia'],a:0},
+{s:'Chemistry',q:'The correct value of wavelength of a light wave having period of 2.0 × 10⁻¹⁰ s is:',o:['6.0 × 10⁻⁴ m','6.0 × 10⁻¹ m','6.0 × 10⁻² m','6.0 × 10⁻⁵ m'],a:2},
+{s:'Chemistry',q:'Among the species K⁺, Cl⁻, S²⁻, Ca²⁺, which has the largest size?',o:['K⁺','Cl⁻','S²⁻','Ca²⁺'],a:2},
+{s:'Chemistry',q:'O₂⁻ is:',o:['Diamagnetic and having bond order 1','Paramagnetic and having bond order 1.5','Paramagnetic and having bond order 2','Paramagnetic and having bond order 2.5'],a:1},
+{s:'Chemistry',q:'The value of Kc for the reaction 2NOCl(g) ⇌ 2NO(g) + Cl₂(g) is 1.8 × 10⁻² at 500 K. Then Kp is:',o:['2.15 × 10⁻⁴ mol/L','8.3 × 10⁴ mol/L','0.43 × 10⁴ mol/L','4.3 × 10⁻⁴ mol/L'],a:3},
+{s:'Chemistry',q:'The conjugate base of NH₃ is:',o:['BH⁺','BH₂⁻','N₂H₄','NH₂⁻'],a:3},
+{s:'Chemistry',q:'The spin-only magnetic moment of M²⁺ ion (Z = 28) is:',o:['3.87 B.M.','0 B.M.','2.83 B.M.','5.37 B.M.'],a:2},
+{s:'Chemistry',q:'The IUPAC name of [Co(NH₃)₅Cl]Cl₂ is:',o:['Chloridopentaamminecobalt(III) chloride','Pentaamminechloridocobaltate(III) chloride','Pentaamminechloridocobalt(III) chloride','Pentaamminechloridocobalt(III) dichloride'],a:2},
+{s:'Chemistry',q:'The number of coordinated water molecules in CuSO₄·5H₂O is:',o:['1','2','3','4'],a:3},
+{s:'Chemistry',q:'On hydrogenation, ethene gives:',o:['Ethyne','Ethane','Methane','Butane'],a:1},
+{s:'Chemistry',q:'The value of Van\'t Hoff factor (i) in the case of dissociation of AlCl₃ is:',o:['2','3','4','8'],a:2},
+{s:'Chemistry',q:'The quantity of electricity needed to reduce 1 mol of Cr₂O₇²⁻ is:',o:['2F','4F','6F','12F'],a:2},
+]
+}
+// ← PASTE NEW PAPER BLOCK HERE (add comma after } above)
+];
+
+// ╔════════════════════════════════════════════════════════════════╗
+// ║  FIREBASE — optional. Paste your config to sync across devices║
+// ╚════════════════════════════════════════════════════════════════╝
+const FIREBASE_CONFIG = null;
+// To enable, replace null with your Firebase config object:
+// const FIREBASE_CONFIG = { apiKey:"...", authDomain:"...", projectId:"...", ... };
+
+// ════════ APP STATE ════════
+let activePaper=null, Q=[], DURATION=0, MARKING={}, STORE_KEY='', CONFIG={};
+let state=null, timerInterval=null, db=null;
+
+// ════════ THEME ════════
+function initTheme(){
+  const t=localStorage.getItem('cbt_theme')||'light';
+  document.documentElement.setAttribute('data-theme',t);
+  document.getElementById('themeBtn').textContent = t==='dark'?'☀️':'🌙';
+}
+function toggleTheme(){
+  const cur=document.documentElement.getAttribute('data-theme');
+  const next=cur==='dark'?'light':'dark';
+  document.documentElement.setAttribute('data-theme',next);
+  localStorage.setItem('cbt_theme',next);
+  document.getElementById('themeBtn').textContent=next==='dark'?'☀️':'🌙';
+}
+
+// ════════ FIREBASE INIT ════════
+async function initFirebase(){
+  if(!FIREBASE_CONFIG) return;
+  try{
+    const {initializeApp}=await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+    const {getFirestore,collection,addDoc,getDocs,query,orderBy,deleteDoc,doc}=await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+    const app=initializeApp(FIREBASE_CONFIG);
+    db=getFirestore(app);
+    window._fb={collection,addDoc,getDocs,query,orderBy,deleteDoc,doc};
+    console.log('Firebase connected');
+  }catch(e){console.warn('Firebase init failed:',e);}
+}
+
+// ════════ HISTORY ════════
+function getHistory(){
+  try{return JSON.parse(localStorage.getItem('cbt_history')||'[]');}catch(e){return [];}
+}
+function saveAttemptToHistory(attempt){
+  const h=getHistory();
+  h.unshift(attempt);
+  if(h.length>100) h.pop();
+  localStorage.setItem('cbt_history',JSON.stringify(h));
+  if(db&&window._fb){
+    const uid=getUID();
+    window._fb.addDoc(window._fb.collection(db,`users/${uid}/attempts`),attempt).catch(()=>{});
+  }
+}
+function deleteAttempt(idx){
+  if(!confirm('Delete this attempt?')) return;
+  const h=getHistory();
+  h.splice(idx,1);
+  localStorage.setItem('cbt_history',JSON.stringify(h));
+  renderHistory();
+}
+function getUID(){
+  let uid=localStorage.getItem('cbt_uid');
+  if(!uid){uid='user_'+Date.now()+'_'+Math.random().toString(36).slice(2);localStorage.setItem('cbt_uid',uid);}
+  return uid;
+}
+
+// ════════ BOOKMARKS ════════
+function getBookmarks(paperId){
+  try{return JSON.parse(localStorage.getItem('bkm_'+paperId)||'[]');}catch(e){return [];}
+}
+function toggleBookmark(paperId,qIdx){
+  const bkms=getBookmarks(paperId);
+  const i=bkms.indexOf(qIdx);
+  if(i>=0) bkms.splice(i,1); else bkms.push(qIdx);
+  localStorage.setItem('bkm_'+paperId,JSON.stringify(bkms));
+}
+
+// ════════ DASHBOARD ════════
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  const el=document.getElementById(id);
+  if(el) el.classList.add('active');
+}
+
+function buildDashboard(){
+  showScreen('dashboard');
+  const history=getHistory();
+  const grid=document.getElementById('paperGrid');
+  grid.innerHTML='';
+  PAPERS.forEach(p=>{
+    const pAttempts=history.filter(h=>h.paperId===p.id);
+    const bestScore=pAttempts.length?Math.max(...pAttempts.map(h=>h.score)):null;
+    const last=pAttempts[0]||null;
+    const secs=[...new Set(p.questions.map(q=>q.s))];
+    const sparks=pAttempts.slice(0,8).reverse();
+    const maxS=sparks.length?Math.max(...sparks.map(h=>h.maxScore),1):1;
+
+    const card=document.createElement('div');
+    card.className='card';
+    card.innerHTML=`
+      <div class="card-header">
+        <h3>📋 ${p.title}</h3>
+        <p>${p.subtitle}</p>
+      </div>
+      <div class="card-body">
+        <div class="card-stats">
+          <div class="stat"><div class="stat-num">${p.questions.length}</div><div class="stat-lbl">Questions</div></div>
+          <div class="stat"><div class="stat-num">${Math.floor(p.duration/60)}</div><div class="stat-lbl">Minutes</div></div>
+          <div class="stat"><div class="stat-num">${pAttempts.length}</div><div class="stat-lbl">Attempts</div></div>
+        </div>
+        <div class="card-tags">
+          ${secs.map(s=>`<span class="tag tag-blue">${s}</span>`).join('')}
+          <span class="tag tag-orange">+${p.marking.correct}/${p.marking.wrong}</span>
+        </div>
+        ${sparks.length?`
+          <div style="font-size:10px;color:var(--text3);margin-bottom:4px">Last ${sparks.length} scores:</div>
+          <div class="sparkbar-wrap">
+            ${sparks.map(h=>{
+              const h_pct=Math.max(4,Math.round((h.score/h.maxScore)*100));
+              const pctLabel=((h.score/h.maxScore)*100).toFixed(1)+'%';
+              const col=h_pct>=60?'#2e7d32':h_pct>=40?'#e65100':'#c62828';
+              return `<div class="sparkbar" style="height:${h_pct*0.28}px;background:${col}" data-tip="${h.score}/${h.maxScore} · ${pctLabel}"></div>`;
+            }).join('')}
+          </div>
+        `:'<div style="font-size:11px;color:var(--text3);padding:4px 0">No attempts yet — start your first!</div>'}
+        ${bestScore!==null?`<div style="font-size:11px;color:var(--green);font-weight:700;margin-top:4px">🏆 Best: ${bestScore}/${p.questions.length*p.marking.correct}</div>`:''}
+      </div>
+      <div class="card-footer">
+        <div class="last-attempt">${last?'Last: '+new Date(last.date).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}):'Never attempted'}</div>
+        <button class="start-btn" onclick="event.stopPropagation();openConfig('${p.id}')">Start →</button>
+      </div>`;
+    card.onclick=()=>openConfig(p.id);
+    grid.appendChild(card);
+  });
+}
+
+// ════════ CONFIG SCREEN ════════
+function openConfig(paperId){
+  activePaper=PAPERS.find(p=>p.id===paperId);
+  Q=activePaper.questions;
+  DURATION=activePaper.duration;
+  MARKING=activePaper.marking;
+  STORE_KEY='cbt_'+paperId;
+
+  const sections=[...new Set(Q.map(q=>q.s))];
+  document.getElementById('configTitle').textContent='Configure: '+activePaper.title;
+
+  // Default section times proportional to Q count
+  CONFIG={mode:'full', fullMins:Math.floor(DURATION/60), sectionMins:{}};
+  sections.forEach(s=>{
+    const cnt=Q.filter(q=>q.s===s).length;
+    CONFIG.sectionMins[s]=Math.round((cnt/Q.length)*Math.floor(DURATION/60));
+  });
+
+  setTimerMode('full');
+  showScreen('config');
+}
+
+function setTimerMode(mode){
+  CONFIG.mode=mode;
+  document.querySelectorAll('.tmode').forEach(t=>t.classList.toggle('sel',t.dataset.mode===mode));
+  renderTimeInputs();
+}
+
+function renderTimeInputs(){
+  const wrap=document.getElementById('timeInputs');
+  const sections=[...new Set(Q.map(q=>q.s))];
+  if(CONFIG.mode==='practice'){
+    wrap.innerHTML=`<div style="text-align:center;padding:14px;color:var(--text3);font-size:13px">⚡ No timer — answer at your own pace.<br>All questions available with no time pressure.</div>`;
+    return;
+  }
+  if(CONFIG.mode==='full'){
+    wrap.innerHTML=`
+      <div class="time-row">
+        <label>⏱ Total Exam Time</label>
+        <input type="range" min="30" max="240" step="5" value="${CONFIG.fullMins}"
+          oninput="CONFIG.fullMins=+this.value;this.nextElementSibling.textContent=this.value+' min'">
+        <span class="time-val">${CONFIG.fullMins} min</span>
+      </div>`;
+  } else {
+    wrap.innerHTML=sections.map(s=>`
+      <div class="time-row">
+        <label>${s}</label>
+        <input type="range" min="5" max="90" step="5" value="${CONFIG.sectionMins[s]||20}"
+          oninput="CONFIG.sectionMins['${s}']=+this.value;this.nextElementSibling.textContent=this.value+' min'">
+        <span class="time-val">${CONFIG.sectionMins[s]||20} min</span>
+      </div>`).join('');
+  }
+}
+
+function hasSavedState(){
+  try{const r=localStorage.getItem(STORE_KEY);if(!r)return false;const s=JSON.parse(r);return s&&!s.submitted&&Array.isArray(s.answers)&&s.answers.length===Q.length;}catch(e){return false;}
+}
+
+function startExam(resume){
+  if(resume){
+    try{state=JSON.parse(localStorage.getItem(STORE_KEY));}catch(e){state=null;}
+    if(!state) state=buildFreshState();
+  } else {
+    try{localStorage.removeItem(STORE_KEY);}catch(e){}
+    state=buildFreshState();
+  }
+  launchExam();
+}
+
+function buildFreshState(){
+  const sections=[...new Set(Q.map(q=>q.s))];
+  const sTimers={};
+  sections.forEach(s=>{sTimers[s]=(CONFIG.sectionMins[s]||20)*60;});
+  return{
+    answers:new Array(Q.length).fill(-1),
+    visited:new Array(Q.length).fill(false),
+    marked:new Array(Q.length).fill(false),
+    current:0,
+    timeLeft:CONFIG.mode==='full'?CONFIG.fullMins*60:null,
+    sectionTimers:sTimers,
+    lockedSections:[],
+    submitted:false,
+    mode:CONFIG.mode,
+    startTime:Date.now(),
+    paperConfig:{fullMins:CONFIG.fullMins,sectionMins:{...CONFIG.sectionMins}}
+  };
+}
+
+// ════════ LAUNCH EXAM ════════
+function launchExam(){
+  showScreen(null);
+  const app=document.getElementById('examApp');
+  app.style.display='flex';
+  document.getElementById('examTitle').textContent=activePaper.title+' — CBT';
+  renderSectionTabs();
+  renderQuestion();
+  startTimer();
+}
+
+// ════════ TIMER ════════
+function pad(n){return n.toString().padStart(2,'0');}
+function fmtTime(s){s=Math.max(0,s);return `${pad(Math.floor(s/3600))}:${pad(Math.floor((s%3600)/60))}:${pad(s%60)}`;}
+
+function startTimer(){
+  clearInterval(timerInterval);
+  if(state.mode==='practice'){
+    document.getElementById('timer').textContent='∞';
+    document.getElementById('timerLbl').textContent='Practice';
+    return;
+  }
+  updateTimerDisplay();
+  timerInterval=setInterval(()=>{
+    if(state.submitted){clearInterval(timerInterval);return;}
+    if(state.mode==='full'){
+      state.timeLeft=Math.max(0,state.timeLeft-1);
+      if(state.timeLeft<=0){clearInterval(timerInterval);submitExam();return;}
+    } else if(state.mode==='section'){
+      const curSec=Q[state.current].s;
+      if(!state.lockedSections.includes(curSec)){
+        state.sectionTimers[curSec]=Math.max(0,state.sectionTimers[curSec]-1);
+        if(state.sectionTimers[curSec]<=0){
+          state.lockedSections.push(curSec);
+          showSectionTimeUp(curSec);
+        }
+      }
+    }
+    saveState();
+    updateTimerDisplay();
+    if(state.mode==='section'){
+      const allLocked=Object.keys(state.sectionTimers).every(s=>state.lockedSections.includes(s));
+      if(allLocked){clearInterval(timerInterval);submitExam();}
+    }
+  },1000);
+}
+
+function updateTimerDisplay(){
+  const el=document.getElementById('timer');
+  const lbl=document.getElementById('timerLbl');
+  let t=0;
+  if(state.mode==='full'){
+    t=state.timeLeft;
+    lbl.textContent='Time Remaining';
+  } else if(state.mode==='section'){
+    const s=Q[state.current].s;
+    t=state.sectionTimers[s]||0;
+    lbl.textContent=s+' Time';
+  }
+  el.textContent=fmtTime(t);
+  el.className='timer'+(t<300?' crit':t<900?' warn':'');
+}
+
+function showSectionTimeUp(sec){
+  document.getElementById('sectionTimeUpMsg').textContent=`Time's up for ${sec}! Moving to the next section.`;
+  document.getElementById('sectionTimeUpModal').classList.add('show');
+  setTimeout(()=>{
+    document.getElementById('sectionTimeUpModal').classList.remove('show');
+    const nextSec=Object.keys(state.sectionTimers).find(s=>!state.lockedSections.includes(s));
+    if(nextSec){const i=Q.findIndex(q=>q.s===nextSec);if(i>=0){state.current=i;renderQuestion();}}
+  },3000);
+}
+
+// ════════ STATUS + RENDER ════════
+function getStatus(i){
+  if(!state.visited[i])return 0;
+  const a=state.answers[i]>=0;
+  if(state.marked[i])return a?4:3;
+  return a?2:1;
+}
+
+function renderSectionTabs(){
+  const sections=[...new Set(Q.map(q=>q.s))];
+  document.getElementById('secTabs').innerHTML=sections.map(sec=>{
+    const qs=Q.map((q,i)=>({...q,i})).filter(q=>q.s===sec);
+    const isActive=qs.some(q=>q.i===state.current);
+    const ans=qs.filter(q=>state.answers[q.i]>=0).length;
+    const locked=state.lockedSections&&state.lockedSections.includes(sec);
+    const timeLeft=state.mode==='section'?` · ${fmtTime(state.sectionTimers[sec]||0)}`:'';
+    return `<div class="sec-tab ${isActive?'act':''} ${locked?'locked':''}"
+      onclick="goToSection('${sec}')">
+      ${sec}${locked?' 🔒':''}<b>${ans}/${qs.length}${timeLeft}</b>
+    </div>`;
+  }).join('');
+}
+
+function renderPalette(){
+  const bkms=getBookmarks(activePaper.id);
+  const counts=[0,0,0,0,0];
+  document.getElementById('palette').innerHTML=Q.map((q,i)=>{
+    const st=getStatus(i); counts[st]++;
+    const isMarked=state.marked[i];
+    const isBkm=bkms.includes(i);
+    return `<button class="pb s${st}${i===state.current?' cur':''}${isBkm?' bkm':''}"
+      onclick="goTo(${i})" title="Q${i+1}: ${q.s}">${isMarked?'M':i+1}</button>`;
+  }).join('');
+  document.getElementById('rpCounts').innerHTML=
+    `<div class="rp-count"><div class="leg-dot s2" style="width:14px;height:14px;font-size:8px"></div>${counts[2]} Answered</div>`+
+    `<div class="rp-count"><div class="leg-dot s1" style="width:14px;height:14px;font-size:8px"></div>${counts[1]} Not Ans.</div>`+
+    `<div class="rp-count"><div class="leg-dot s3" style="width:14px;height:14px;font-size:8px"></div>${counts[3]+counts[4]} Marked</div>`+
+    `<div class="rp-count"><div class="leg-dot s0" style="width:14px;height:14px;font-size:8px"></div>${counts[0]} Not Vis.</div>`;
+}
+
+function renderQuestion(){
+  const i=state.current, q=Q[i];
+  state.visited[i]=true;
+  saveState();
+  const secQs=Q.map((qq,j)=>({...qq,j})).filter(qq=>qq.s===q.s);
+  const qInSec=secQs.findIndex(qq=>qq.j===i)+1;
+  const bkms=getBookmarks(activePaper.id);
+  const isBkm=bkms.includes(i);
+  const isLocked=state.lockedSections&&state.lockedSections.includes(q.s);
+  document.getElementById('qContent').innerHTML=`
+    <div class="q-meta">
+      Q <span>${i+1}</span> of <span>${Q.length}</span>
+      &nbsp;|&nbsp; <span>${q.s}</span>
+      &nbsp;|&nbsp; Q${qInSec} of ${secQs.length}
+      &nbsp;|&nbsp; <span style="color:var(--green)">+${MARKING.correct}</span> / <span style="color:var(--red)">${MARKING.wrong}</span>
+      ${isLocked?'<span style="color:var(--red);font-weight:700">🔒 Section Locked</span>':''}
+    </div>
+    <div class="q-box">${q.q}</div>
+    <div class="opts">
+      ${q.o.map((opt,oi)=>`
+        <div class="opt ${state.answers[i]===oi?'sel':''} ${isBkm?'bkm':''}"
+          onclick="selectOpt(${oi})" style="${isLocked?'opacity:.6;cursor:not-allowed':''}">
+          <span class="opt-lbl">${'ABCD'[oi]}.</span><span>${opt}</span>
+        </div>`).join('')}
+    </div>
+    <div style="margin-top:10px;display:flex;align-items:center;gap:10px">
+      <button class="bkm-btn ${isBkm?'active':''}" onclick="bkmToggle(${i})">
+        ${isBkm?'★ Bookmarked':'☆ Bookmark'}
+      </button>
+    </div>`;
+  renderSectionTabs();
+  renderPalette();
+  updateTimerDisplay();
+}
+
+function bkmToggle(i){
+  toggleBookmark(activePaper.id,i);
+  renderQuestion();
+}
+
+// ════════ NAVIGATION ════════
+function selectOpt(oi){
+  if(state.lockedSections&&state.lockedSections.includes(Q[state.current].s))return;
+  state.answers[state.current]=oi; saveState(); renderQuestion();
+}
+function clearResponse(){
+  if(state.lockedSections&&state.lockedSections.includes(Q[state.current].s))return;
+  state.answers[state.current]=-1; saveState(); renderQuestion();
+}
+function saveNext(){if(state.current<Q.length-1)state.current++;renderQuestion();}
+function nextQ(){if(state.current<Q.length-1){state.current++;renderQuestion();}}
+function prevQ(){if(state.current>0){state.current--;renderQuestion();}}
+function markReview(){
+  if(state.lockedSections&&state.lockedSections.includes(Q[state.current].s))return;
+  state.marked[state.current]=!state.marked[state.current];
+  if(state.current<Q.length-1)state.current++;
+  saveState(); renderQuestion();
+}
+function goTo(i){state.current=i;renderQuestion();}
+function goToSection(sec){
+  if(state.lockedSections&&state.lockedSections.includes(sec))return;
+  const i=Q.findIndex(q=>q.s===sec);if(i>=0)goTo(i);
+}
+function togglePalette(){
+  const rp=document.getElementById('rightPanel');
+  rp.classList.toggle('open');
+  document.getElementById('palBtn').textContent=rp.classList.contains('open')?'✕':'☰';
+}
+
+// ════════ STATE SAVE ════════
+function saveState(){
+  try{localStorage.setItem(STORE_KEY,JSON.stringify(state));}catch(e){}
+}
+
+// ════════ SUBMIT ════════
+function confirmSubmit(){
+  const ans=state.answers.filter(a=>a>=0).length;
+  document.getElementById('submitMsg').innerHTML=`
+    <table style="width:100%;font-size:13px;color:var(--text)">
+      <tr><td>✅ Answered</td><td style="font-weight:bold;color:var(--green)">${ans}</td></tr>
+      <tr><td>❌ Not Answered</td><td style="font-weight:bold;color:var(--red)">${Q.length-ans}</td></tr>
+      <tr><td>🔖 Marked</td><td style="font-weight:bold;color:var(--purple)">${state.marked.filter(Boolean).length}</td></tr>
+      <tr><td>📋 Total</td><td style="font-weight:bold">${Q.length}</td></tr>
+    </table><br>Once submitted you cannot continue.`;
+  document.getElementById('submitModal').classList.add('show');
+}
+function closeModal(){document.querySelectorAll('.modal-bg').forEach(m=>m.classList.remove('show'));}
+
+function submitExam(){
+  closeModal();
+  clearInterval(timerInterval);
+  state.submitted=true; state.endTime=Date.now();
+  saveState();
+  saveAttemptToHistory(buildAttemptRecord());
+  showResults();
+}
+
+function buildAttemptRecord(){
+  const sections=[...new Set(Q.map(q=>q.s))];
+  let correct=0,wrong=0,skip=0;
+  Q.forEach((q,i)=>{const a=state.answers[i];if(a<0)skip++;else if(a===q.a)correct++;else wrong++;});
+  const secStats=sections.map(sec=>{
+    const qs=Q.map((q,i)=>({...q,i})).filter(q=>q.s===sec);
+    let c=0,w=0,s=0;
+    qs.forEach(q=>{const a=state.answers[q.i];if(a<0)s++;else if(a===q.a)c++;else w++;});
+    return{name:sec,total:qs.length,correct:c,wrong:w,skip:s,score:+(c*MARKING.correct+w*MARKING.wrong).toFixed(2)};
+  });
+  const timeTaken=Math.round((Date.now()-(state.startTime||Date.now()-60000))/1000);
+  const score=+(correct*MARKING.correct+wrong*MARKING.wrong).toFixed(2);
+  const maxScore=Q.length*MARKING.correct;
+  return{
+    paperId:activePaper.id,
+    paperTitle:activePaper.title,
+    date:new Date().toISOString(),
+    timerMode:state.mode||'full',
+    score,maxScore,correct,wrong,skip,
+    accuracy:correct+wrong>0?+((correct/(correct+wrong))*100).toFixed(1):0,
+    timeTaken,totalTime:state.mode==='full'?(CONFIG.fullMins||180)*60:null,
+    sections:secStats
+  };
+}
+
+// ════════ RESULTS ════════
+let reviewVisible=false;
+function showResults(){
+  document.getElementById('examApp').style.display='none';
+  showScreen('results');
+  renderResults();
+}
+
+function renderResults(){
+  const sections=[...new Set(Q.map(q=>q.s))];
+  let correct=0,wrong=0,skip=0;
+  Q.forEach((q,i)=>{const a=state.answers[i];if(a<0)skip++;else if(a===q.a)correct++;else wrong++;});
+  const score=(correct*MARKING.correct+wrong*MARKING.wrong).toFixed(2);
+  const maxScore=Q.length*MARKING.correct;
+  const pct=maxScore>0?((parseFloat(score)/maxScore)*100).toFixed(1):0;
+  const timeTaken=Math.round((Date.now()-(state.startTime||Date.now()))/1000);
+  const th=Math.floor(timeTaken/3600),tm=Math.floor((timeTaken%3600)/60),ts=timeTaken%60;
+
+  const secStats=sections.map(sec=>{
+    const qs=Q.map((q,i)=>({...q,i})).filter(q=>q.s===sec);
+    let c=0,w=0,s=0;
+    qs.forEach(q=>{const a=state.answers[q.i];if(a<0)s++;else if(a===q.a)c++;else w++;});
+    return{sec,total:qs.length,c,w,s,score:(c*MARKING.correct+w*MARKING.wrong).toFixed(2)};
+  });
+
+  const bkms=getBookmarks(activePaper.id);
+
+  document.getElementById('results').innerHTML=`
+    <div class="res-card">
+      <div class="res-banner">
+        <h1>🎓 ${activePaper.title} — Result</h1>
+        <p>Mode: ${state.mode||'Full'} &nbsp;|&nbsp; Time: ${pad(th)}:${pad(tm)}:${pad(ts)} &nbsp;|&nbsp; Accuracy: ${correct+wrong>0?((correct/(correct+wrong))*100).toFixed(1):0}%</p>
+      </div>
+      <div class="score-grid">
+        <div class="sc blue"><div class="sc-num">${score}</div><div class="sc-lbl">Score / ${maxScore}</div></div>
+        <div class="sc green"><div class="sc-num">${correct}</div><div class="sc-lbl">Correct (+${MARKING.correct})</div></div>
+        <div class="sc red"><div class="sc-num">${wrong}</div><div class="sc-lbl">Wrong (${MARKING.wrong})</div></div>
+        <div class="sc purple"><div class="sc-num">${skip}</div><div class="sc-lbl">Skipped</div></div>
+      </div>
+      <h3 style="color:var(--primary);margin-bottom:10px;font-size:14px">📊 Section Performance</h3>
+      <table class="sec-table">
+        <thead><tr><th>Section</th><th>Qs</th><th>✓</th><th>✗</th><th>Skip</th><th>Score</th><th>%</th></tr></thead>
+        <tbody>${secStats.map(s=>`<tr>
+          <td style="text-align:left;font-weight:600">${s.sec}</td>
+          <td>${s.total}</td><td style="color:var(--green);font-weight:bold">${s.c}</td>
+          <td style="color:var(--red);font-weight:bold">${s.w}</td>
+          <td>${s.s}</td><td style="font-weight:bold">${s.score}</td>
+          <td>${s.total>0?((s.c/s.total)*100).toFixed(0):0}%</td>
+        </tr>`).join('')}</tbody>
+        <tfoot><tr><td>Total</td><td>${Q.length}</td>
+          <td style="color:var(--green);font-weight:bold">${correct}</td>
+          <td style="color:var(--red);font-weight:bold">${wrong}</td>
+          <td>${skip}</td><td><b>${score}/${maxScore}</b></td><td>${pct}%</td>
+        </tr></tfoot>
+      </table>
+      <div class="review-btns">
+        <button class="btn btn-primary" onclick="toggleReview('all')" id="revAllBtn">📋 All Questions</button>
+        <button class="btn btn-outline" onclick="toggleReview('wrong')" id="revWrongBtn">❌ Wrong Only</button>
+        <button class="btn btn-outline" onclick="toggleReview('bkm')" id="revBkmBtn">★ Bookmarked (${bkms.length})</button>
+        <button class="btn btn-green" onclick="retryPaper()">🔄 Retry</button>
+        <button class="btn btn-outline" onclick="goToDashboard()">🏠 Dashboard</button>
+      </div>
+      <div id="answerReview"></div>
+    </div>`;
+  reviewVisible=false;
+}
+
+let reviewMode=null;
+function toggleReview(mode){
+  if(reviewMode===mode&&reviewVisible){reviewVisible=false;reviewMode=null;document.getElementById('answerReview').innerHTML='';document.querySelectorAll('[id^=rev]').forEach(b=>b.classList.remove('btn-primary'));return;}
+  reviewMode=mode; reviewVisible=true;
+  document.querySelectorAll('[id^=rev]').forEach(b=>b.classList.remove('btn-primary'));
+  const btn=document.getElementById('rev'+(mode==='all'?'All':mode==='wrong'?'Wrong':'Bkm')+'Btn');
+  if(btn) btn.classList.add('btn-primary');
+  const labels=['A','B','C','D'];
+  const bkms=getBookmarks(activePaper.id);
+  const filtered=Q.map((q,i)=>({...q,i})).filter(q=>{
+    if(mode==='all')return true;
+    if(mode==='wrong')return state.answers[q.i]>=0&&state.answers[q.i]!==q.a;
+    if(mode==='bkm')return bkms.includes(q.i);
+    return true;
+  });
+  const el=document.getElementById('answerReview');
+  el.innerHTML=filtered.length===0?`<div style="text-align:center;padding:24px;color:var(--text3)">No questions in this filter.</div>`:
+    filtered.map(q=>{
+      const i=q.i,ua=state.answers[i],ca=q.a;
+      const status=ua<0?'skip':ua===ca?'correct':'wrong';
+      const icons={correct:'✅',wrong:'❌',skip:'⬜'};
+      const isBkm=bkms.includes(i);
+      return`<div class="q-review ${isBkm?'bookmarked':''}">
+        <div class="qr-top">
+          <span class="qr-num">Q${i+1}</span>
+          <span style="font-size:11px;color:var(--text3)">[${q.s}]</span>
+          <span class="badge ${status}">${icons[status]} ${status==='correct'?'Correct':status==='wrong'?'Wrong':'Skipped'}</span>
+          ${ua>=0?`<span style="font-size:11px">Your: <b style="color:${ua===ca?'var(--green)':'var(--red)'}">${labels[ua]}</b></span>`:''}
+          <span style="font-size:11px;color:var(--green)">Ans: <b>${labels[ca]}</b></span>
+          <button class="bkm-btn ${isBkm?'active':''}" onclick="toggleBkmReview(${i})">
+            ${isBkm?'★':'☆'}
+          </button>
+        </div>
+        <div class="qr-q">${q.q}</div>
+        <div class="qr-opts-grid">
+          ${q.o.map((opt,oi)=>{
+            let cls='';
+            if(oi===ca&&oi===ua)cls='both';else if(oi===ca)cls='ca';else if(oi===ua)cls='ua';
+            return`<div class="qr-opt ${cls}">${labels[oi]}. ${opt}</div>`;
+          }).join('')}
+        </div>
+      </div>`;
+    }).join('');
+  el.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function toggleBkmReview(i){toggleBookmark(activePaper.id,i);toggleReview(reviewMode);}
+function retryPaper(){
+  if(!confirm('Retry? All answers will be lost.'))return;
+  try{localStorage.removeItem(STORE_KEY);}catch(e){}
+  reviewVisible=false; reviewMode=null;
+  showScreen(null);
+  document.getElementById('results').style.display='none';
+  openConfig(activePaper.id);
+}
+function goToDashboard(){
+  showScreen(null);
+  document.getElementById('results').style.display='none';
+  buildDashboard();
+}
+
+// ════════ HISTORY SCREEN ════════
+let histFilter='all';
+function openHistory(){
+  showScreen('history');
+  renderHistory();
+}
+function renderHistory(){
+  const history=getHistory();
+  const papers=[...new Set(history.map(h=>h.paperId))];
+  const filtered=histFilter==='all'?history:history.filter(h=>h.paperId===histFilter);
+
+  document.getElementById('histFilters').innerHTML=
+    `<button class="hist-filter ${histFilter==='all'?'active':''}" onclick="setHistFilter('all')">All Papers</button>`+
+    papers.map(pid=>{
+      const p=PAPERS.find(p=>p.id===pid);
+      return`<button class="hist-filter ${histFilter===pid?'active':''}" onclick="setHistFilter('${pid}')">${p?p.title:pid}</button>`;
+    }).join('')+
+    (history.length?`<button class="btn btn-outline" style="margin-left:auto;font-size:11px;min-height:34px;padding:5px 10px" onclick="clearAllHistory()">🗑 Clear All</button>`:'');
+
+  if(!filtered.length){
+    document.getElementById('histList').innerHTML=`<div class="no-history"><div style="font-size:40px;margin-bottom:10px">📭</div>No attempts yet. Start your first exam from the Dashboard!</div>`;
+    return;
+  }
+  document.getElementById('histList').innerHTML=filtered.map((h,idx)=>{
+    const realIdx=history.indexOf(h);
+    const pct=h.maxScore>0?((h.score/h.maxScore)*100).toFixed(1):0;
+    const scoreColor=pct>=60?'var(--green)':pct>=40?'var(--orange)':'var(--red)';
+    const d=new Date(h.date);
+    const dateStr=d.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})+' '+d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+    return`<div class="hist-item">
+      <div class="hist-item-hdr" onclick="toggleHistDetail(this)">
+        <div class="hi-date">${dateStr}</div>
+        <div class="hi-paper">${h.paperTitle}<br><span class="hi-badge ${h.timerMode}">${h.timerMode}</span></div>
+        <div>
+          <div class="hi-score" style="color:${scoreColor}">${h.score}</div>
+          <div class="hi-pct">${pct}%</div>
+        </div>
+        <button class="del-btn" onclick="event.stopPropagation();deleteAttempt(${realIdx})">✕</button>
+      </div>
+      <div class="hist-detail">
+        <div style="display:flex;gap:20px;margin-bottom:10px;font-size:12px;flex-wrap:wrap">
+          <span>✅ <b style="color:var(--green)">${h.correct}</b> Correct</span>
+          <span>❌ <b style="color:var(--red)">${h.wrong}</b> Wrong</span>
+          <span>⬜ <b>${h.skip}</b> Skipped</span>
+          <span>🎯 <b>${h.accuracy}%</b> Accuracy</span>
+          <span>⏱ <b>${fmtTime(h.timeTaken||0)}</b> Time</span>
+        </div>
+        ${h.sections?h.sections.map(s=>{
+          const pct2=s.total>0?((s.correct/s.total)*100):0;
+          const col=pct2>=60?'var(--green)':pct2>=40?'var(--orange)':'var(--red)';
+          return`<div class="hist-sec-row">
+            <span style="min-width:120px;font-weight:600">${s.name}</span>
+            <div class="hist-sec-bar"><div class="hist-sec-fill" style="width:${pct2}%;background:${col}"></div></div>
+            <span style="color:${col};font-weight:700;min-width:50px;text-align:right">${pct2.toFixed(0)}%</span>
+            <span style="color:var(--text3);font-size:11px;min-width:70px;text-align:right">${s.correct}/${s.total}</span>
+          </div>`;}).join(''):''}
+      </div>
+    </div>`;
+  }).join('');
+}
+function toggleHistDetail(hdr){hdr.nextElementSibling.classList.toggle('open');}
+function setHistFilter(f){histFilter=f;renderHistory();}
+function clearAllHistory(){
+  if(!confirm('Delete ALL attempt history? This cannot be undone.'))return;
+  localStorage.removeItem('cbt_history');
+  renderHistory();
+}
+
+// ════════ INIT ════════
+initTheme();
+initFirebase();
+buildDashboard();
+
+// Extra: sync theme toggle in exam header
+document.getElementById('themeBtn2').textContent = document.getElementById('themeBtn').textContent;
+
+// Extra: check and start exam
+function checkAndStart(){
+  if(hasSavedState()){
+    document.getElementById('resumeBox').style.display='block';
+    document.getElementById('configActions').style.display='none';
+  } else {
+    startExam(false);
+  }
+}
+// Hide results screen initially since it's a .screen now
+document.getElementById('results').style.display='none';
+document.getElementById('examApp').style.display='none';
+</script>
+</body>
+</html>
