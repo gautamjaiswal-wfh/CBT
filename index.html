@@ -3,265 +3,790 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>IMU-CET CBT Simulator</title>
+<title>IMU-CET CBT Simulator — Neural Edition</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Exo+2:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#e8eef7;--surface:#fff;--surface2:#f5f8fc;--surface3:#f0f4f8;--primary:#003366;--primary2:#004a99;--accent:#0057b3;--text:#222;--text2:#555;--text3:#888;--border:#dde4ef;--border2:#d0dcea;--green:#1b5e20;--red:#c62828;--purple:#6a1b9a;--orange:#e65100;--shadow:rgba(0,0,0,.1)}
-[data-theme=dark]{--bg:#0f1624;--surface:#1a2438;--surface2:#1e2a40;--surface3:#243050;--primary:#4a9eff;--primary2:#3a7fd4;--accent:#5aafff;--text:#e8eef7;--text2:#a8c4e0;--text3:#6a8ab0;--border:#2a3a5e;--border2:#233050;--green:#4caf50;--red:#ef5350;--purple:#ab47bc;--orange:#ffa726;--shadow:rgba(0,0,0,.4)}
+:root {
+  --bg: #04080f;
+  --bg2: #060d1a;
+  --surface: rgba(10,20,45,0.85);
+  --surface2: rgba(15,28,60,0.9);
+  --surface3: rgba(20,38,80,0.7);
+  --glass: rgba(0,180,255,0.04);
+  --primary: #00c8ff;
+  --primary2: #0090d0;
+  --accent: #00ffcc;
+  --accent2: #ff6b35;
+  --warn: #ffb300;
+  --danger: #ff3366;
+  --success: #00e676;
+  --purple: #b388ff;
+  --text: #e0f0ff;
+  --text2: #7ab0d0;
+  --text3: #3a6080;
+  --border: rgba(0,180,255,0.15);
+  --border2: rgba(0,180,255,0.08);
+  --glow: 0 0 20px rgba(0,200,255,0.3);
+  --glow-accent: 0 0 20px rgba(0,255,200,0.3);
+  --shadow: rgba(0,0,0,0.6);
+  --red: #ff3366;
+  --green: #00e676;
+  --orange: #ff9100;
+}
+[data-theme=light] {
+  --bg: #eef4fc;
+  --bg2: #dce8f8;
+  --surface: rgba(255,255,255,0.88);
+  --surface2: rgba(240,248,255,0.95);
+  --surface3: rgba(224,238,255,0.8);
+  --glass: rgba(0,120,200,0.04);
+  --primary: #005fa3;
+  --primary2: #0077c8;
+  --accent: #007a5e;
+  --accent2: #c0440a;
+  --warn: #e67c00;
+  --danger: #c0002a;
+  --success: #007a40;
+  --purple: #6a1b9a;
+  --text: #0a1a2e;
+  --text2: #2a5070;
+  --text3: #8ab0cc;
+  --border: rgba(0,100,180,0.18);
+  --border2: rgba(0,100,180,0.1);
+  --glow: 0 0 16px rgba(0,100,200,0.15);
+  --glow-accent: 0 0 16px rgba(0,120,100,0.15);
+  --shadow: rgba(0,40,80,0.12);
+  --red: #c0002a;
+  --green: #007a40;
+  --orange: #b05800;
+}
+
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);transition:background .3s,color .3s;min-height:100svh}
-.screen{display:none}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--primary);border-radius:2px;opacity:0.5}
+
+body {
+  font-family:'Exo 2',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100svh;
+  overflow-x:hidden;
+  transition:background .4s,color .4s;
+}
+
+/* ── ANIMATED BACKGROUND ── */
+.bg-canvas {
+  position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;
+}
+.bg-grid {
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(0,200,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,200,255,0.04) 1px, transparent 1px);
+  background-size:48px 48px;
+  animation:gridShift 60s linear infinite;
+}
+[data-theme=light] .bg-grid {
+  background-image:
+    linear-gradient(rgba(0,100,200,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,100,200,0.06) 1px, transparent 1px);
+}
+@keyframes gridShift{to{background-position:48px 48px}}
+.bg-orb {
+  position:absolute;border-radius:50%;filter:blur(80px);opacity:0.12;animation:orbFloat 20s ease-in-out infinite;
+}
+.bg-orb.o1{width:500px;height:500px;background:var(--primary);top:-100px;left:-100px;animation-delay:0s;}
+.bg-orb.o2{width:400px;height:400px;background:var(--accent);bottom:-100px;right:-100px;animation-delay:-7s;}
+.bg-orb.o3{width:300px;height:300px;background:var(--purple);top:40%;left:60%;animation-delay:-14s;}
+[data-theme=light] .bg-orb{opacity:0.06}
+@keyframes orbFloat{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(30px,-20px) scale(1.05)}66%{transform:translate(-20px,30px) scale(0.95)}}
+
+/* ── SCREEN SYSTEM ── */
+.screen{display:none;position:relative;z-index:10}
 .screen.active{display:block}
-/* ── NAV BAR ── */
-.topnav{background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff;padding:0 16px;height:54px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px var(--shadow)}
-.topnav-brand{font-size:17px;font-weight:800;letter-spacing:.5px;display:flex;align-items:center;gap:8px}
-.topnav-brand span{font-size:12px;font-weight:400;opacity:.75;display:block;margin-top:-2px}
+
+/* ── NAV ── */
+.topnav {
+  background:rgba(4,8,15,0.85);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  padding:0 20px;
+  height:58px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:100;
+  box-shadow:0 4px 24px rgba(0,0,0,0.4);
+}
+[data-theme=light] .topnav{background:rgba(238,244,252,0.9);}
+.topnav-brand {
+  font-family:'Orbitron',monospace;
+  font-size:16px;font-weight:700;
+  color:var(--primary);
+  display:flex;align-items:center;gap:10px;
+  text-shadow:var(--glow);
+  letter-spacing:1px;
+}
+.brand-icon {
+  width:36px;height:36px;border-radius:8px;
+  background:linear-gradient(135deg,var(--primary),var(--accent));
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;
+  box-shadow:var(--glow);
+  flex-shrink:0;
+}
+.brand-sub{font-family:'Exo 2';font-size:10px;font-weight:400;opacity:0.6;display:block;margin-top:-2px;letter-spacing:2px;text-transform:uppercase;color:var(--text2)}
 .topnav-right{display:flex;gap:8px;align-items:center}
-.nav-btn{background:rgba(255,255,255,.15);border:none;color:#fff;padding:7px 13px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;touch-action:manipulation;white-space:nowrap;transition:.15s}
-.nav-btn:active,.nav-btn.active{background:rgba(255,255,255,.35)}
-/* ── CARDS ── */
-.page-body{padding:20px;max-width:1100px;margin:0 auto}
-.page-title{font-size:20px;font-weight:800;color:var(--primary);margin-bottom:4px}
-.page-sub{font-size:13px;color:var(--text3);margin-bottom:20px}
-.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-bottom:28px}
-.card{background:var(--surface);border-radius:14px;border:2px solid var(--border);box-shadow:0 3px 12px var(--shadow);overflow:hidden;transition:all .2s;cursor:pointer;touch-action:manipulation}
-.card:active,.card:hover{transform:translateY(-3px);box-shadow:0 8px 24px var(--shadow);border-color:var(--accent)}
-.card-header{background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;padding:16px 18px}
-.card-header h3{font-size:17px;font-weight:800;margin-bottom:2px}
-.card-header p{font-size:11px;opacity:.8}
-.card-body{padding:14px 18px}
-.card-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px}
-.stat{text-align:center;background:var(--surface3);border-radius:8px;padding:8px 4px}
-.stat-num{font-size:18px;font-weight:800;color:var(--primary)}
-.stat-lbl{font-size:10px;color:var(--text3);margin-top:2px}
+.nav-btn {
+  background:var(--surface3);
+  border:1px solid var(--border);
+  color:var(--text);
+  padding:7px 14px;border-radius:6px;
+  cursor:pointer;font-size:12px;font-weight:600;
+  font-family:'Exo 2';
+  transition:all .2s;
+  white-space:nowrap;
+  letter-spacing:0.5px;
+}
+.nav-btn:hover{background:var(--primary);color:#000;border-color:var(--primary);box-shadow:var(--glow);transform:translateY(-1px)}
+.nav-btn:active{transform:translateY(0);filter:brightness(0.85)}
+.nav-btn.active{background:var(--primary);color:#000;border-color:var(--primary)}
+
+/* ── SAVE INDICATOR ── */
+#saveFlash {
+  position:fixed;bottom:20px;left:20px;z-index:9999;
+  background:rgba(0,230,118,0.9);color:#000;
+  padding:7px 14px;border-radius:20px;
+  font-size:11px;font-weight:700;font-family:'Orbitron';
+  letter-spacing:1px;
+  opacity:0;transform:translateY(10px);
+  transition:all .3s;pointer-events:none;
+  box-shadow:0 0 20px rgba(0,230,118,0.4);
+}
+#saveFlash.show{opacity:1;transform:translateY(0)}
+
+/* ── PAGE BODY ── */
+.page-body{padding:24px 20px;max-width:1200px;margin:0 auto}
+.page-title {
+  font-family:'Orbitron';font-size:22px;font-weight:700;
+  color:var(--primary);margin-bottom:4px;
+  text-shadow:var(--glow);letter-spacing:1px;
+}
+.page-sub{font-size:12px;color:var(--text3);margin-bottom:24px;letter-spacing:0.5px}
+
+/* ── DASHBOARD CARDS ── */
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px;margin-bottom:32px}
+.card {
+  background:var(--surface);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  border-radius:16px;
+  border:1px solid var(--border);
+  box-shadow:0 8px 32px var(--shadow);
+  overflow:hidden;
+  transition:all .25s cubic-bezier(.34,1.56,.64,1);
+  cursor:pointer;
+  position:relative;
+}
+.card::before {
+  content:'';position:absolute;inset:0;border-radius:16px;
+  background:linear-gradient(135deg,rgba(0,200,255,0.05),transparent,rgba(0,255,200,0.03));
+  pointer-events:none;
+}
+.card:hover {
+  transform:translateY(-6px) scale(1.01);
+  box-shadow:0 20px 60px rgba(0,0,0,0.5), var(--glow);
+  border-color:var(--primary);
+}
+.card-header {
+  background:linear-gradient(135deg,rgba(0,40,80,0.8),rgba(0,20,50,0.9));
+  padding:18px 20px;
+  border-bottom:1px solid var(--border);
+  position:relative;overflow:hidden;
+}
+[data-theme=light] .card-header{background:linear-gradient(135deg,rgba(0,80,160,0.9),rgba(0,50,120,0.95))}
+.card-header::after {
+  content:'';position:absolute;top:-50%;right:-20px;
+  width:120px;height:200%;
+  background:linear-gradient(90deg,transparent,rgba(0,200,255,0.06),transparent);
+  transform:rotate(15deg);animation:shimmer 4s ease-in-out infinite;
+}
+@keyframes shimmer{0%,100%{opacity:0}50%{opacity:1}}
+.card-header h3{font-family:'Orbitron';font-size:15px;font-weight:700;color:#fff;margin-bottom:2px;letter-spacing:0.5px}
+.card-header p{font-size:11px;color:rgba(255,255,255,0.6);letter-spacing:0.5px}
+.card-body{padding:16px 20px}
+.card-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px}
+.stat {
+  text-align:center;
+  background:var(--glass);
+  border:1px solid var(--border2);
+  border-radius:8px;padding:10px 4px;
+  backdrop-filter:blur(8px);
+}
+.stat-num{font-family:'Orbitron';font-size:20px;font-weight:700;color:var(--primary);text-shadow:var(--glow)}
+.stat-lbl{font-size:10px;color:var(--text3);margin-top:3px;letter-spacing:0.5px;text-transform:uppercase}
 .card-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
-.tag{font-size:11px;padding:3px 9px;border-radius:10px;font-weight:600}
-.tag-blue{background:#e3f2fd;color:#0d47a1}[data-theme=dark] .tag-blue{background:#1a3a6e;color:#90caf9}
-.tag-green{background:#e8f5e9;color:#1b5e20}[data-theme=dark] .tag-green{background:#1a4a1a;color:#a5d6a7}
-.tag-orange{background:#fff8e1;color:#e65100}[data-theme=dark] .tag-orange{background:#4a2a00;color:#ffcc80}
-.tag-purple{background:#f3e5f5;color:#6a1b9a}[data-theme=dark] .tag-purple{background:#3a1a5e;color:#ce93d8}
-.card-footer{border-top:1px solid var(--border);padding:10px 18px;display:flex;align-items:center;justify-content:space-between}
-.last-attempt{font-size:11px;color:var(--text3)}
-.start-btn{background:var(--primary);color:#fff;border:none;padding:8px 18px;border-radius:6px;font-size:13px;font-weight:700;cursor:pointer;touch-action:manipulation;transition:.15s}
-.start-btn:active{background:var(--accent)}
-.sparkbar-wrap{display:flex;align-items:flex-end;gap:3px;height:28px;margin:8px 0}
-.sparkbar{background:var(--primary);border-radius:2px 2px 0 0;width:16px;min-height:3px;transition:.3s;cursor:default;position:relative}
-.sparkbar:hover::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 4px);left:50%;transform:translateX(-50%);background:#333;color:#fff;font-size:10px;white-space:nowrap;padding:2px 6px;border-radius:3px;pointer-events:none}
+.tag{font-size:10px;padding:3px 9px;border-radius:20px;font-weight:600;letter-spacing:0.5px;border:1px solid}
+.tag-blue{background:rgba(0,180,255,0.1);color:var(--primary);border-color:rgba(0,180,255,0.2)}
+.tag-green{background:rgba(0,230,118,0.1);color:var(--success);border-color:rgba(0,230,118,0.2)}
+.tag-orange{background:rgba(255,107,53,0.1);color:var(--accent2);border-color:rgba(255,107,53,0.2)}
+.tag-purple{background:rgba(179,136,255,0.1);color:var(--purple);border-color:rgba(179,136,255,0.2)}
+.card-footer {
+  border-top:1px solid var(--border2);
+  padding:12px 20px;
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--glass);
+}
+.last-attempt{font-size:10px;color:var(--text3);letter-spacing:0.3px}
+.start-btn {
+  background:linear-gradient(135deg,var(--primary),var(--accent));
+  color:#000;border:none;padding:9px 20px;
+  border-radius:6px;font-size:12px;font-weight:700;
+  font-family:'Orbitron';letter-spacing:1px;
+  cursor:pointer;transition:all .2s;
+  box-shadow:var(--glow);
+}
+.start-btn:hover{transform:translateY(-1px);box-shadow:0 0 30px rgba(0,200,255,0.5)}
+.start-btn:active{transform:scale(0.96)}
+.sparkbar-wrap{display:flex;align-items:flex-end;gap:3px;height:32px;margin:8px 0}
+.sparkbar{border-radius:2px 2px 0 0;width:14px;min-height:3px;cursor:default;position:relative;transition:height .3s}
+.sparkbar:hover::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 4px);left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.9);color:var(--primary);font-size:10px;white-space:nowrap;padding:3px 8px;border-radius:4px;pointer-events:none;border:1px solid var(--border);font-family:'JetBrains Mono'}
+
+/* ── TREND CHART in History ── */
+.trend-chart-wrap{width:100%;height:100px;margin:10px 0;position:relative}
+.trend-svg{width:100%;height:100%}
+
 /* ── BUTTONS ── */
-.btn{padding:9px 14px;border:none;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600;transition:.15s;white-space:nowrap;touch-action:manipulation;min-height:42px;display:inline-flex;align-items:center;gap:6px}
+.btn {
+  padding:9px 16px;border:1px solid var(--border);
+  border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;
+  font-family:'Exo 2';letter-spacing:0.5px;
+  transition:all .2s;white-space:nowrap;
+  min-height:40px;display:inline-flex;align-items:center;gap:6px;
+  background:var(--surface);color:var(--text);
+  backdrop-filter:blur(8px);
+}
+.btn:hover{border-color:var(--primary);color:var(--primary);box-shadow:var(--glow);transform:translateY(-1px)}
 .btn:active{filter:brightness(.82);transform:scale(.97)}
-.btn-primary{background:var(--primary);color:#fff}
-.btn-green{background:var(--green);color:#fff}
-.btn-red{background:var(--red);color:#fff}
-.btn-purple{background:var(--purple);color:#fff}
-.btn-outline{background:var(--surface);color:var(--text);border:1.5px solid var(--border)}
-.btn-lg{padding:12px 28px;font-size:15px}
+.btn-primary{background:linear-gradient(135deg,var(--primary),var(--primary2));color:#000;border-color:var(--primary);font-weight:700}
+.btn-primary:hover{color:#000;box-shadow:0 0 30px rgba(0,200,255,0.5)}
+.btn-green{background:linear-gradient(135deg,var(--success),#00b04a);color:#000;border-color:var(--success)}
+.btn-green:hover{color:#000}
+.btn-red{background:linear-gradient(135deg,var(--danger),#c0002a);color:#fff;border-color:var(--danger)}
+.btn-red:hover{color:#fff;box-shadow:0 0 20px rgba(255,51,102,0.4)}
+.btn-purple{background:linear-gradient(135deg,var(--purple),#7c4dff);color:#000;border-color:var(--purple)}
+.btn-purple:hover{color:#000}
+.btn-outline{background:transparent;color:var(--text2);border-color:var(--border)}
+.btn-lg{padding:12px 28px;font-size:14px;font-family:'Orbitron';letter-spacing:1px}
+
+/* ── SECTION PROGRESS BAR ── */
+.sec-progress{height:3px;background:var(--border2);border-radius:2px;margin:6px 0 0 0;overflow:hidden}
+.sec-progress-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--primary),var(--accent));transition:width .4s}
+
 /* ── CONFIG SCREEN ── */
-.config-wrap{max-width:680px;margin:0 auto;padding:24px 20px}
-.config-box{background:var(--surface);border-radius:14px;border:1px solid var(--border);padding:24px;margin-bottom:16px;box-shadow:0 2px 8px var(--shadow)}
-.config-box h3{font-size:15px;font-weight:700;color:var(--primary);margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border)}
-.timer-modes{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:0}
-.tmode{border:2px solid var(--border);border-radius:10px;padding:14px 10px;text-align:center;cursor:pointer;touch-action:manipulation;transition:.15s;background:var(--surface)}
-.tmode:active,.tmode.sel{border-color:var(--primary);background:var(--surface3)}
-.tmode-icon{font-size:24px;margin-bottom:6px}
-.tmode-label{font-size:12px;font-weight:700;color:var(--primary)}
-.tmode-desc{font-size:10px;color:var(--text3);margin-top:3px;line-height:1.4}
-.time-inputs{margin-top:16px;display:flex;flex-direction:column;gap:10px}
-.time-row{display:flex;align-items:center;gap:12px;background:var(--surface3);border-radius:8px;padding:10px 14px}
-.time-row label{flex:1;font-size:13px;font-weight:600;color:var(--text)}
+.config-wrap{max-width:700px;margin:0 auto;padding:24px 20px}
+.config-box {
+  background:var(--surface);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  border-radius:14px;border:1px solid var(--border);
+  padding:24px;margin-bottom:16px;
+  box-shadow:0 4px 24px var(--shadow);
+}
+.config-box h3 {
+  font-family:'Orbitron';font-size:13px;font-weight:600;
+  color:var(--primary);margin-bottom:18px;
+  padding-bottom:10px;border-bottom:1px solid var(--border);
+  letter-spacing:1px;text-shadow:var(--glow);
+}
+.timer-modes{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.tmode {
+  border:1px solid var(--border);border-radius:10px;
+  padding:16px 10px;text-align:center;cursor:pointer;
+  transition:all .2s;background:var(--surface3);
+  backdrop-filter:blur(8px);
+}
+.tmode:hover{border-color:var(--primary);box-shadow:var(--glow)}
+.tmode.sel{border-color:var(--accent);background:rgba(0,255,200,0.05);box-shadow:var(--glow-accent)}
+.tmode-icon{font-size:26px;margin-bottom:8px}
+.tmode-label{font-family:'Orbitron';font-size:11px;font-weight:700;color:var(--primary);letter-spacing:0.5px}
+.tmode-desc{font-size:10px;color:var(--text3);margin-top:4px;line-height:1.4}
+.time-inputs{margin-top:14px;display:flex;flex-direction:column;gap:10px}
+.time-row {
+  display:flex;align-items:center;gap:12px;
+  background:var(--glass);border:1px solid var(--border2);
+  border-radius:8px;padding:10px 14px;
+}
+.time-row label{flex:1;font-size:12px;font-weight:600;color:var(--text2);letter-spacing:0.3px}
 .time-row input[type=range]{flex:2;accent-color:var(--primary)}
-.time-val{font-size:14px;font-weight:800;color:var(--primary);min-width:60px;text-align:right}
+.time-val{font-family:'JetBrains Mono';font-size:14px;font-weight:600;color:var(--primary);min-width:65px;text-align:right}
 .config-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
-/* ── EXAM SCREEN ── */
-#examApp{display:none;flex-direction:column;height:100svh;position:fixed;inset:0;background:var(--surface2);z-index:200}
-.exam-hdr{background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff;padding:8px 16px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
-.exam-hdr-left h1{font-size:14px;font-weight:700}
-.exam-hdr-left p{font-size:10px;opacity:.75;margin-top:1px}
+
+/* ── RESUME BOX ── */
+.resume-box {
+  background:rgba(0,255,200,0.05);
+  border:1px solid rgba(0,255,200,0.2);
+  border-radius:10px;padding:16px;margin-bottom:12px;
+  animation:pulseGreen 2s ease-in-out infinite;
+}
+@keyframes pulseGreen{0%,100%{box-shadow:0 0 10px rgba(0,255,200,0.1)}50%{box-shadow:0 0 20px rgba(0,255,200,0.25)}}
+
+/* ── EXAM APP ── */
+#examApp {
+  display:none;flex-direction:column;height:100svh;
+  position:fixed;inset:0;background:var(--bg);z-index:200;
+}
+.exam-hdr {
+  background:rgba(4,8,15,0.92);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  padding:8px 16px;
+  display:flex;justify-content:space-between;align-items:center;
+  flex-shrink:0;box-shadow:0 4px 24px rgba(0,0,0,0.4);
+}
+[data-theme=light] .exam-hdr{background:rgba(238,244,252,0.94)}
+.exam-hdr-left h1{font-family:'Orbitron';font-size:13px;font-weight:700;color:var(--primary);letter-spacing:0.5px;text-shadow:var(--glow)}
+.exam-hdr-left p{font-size:10px;color:var(--text3);margin-top:1px;letter-spacing:0.5px}
 .timer-block{display:flex;flex-direction:column;align-items:center}
-.timer-lbl{font-size:9px;opacity:.75;letter-spacing:1px;text-transform:uppercase;margin-bottom:2px}
-.timer{background:#c62828;padding:5px 14px;border-radius:6px;font-size:20px;font-weight:bold;letter-spacing:3px;font-family:'Courier New',monospace;min-width:100px;text-align:center}
-.timer.warn{background:#e65100}
-.timer.crit{background:#b71c1c;animation:blink 1s infinite}
+.timer-lbl{font-size:9px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:2px;font-family:'Orbitron'}
+.timer {
+  font-family:'JetBrains Mono';font-size:22px;font-weight:600;
+  color:var(--primary);letter-spacing:3px;
+  background:rgba(0,200,255,0.06);
+  padding:5px 14px;border-radius:6px;
+  border:1px solid var(--border);min-width:110px;text-align:center;
+  transition:color .3s,background .3s;
+  text-shadow:var(--glow);
+}
+.timer.warn{color:var(--warn);background:rgba(255,179,0,0.08);border-color:rgba(255,179,0,0.3);text-shadow:0 0 15px rgba(255,179,0,0.5)}
+.timer.crit{color:var(--danger);background:rgba(255,51,102,0.1);border-color:rgba(255,51,102,0.4);animation:blink 1s infinite;text-shadow:0 0 20px rgba(255,51,102,0.7)}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
-.sec-tabs{display:flex;background:var(--border2);border-bottom:2px solid var(--primary);flex-shrink:0;overflow-x:auto}
-.sec-tab{padding:7px 14px;cursor:pointer;font-size:11px;white-space:nowrap;border-right:1px solid var(--border2);touch-action:manipulation;line-height:1.4;color:var(--text);transition:.15s}
-.sec-tab b{display:block;font-size:10px;opacity:.65}
-.sec-tab.act{background:var(--primary);color:#fff}
-.sec-tab.locked{opacity:.5;cursor:not-allowed}
+
+/* ── SECTION WARNING TOAST ── */
+#sectionWarningToast {
+  position:fixed;top:70px;left:50%;transform:translateX(-50%);z-index:9000;
+  background:rgba(255,179,0,0.95);color:#000;
+  padding:10px 24px;border-radius:8px;
+  font-family:'Orbitron';font-size:12px;font-weight:700;letter-spacing:1px;
+  box-shadow:0 4px 24px rgba(255,179,0,0.4);
+  display:none;animation:slideDown .3s ease;
+}
+@keyframes slideDown{from{opacity:0;transform:translateX(-50%) translateY(-10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+
+/* ── SECTION TABS ── */
+.sec-tabs {
+  display:flex;background:var(--bg2);
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;overflow-x:auto;
+}
+.sec-tabs::-webkit-scrollbar{height:2px}
+.sec-tab {
+  padding:8px 14px;cursor:pointer;font-size:11px;
+  white-space:nowrap;border-right:1px solid var(--border2);
+  color:var(--text2);transition:all .2s;
+  font-family:'Exo 2';font-weight:500;letter-spacing:0.3px;
+  flex-shrink:0;position:relative;
+}
+.sec-tab b{display:block;font-size:10px;color:var(--text3);margin-top:1px;font-family:'JetBrains Mono'}
+.sec-tab:hover{background:var(--glass);color:var(--primary)}
+.sec-tab.act{background:rgba(0,200,255,0.08);color:var(--primary);font-weight:600;border-bottom:2px solid var(--primary)}
+.sec-tab.locked{opacity:.4;cursor:not-allowed}
+.sec-tab-progress{position:absolute;bottom:0;left:0;height:2px;background:var(--accent);transition:width .4s;border-radius:0 1px 1px 0}
+
+/* ── EXAM BODY ── */
 .exam-body{display:flex;flex:1;overflow:hidden}
 .q-area{flex:1;display:flex;flex-direction:column;overflow:hidden}
-.q-content{flex:1;overflow-y:auto;padding:14px 18px;-webkit-overflow-scrolling:touch}
-.q-meta{display:flex;gap:8px;flex-wrap:wrap;font-size:11px;color:var(--text3);margin-bottom:10px;padding:6px 10px;background:var(--surface);border-radius:5px;border:1px solid var(--border)}
-.q-meta span{color:var(--primary);font-weight:bold}
-.q-box{background:var(--surface);border-left:4px solid var(--primary);border-radius:6px;padding:14px 16px;font-size:15px;line-height:1.8;margin-bottom:14px;box-shadow:0 1px 4px var(--shadow)}
+.q-content{flex:1;overflow-y:auto;padding:14px 20px;-webkit-overflow-scrolling:touch}
+
+/* ── Q META ── */
+.q-meta {
+  display:flex;gap:8px;flex-wrap:wrap;font-size:11px;
+  color:var(--text3);margin-bottom:12px;
+  padding:8px 12px;
+  background:var(--glass);border:1px solid var(--border2);
+  border-radius:6px;align-items:center;font-family:'JetBrains Mono';
+}
+.q-meta span{color:var(--primary);font-weight:600}
+.q-meta-sep{color:var(--border);font-size:14px}
+.time-spent-badge {
+  margin-left:auto;font-size:10px;color:var(--text3);
+  background:var(--glass);padding:2px 8px;border-radius:10px;
+  border:1px solid var(--border2);
+}
+
+/* ── QUESTION BOX ── */
+.q-box {
+  background:var(--surface);border-left:3px solid var(--primary);
+  border-radius:8px;padding:16px 18px;
+  font-size:15px;line-height:1.9;margin-bottom:16px;
+  box-shadow:0 4px 16px var(--shadow);
+  backdrop-filter:blur(12px);
+  border-top:1px solid var(--border);
+  border-right:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+}
+code{font-family:'JetBrains Mono';background:rgba(0,200,255,0.08);padding:1px 5px;border-radius:3px;font-size:13px;color:var(--accent)}
+
+/* ── OPTIONS ── */
 .opts{display:flex;flex-direction:column;gap:8px}
-.opt{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;background:var(--surface);border:2px solid var(--border);border-radius:7px;cursor:pointer;transition:border-color .1s,background .1s;font-size:14px;line-height:1.6;touch-action:manipulation;min-height:48px;color:var(--text)}
-.opt:active{border-color:var(--primary);background:var(--surface3)}
-.opt.sel{border-color:var(--primary);background:var(--surface3);font-weight:500}
-.opt.bkm{border-left:4px solid gold}
-.opt-lbl{font-weight:bold;color:var(--primary);min-width:22px;font-size:15px;padding-top:1px}
-.q-nav-bar{border-top:2px solid var(--border2);padding:8px 10px;display:flex;gap:5px;flex-wrap:wrap;background:var(--surface);flex-shrink:0;align-items:center}
+.opt {
+  display:flex;align-items:flex-start;gap:12px;
+  padding:13px 16px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:8px;cursor:pointer;
+  transition:all .15s cubic-bezier(.34,1.56,.64,1);
+  font-size:14px;line-height:1.6;
+  min-height:50px;color:var(--text);
+  backdrop-filter:blur(8px);
+}
+.opt:hover{border-color:var(--primary);background:rgba(0,200,255,0.05);transform:translateX(4px);box-shadow:var(--glow)}
+.opt.sel {
+  border-color:var(--accent);background:rgba(0,255,200,0.06);
+  font-weight:500;transform:translateX(6px);
+  box-shadow:var(--glow-accent);
+}
+.opt-lbl {
+  font-family:'Orbitron';font-weight:700;color:var(--primary);
+  min-width:24px;font-size:13px;padding-top:1px;
+}
+.opt.sel .opt-lbl{color:var(--accent)}
+
+/* ── Q NAV BAR ── */
+.q-nav-bar {
+  border-top:1px solid var(--border);padding:8px 12px;
+  display:flex;gap:6px;flex-wrap:wrap;
+  background:rgba(4,8,15,0.7);
+  backdrop-filter:blur(12px);
+  flex-shrink:0;align-items:center;
+}
+[data-theme=light] .q-nav-bar{background:rgba(238,244,252,0.8)}
+
+/* ── KEYBOARD SHORTCUT HINT ── */
+.kb-hint{font-size:10px;color:var(--text3);margin-left:auto;letter-spacing:0.3px;display:flex;align-items:center;gap:4px}
+.kb{background:var(--glass);border:1px solid var(--border2);border-radius:3px;padding:1px 5px;font-family:'JetBrains Mono';font-size:10px;color:var(--text3)}
+
+/* ── BOOKMARK ── */
+.bkm-btn {
+  background:none;border:1px solid var(--border);color:var(--text3);
+  padding:4px 10px;border-radius:4px;cursor:pointer;
+  font-size:12px;font-family:'Exo 2';transition:all .2s;
+}
+.bkm-btn:hover{border-color:var(--warn);color:var(--warn)}
+.bkm-btn.active{background:rgba(255,179,0,0.15);border-color:var(--warn);color:var(--warn);box-shadow:0 0 10px rgba(255,179,0,0.3)}
+
 /* ── RIGHT PANEL ── */
-.right-panel{width:235px;background:var(--surface);border-left:2px solid var(--border2);display:flex;flex-direction:column;flex-shrink:0}
-.rp-hdr{background:var(--primary);color:#fff;padding:9px;font-size:13px;font-weight:700;text-align:center}
-.legend{padding:7px 10px;border-bottom:1px solid var(--border);background:var(--surface2)}
-.leg-row{display:flex;align-items:center;gap:7px;font-size:11px;margin-bottom:4px;color:var(--text2)}
-.leg-dot{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:bold;flex-shrink:0;color:#fff}
-.rp-counts{padding:6px 10px;font-size:11px;display:grid;grid-template-columns:1fr 1fr;gap:3px;border-bottom:1px solid var(--border);background:var(--surface2)}
+.right-panel {
+  width:250px;
+  background:rgba(4,8,15,0.88);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  border-left:1px solid var(--border);
+  display:flex;flex-direction:column;flex-shrink:0;
+}
+[data-theme=light] .right-panel{background:rgba(240,248,255,0.92)}
+.rp-hdr{
+  background:linear-gradient(135deg,rgba(0,200,255,0.15),rgba(0,200,255,0.05));
+  color:var(--primary);padding:10px;
+  font-family:'Orbitron';font-size:11px;font-weight:600;
+  text-align:center;letter-spacing:1.5px;
+  border-bottom:1px solid var(--border);
+  text-shadow:var(--glow);
+}
+.legend{padding:8px 10px;border-bottom:1px solid var(--border2);background:var(--glass)}
+.leg-row{display:flex;align-items:center;gap:8px;font-size:11px;margin-bottom:5px;color:var(--text2)}
+.leg-dot {
+  width:24px;height:24px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:9px;font-weight:bold;flex-shrink:0;color:#fff;
+  font-family:'JetBrains Mono';
+}
+.rp-counts{padding:8px 10px;font-size:11px;display:grid;grid-template-columns:1fr 1fr;gap:4px;border-bottom:1px solid var(--border);background:var(--glass)}
 .rp-count{display:flex;align-items:center;gap:5px;color:var(--text2)}
 .palette{padding:8px;display:flex;flex-wrap:wrap;gap:5px;overflow-y:auto;flex:1;align-content:flex-start;touch-action:pan-y;-webkit-overflow-scrolling:touch}
-.pb{width:40px;height:40px;border-radius:50%;border:none;cursor:pointer;font-size:11px;font-weight:bold;color:#fff;display:flex;align-items:center;justify-content:center;transition:.1s;position:relative;touch-action:manipulation}
-.pb:active{transform:scale(1.12)}
-.pb.cur{box-shadow:0 0 0 3px #000,0 0 0 5px #fff}
-.pb.bkm::before{content:'★';position:absolute;top:-3px;right:-3px;font-size:9px;background:gold;color:#333;width:13px;height:13px;border-radius:50%;display:flex;align-items:center;justify-content:center;line-height:13px}
-.s0{background:#8b9eb5}.s1{background:#c62828}.s2{background:#2e7d32}.s3{background:#6a1b9a}.s4{background:#6a1b9a}
+.pb {
+  width:40px;height:40px;border-radius:50%;border:none;
+  cursor:pointer;font-family:'JetBrains Mono';font-size:11px;font-weight:600;
+  color:#fff;display:flex;align-items:center;justify-content:center;
+  transition:all .15s;position:relative;
+}
+.pb:hover{transform:scale(1.1)}
+.pb:active{transform:scale(1.05)}
+.pb.cur{box-shadow:0 0 0 2px #000,0 0 0 4px var(--primary),var(--glow)}
+.pb.bkm::before{content:'★';position:absolute;top:-3px;right:-3px;font-size:9px;background:var(--warn);color:#000;width:14px;height:14px;border-radius:50%;display:flex;align-items:center;justify-content:center;line-height:14px}
+.s0{background:#2a3a50}.s1{background:#7a1030}.s2{background:#006640}.s3{background:#4a1080}.s4{background:#2a0a70}
+
+/* ── PALETTE FAB ── */
+#palBtn{
+  display:none;position:fixed;right:16px;bottom:72px;z-index:201;
+  width:50px;height:50px;border-radius:50%;
+  background:linear-gradient(135deg,var(--primary),var(--accent));
+  color:#000;font-size:20px;border:none;
+  box-shadow:var(--glow);cursor:pointer;
+  align-items:center;justify-content:center;
+  font-weight:700;
+}
+
 /* ── RESULTS ── */
 #results{display:none;position:fixed;inset:0;background:var(--bg);overflow-y:auto;z-index:300;padding:20px;-webkit-overflow-scrolling:touch}
-.res-card{background:var(--surface);border-radius:12px;max-width:960px;margin:0 auto;padding:24px;box-shadow:0 4px 20px var(--shadow)}
-.res-banner{background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;border-radius:8px;padding:18px;text-align:center;margin-bottom:18px}
-.res-banner h1{font-size:20px;margin-bottom:4px}
-.res-banner p{font-size:12px;opacity:.85}
-.score-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}
-.sc{border-radius:10px;padding:12px;text-align:center;border:2px solid transparent}
-.sc-num{font-size:26px;font-weight:bold}
-.sc-lbl{font-size:11px;color:var(--text3);margin-top:3px}
-.sc.blue{background:var(--surface3);border-color:var(--primary)}.sc.blue .sc-num{color:var(--primary)}
-.sc.green{background:#e8f5e9;border-color:#2e7d32}.sc.green .sc-num{color:#1b5e20}
-.sc.red{background:#ffebee;border-color:#c62828}.sc.red .sc-num{color:#b71c1c}
-.sc.purple{background:#f3e5f5;border-color:#7b1fa2}.sc.purple .sc-num{color:#6a1b9a}
-[data-theme=dark] .sc.green{background:#1a3a1a}
-[data-theme=dark] .sc.red{background:#3a1a1a}
-[data-theme=dark] .sc.purple{background:#2a1a3a}
-.sec-table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:18px}
-.sec-table th{background:var(--primary);color:#fff;padding:9px 12px;text-align:center}
-.sec-table td{padding:8px 12px;border:1px solid var(--border);text-align:center;background:var(--surface);color:var(--text)}
-.sec-table tr:nth-child(even) td{background:var(--surface2)}
-.sec-table tfoot td{font-weight:bold;background:var(--surface3)}
-.review-btns{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;justify-content:center}
-.q-review{margin-bottom:10px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px;font-size:13px}
-.q-review.bookmarked{border-left:4px solid gold}
+.res-card {
+  background:var(--surface);backdrop-filter:blur(16px);
+  border-radius:16px;max-width:1000px;margin:0 auto;
+  padding:28px;box-shadow:0 8px 40px var(--shadow);
+  border:1px solid var(--border);
+}
+.res-banner {
+  background:linear-gradient(135deg,rgba(0,40,80,0.8),rgba(0,20,50,0.9));
+  border:1px solid var(--border);
+  border-radius:10px;padding:20px;text-align:center;margin-bottom:20px;
+  position:relative;overflow:hidden;
+}
+[data-theme=light] .res-banner{background:linear-gradient(135deg,rgba(0,80,160,0.9),rgba(0,50,120,0.95))}
+.res-banner::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='50' cy='50' r='40' fill='none' stroke='rgba(0,200,255,0.05)' stroke-width='1'/%3E%3C/svg%3E") repeat;opacity:0.5}
+.res-banner h1{font-family:'Orbitron';font-size:20px;color:#fff;margin-bottom:6px;letter-spacing:1px;text-shadow:var(--glow)}
+.res-banner p{font-size:12px;color:rgba(255,255,255,0.6);letter-spacing:0.5px}
+.score-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.sc{border-radius:10px;padding:14px;text-align:center;border:1px solid var(--border);backdrop-filter:blur(8px)}
+.sc-num{font-family:'Orbitron';font-size:28px;font-weight:700}
+.sc-lbl{font-size:10px;color:var(--text3);margin-top:4px;letter-spacing:0.5px;text-transform:uppercase}
+.sc.blue{background:rgba(0,200,255,0.08);border-color:rgba(0,200,255,0.2)}.sc.blue .sc-num{color:var(--primary);text-shadow:var(--glow)}
+.sc.green{background:rgba(0,230,118,0.08);border-color:rgba(0,230,118,0.2)}.sc.green .sc-num{color:var(--success)}
+.sc.red{background:rgba(255,51,102,0.08);border-color:rgba(255,51,102,0.2)}.sc.red .sc-num{color:var(--danger)}
+.sc.purple{background:rgba(179,136,255,0.08);border-color:rgba(179,136,255,0.2)}.sc.purple .sc-num{color:var(--purple)}
+.sec-table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:20px}
+.sec-table th{background:rgba(0,200,255,0.1);color:var(--primary);padding:10px 12px;text-align:center;font-family:'Orbitron';font-size:10px;letter-spacing:1px;border:1px solid var(--border)}
+.sec-table td{padding:9px 12px;border:1px solid var(--border2);text-align:center;background:var(--surface);color:var(--text)}
+.sec-table tr:nth-child(even) td{background:var(--glass)}
+.sec-table tfoot td{font-weight:700;background:var(--surface2)}
+.review-btns{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;justify-content:center}
+.q-review {
+  margin-bottom:10px;background:var(--surface);
+  border:1px solid var(--border2);border-radius:8px;padding:14px;
+  font-size:13px;backdrop-filter:blur(8px);transition:all .2s;
+}
+.q-review:hover{border-color:var(--border)}
+.q-review.bookmarked{border-left:3px solid var(--warn)}
 .qr-top{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}
-.qr-num{font-weight:bold;color:var(--primary)}
-.badge{font-size:11px;padding:3px 9px;border-radius:3px;font-weight:bold}
-.badge.correct{background:#e8f5e9;color:#1b5e20}
-.badge.wrong{background:#ffebee;color:#b71c1c}
-.badge.skip{background:var(--surface3);color:var(--text3)}
-.qr-q{margin-bottom:8px;color:var(--text);line-height:1.6}
+.qr-num{font-family:'Orbitron';font-weight:700;color:var(--primary);font-size:12px}
+.badge{font-size:10px;padding:3px 9px;border-radius:3px;font-weight:700;letter-spacing:0.5px}
+.badge.correct{background:rgba(0,230,118,0.15);color:var(--success);border:1px solid rgba(0,230,118,0.3)}
+.badge.wrong{background:rgba(255,51,102,0.15);color:var(--danger);border:1px solid rgba(255,51,102,0.3)}
+.badge.skip{background:var(--glass);color:var(--text3);border:1px solid var(--border2)}
+.qr-q{margin-bottom:8px;color:var(--text);line-height:1.7}
 .qr-opts-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:6px}
-.qr-opt{font-size:12px;padding:5px 9px;border-radius:4px;border:1px solid var(--border);background:var(--surface);color:var(--text)}
-.qr-opt.ca{background:#e8f5e9;border-color:#2e7d32;color:#1b5e20;font-weight:bold}
-.qr-opt.ua{background:#fff3e0;border-color:#e65100;color:#b71c1c;font-weight:bold}
-.qr-opt.both{background:#e8f5e9;border-color:#2e7d32;color:#1b5e20;font-weight:bold}
-.bkm-btn{margin-left:auto;background:none;border:1px solid var(--border);color:var(--text3);padding:3px 8px;border-radius:4px;cursor:pointer;font-size:12px;touch-action:manipulation}
-.bkm-btn.active{background:gold;border-color:gold;color:#333}
+.qr-opt{font-size:12px;padding:5px 9px;border-radius:4px;border:1px solid var(--border2);background:var(--surface);color:var(--text)}
+.qr-opt.ca{background:rgba(0,230,118,0.1);border-color:rgba(0,230,118,0.3);color:var(--success);font-weight:700}
+.qr-opt.ua{background:rgba(255,51,102,0.1);border-color:rgba(255,51,102,0.3);color:var(--danger);font-weight:700}
+.qr-opt.both{background:rgba(0,230,118,0.1);border-color:rgba(0,230,118,0.3);color:var(--success);font-weight:700}
+
+/* ── QUESTION SEARCH IN REVIEW ── */
+.review-search {
+  display:flex;gap:8px;margin-bottom:14px;align-items:center;
+}
+.review-search input {
+  flex:1;background:var(--surface);border:1px solid var(--border);
+  color:var(--text);padding:8px 14px;border-radius:6px;
+  font-family:'Exo 2';font-size:13px;outline:none;
+  transition:border-color .2s;
+}
+.review-search input:focus{border-color:var(--primary);box-shadow:var(--glow)}
+.review-search select{
+  background:var(--surface);border:1px solid var(--border);
+  color:var(--text);padding:8px 12px;border-radius:6px;
+  font-family:'Exo 2';font-size:12px;outline:none;cursor:pointer;
+}
+
+/* ── WEAKNESS REPORT ── */
+.weakness-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-bottom:20px}
+.weakness-item{background:var(--glass);border:1px solid var(--border2);border-radius:8px;padding:10px 12px}
+.weakness-topic{font-size:11px;font-weight:600;color:var(--text2);margin-bottom:6px;letter-spacing:0.3px}
+.weakness-bar-wrap{height:6px;background:var(--border2);border-radius:3px;overflow:hidden}
+.weakness-bar{height:100%;border-radius:3px;transition:width .5s}
+
+/* ── EXPORT BUTTON ── */
+.export-btn{
+  background:linear-gradient(135deg,rgba(0,255,200,0.1),rgba(0,200,255,0.1));
+  border:1px solid var(--accent);color:var(--accent);
+  padding:8px 16px;border-radius:6px;font-size:12px;font-weight:600;
+  cursor:pointer;font-family:'Exo 2';letter-spacing:0.5px;transition:all .2s;
+}
+.export-btn:hover{background:rgba(0,255,200,0.15);box-shadow:var(--glow-accent)}
+
 /* ── HISTORY ── */
-.hist-filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;align-items:center}
-.hist-filter{background:var(--surface);border:1.5px solid var(--border);color:var(--text);padding:7px 14px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;touch-action:manipulation}
-.hist-filter.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.hist-filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;align-items:center}
+.hist-filter {
+  background:var(--surface);border:1px solid var(--border);
+  color:var(--text2);padding:7px 14px;border-radius:6px;
+  cursor:pointer;font-size:11px;font-weight:600;
+  font-family:'Exo 2';transition:all .2s;letter-spacing:0.5px;
+}
+.hist-filter:hover{border-color:var(--primary);color:var(--primary)}
+.hist-filter.active{background:rgba(0,200,255,0.1);color:var(--primary);border-color:var(--primary);box-shadow:var(--glow)}
 .hist-list{display:flex;flex-direction:column;gap:10px}
-.hist-item{background:var(--surface);border-radius:10px;border:1px solid var(--border);overflow:hidden;box-shadow:0 2px 6px var(--shadow)}
-.hist-item-hdr{display:flex;align-items:center;gap:10px;padding:12px 16px;cursor:pointer;touch-action:manipulation}
-.hist-item-hdr:active{background:var(--surface2)}
-.hi-date{font-size:11px;color:var(--text3);min-width:90px}
-.hi-paper{font-size:13px;font-weight:700;color:var(--primary);flex:1}
-.hi-score{font-size:18px;font-weight:800;color:var(--primary);min-width:60px;text-align:right}
-.hi-pct{font-size:11px;color:var(--text3);text-align:right;min-width:40px}
-.hi-badge{font-size:10px;padding:2px 7px;border-radius:8px;font-weight:700}
-.hi-badge.full{background:#e3f2fd;color:#0d47a1}
-.hi-badge.section{background:#f3e5f5;color:#6a1b9a}
-.hi-badge.practice{background:#e8f5e9;color:#1b5e20}
-.hist-detail{display:none;border-top:1px solid var(--border);padding:12px 16px;background:var(--surface2)}
+.hist-item {
+  background:var(--surface);backdrop-filter:blur(12px);
+  border-radius:10px;border:1px solid var(--border);
+  overflow:hidden;box-shadow:0 4px 16px var(--shadow);
+  transition:border-color .2s;
+}
+.hist-item:hover{border-color:var(--border)}
+.hist-item-hdr {
+  display:flex;align-items:center;gap:10px;
+  padding:12px 16px;cursor:pointer;
+}
+.hist-item-hdr:active{background:var(--glass)}
+.hi-date{font-family:'JetBrains Mono';font-size:10px;color:var(--text3);min-width:95px}
+.hi-paper{font-size:13px;font-weight:700;color:var(--primary);flex:1;font-family:'Exo 2'}
+.hi-score{font-family:'Orbitron';font-size:18px;font-weight:700;min-width:60px;text-align:right}
+.hi-pct{font-family:'JetBrains Mono';font-size:10px;color:var(--text3);text-align:right;min-width:40px}
+.hi-badge{font-size:10px;padding:2px 8px;border-radius:8px;font-weight:700;letter-spacing:0.5px}
+.hi-badge.full{background:rgba(0,200,255,0.1);color:var(--primary);border:1px solid rgba(0,200,255,0.2)}
+.hi-badge.section{background:rgba(179,136,255,0.1);color:var(--purple);border:1px solid rgba(179,136,255,0.2)}
+.hi-badge.practice{background:rgba(0,230,118,0.1);color:var(--success);border:1px solid rgba(0,230,118,0.2)}
+.hist-detail{display:none;border-top:1px solid var(--border);padding:14px 16px;background:var(--glass)}
 .hist-detail.open{display:block}
-.hist-sec-row{display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:4px 0;border-bottom:1px solid var(--border)}
+.hist-sec-row{display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:5px 0;border-bottom:1px solid var(--border2)}
 .hist-sec-row:last-child{border:none}
-.hist-sec-bar{height:6px;background:var(--border);border-radius:3px;overflow:hidden;flex:1;margin:0 12px}
-.hist-sec-fill{height:100%;background:var(--primary);border-radius:3px;transition:.5s}
-.del-btn{background:none;border:none;color:var(--red);cursor:pointer;font-size:12px;padding:2px 6px;touch-action:manipulation;opacity:.7}
-.del-btn:active{opacity:1}
-.no-history{text-align:center;padding:40px;color:var(--text3)}
+.hist-sec-bar{height:6px;background:var(--border2);border-radius:3px;overflow:hidden;flex:1;margin:0 12px}
+.hist-sec-fill{height:100%;border-radius:3px;transition:.5s}
+.del-btn{background:none;border:none;color:var(--danger);cursor:pointer;font-size:12px;padding:2px 6px;opacity:.5;transition:opacity .2s}
+.del-btn:hover{opacity:1}
+.no-history{text-align:center;padding:48px;color:var(--text3);font-family:'Orbitron';font-size:13px;letter-spacing:1px}
+
 /* ── MODAL ── */
-.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:500;justify-content:center;align-items:center}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:500;justify-content:center;align-items:center;backdrop-filter:blur(8px)}
 .modal-bg.show{display:flex}
-.modal{background:var(--surface);border-radius:10px;padding:22px;max-width:420px;width:92%;box-shadow:0 8px 32px rgba(0,0,0,.3)}
-.modal h3{color:var(--primary);margin-bottom:10px;font-size:16px}
-.modal-body{font-size:13px;color:var(--text2);line-height:1.8;margin-bottom:14px}
+.modal {
+  background:var(--surface);backdrop-filter:blur(20px);
+  border-radius:12px;padding:24px;max-width:440px;width:92%;
+  box-shadow:0 20px 60px rgba(0,0,0,0.5),var(--glow);
+  border:1px solid var(--border);
+  animation:modalIn .25s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes modalIn{from{opacity:0;transform:scale(.9) translateY(20px)}}
+.modal h3{font-family:'Orbitron';color:var(--primary);margin-bottom:10px;font-size:14px;letter-spacing:1px;text-shadow:var(--glow)}
+.modal-body{font-size:13px;color:var(--text2);line-height:1.8;margin-bottom:16px}
 .modal-btns{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
-/* ── PALETTE TOGGLE ── */
-#palBtn{display:none;position:fixed;right:14px;bottom:68px;z-index:201;width:48px;height:48px;border-radius:50%;background:var(--primary);color:#fff;font-size:20px;border:none;box-shadow:0 3px 12px rgba(0,0,0,.35);cursor:pointer;touch-action:manipulation;align-items:center;justify-content:center}
+
+/* ── SUBMIT SUMMARY TABLE ── */
+.submit-table{width:100%;font-size:13px;border-collapse:collapse}
+.submit-table td{padding:6px 8px;border-bottom:1px solid var(--border2)}
+.submit-table td:last-child{font-weight:700;text-align:right;font-family:'JetBrains Mono'}
+
 /* ── RESPONSIVE ── */
-@media(max-width:700px){
-  .right-panel{display:none;position:fixed;right:0;top:0;bottom:0;z-index:202;width:230px;box-shadow:-4px 0 20px rgba(0,0,0,.3)}
+@media(max-width:900px){
+  .right-panel{display:none;position:fixed;right:0;top:0;bottom:0;z-index:202;width:240px;box-shadow:-4px 0 30px rgba(0,0,0,.5)}
   .right-panel.open{display:flex}
   #palBtn{display:flex}
-  .q-nav-bar{padding:6px 8px;gap:3px}
-  .btn{padding:8px 10px;font-size:11px;min-height:38px}
-  .exam-hdr-left h1{font-size:12px}
-  .exam-hdr-left p{display:none}
   .score-grid{grid-template-columns:1fr 1fr}
   .timer-modes{grid-template-columns:1fr}
   .card-stats{grid-template-columns:1fr 1fr}
+  .btn{padding:7px 10px;font-size:11px;min-height:36px}
+  .kb-hint{display:none}
 }
-@media(min-width:701px) and (max-width:1024px){
-  .right-panel{width:210px}
+@media(max-width:600px){
+  .topnav-brand span.brand-sub{display:none}
+  .exam-hdr-left p{display:none}
+  .qr-opts-grid{grid-template-columns:1fr}
+  .weakness-grid{grid-template-columns:1fr 1fr}
+}
+@media(min-width:901px) and (max-width:1200px){
+  .right-panel{width:230px}
   .pb{width:38px;height:38px}
 }
+
+/* ── 3D CARD EFFECT (desktop only) ── */
+@media(min-width:900px){
+  .card{transform-style:preserve-3d;perspective:1000px}
+}
+
+/* ── SECTION TIME WARNING BADGE ── */
+.sec-time-warn {
+  display:inline-block;margin-left:4px;
+  background:rgba(255,179,0,0.2);color:var(--warn);
+  font-size:9px;padding:1px 5px;border-radius:3px;
+  border:1px solid rgba(255,179,0,0.4);
+  font-family:'JetBrains Mono';animation:pulseWarn 1s ease-in-out infinite;
+}
+@keyframes pulseWarn{0%,100%{opacity:1}50%{opacity:.5}}
 </style>
 </head>
 <body>
+<div class="bg-canvas">
+  <div class="bg-grid"></div>
+  <div class="bg-orb o1"></div>
+  <div class="bg-orb o2"></div>
+  <div class="bg-orb o3"></div>
+</div>
 
-<!-- ── TOP NAV (shown on non-exam screens) ── -->
+<!-- ── AUTO-SAVE INDICATOR ── -->
+<div id="saveFlash">💾 SAVED</div>
+
+<!-- ── SECTION WARNING TOAST ── -->
+<div id="sectionWarningToast"></div>
+
+<!-- ── TOP NAV ── -->
 <nav class="topnav" id="topNav">
   <div class="topnav-brand">
-    🎓 <div><div>IMU-CET CBT</div><span>Practice Simulator</span></div>
+    <div class="brand-icon">🎓</div>
+    <div>
+      <div>IMU-CET CBT</div>
+      <span class="brand-sub">Neural Simulator</span>
+    </div>
   </div>
   <div class="topnav-right">
-    <button class="nav-btn" onclick="buildDashboard();showScreen('dashboard')" id="navDash">🏠 Dashboard</button>
-    <button class="nav-btn" onclick="openHistory()" id="navHist">📊 History</button>
-    <button class="nav-btn" id="themeBtn" onclick="toggleTheme()">🌙</button>
+    <button class="nav-btn" onclick="buildDashboard();showScreen('dashboard')" id="navDash">⬡ Dashboard</button>
+    <button class="nav-btn" onclick="openHistory()" id="navHist">◈ History</button>
+    <button class="nav-btn" id="themeBtn" onclick="toggleTheme()">◐</button>
   </div>
 </nav>
 
 <!-- ════════ DASHBOARD ════════ -->
 <div class="screen active" id="dashboard">
   <div class="page-body">
-    <div class="page-title">📚 Your Exam Bank</div>
-    <div class="page-sub">Select a paper to start practising. Your progress and history are saved automatically.</div>
+    <div class="page-title">◈ EXAM BANK</div>
+    <div class="page-sub">Select a paper to enter simulation. Progress saves every second automatically.</div>
     <div class="card-grid" id="paperGrid"></div>
   </div>
 </div>
 
-<!-- ════════ CONFIG SCREEN ════════ -->
+<!-- ════════ CONFIG ════════ -->
 <div class="screen" id="config">
   <div class="config-wrap">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
       <button class="btn btn-outline" onclick="buildDashboard();showScreen('dashboard')">← Back</button>
-      <h2 style="color:var(--primary);font-size:18px" id="configTitle">Configure Exam</h2>
+      <h2 style="color:var(--primary);font-family:'Orbitron';font-size:16px;letter-spacing:1px;text-shadow:var(--glow)" id="configTitle">Configure Exam</h2>
     </div>
     <div class="config-box">
-      <h3>⏱ Timer Mode</h3>
+      <h3>⊕ TIMER MODE</h3>
       <div class="timer-modes">
         <div class="tmode sel" data-mode="full" onclick="setTimerMode('full')">
           <div class="tmode-icon">🕐</div>
-          <div class="tmode-label">Full Exam</div>
-          <div class="tmode-desc">One countdown for the entire paper</div>
+          <div class="tmode-label">FULL EXAM</div>
+          <div class="tmode-desc">Single countdown for entire paper</div>
         </div>
         <div class="tmode" data-mode="section" onclick="setTimerMode('section')">
           <div class="tmode-icon">📑</div>
-          <div class="tmode-label">Section Timer</div>
-          <div class="tmode-desc">Each section gets its own countdown</div>
+          <div class="tmode-label">SECTION</div>
+          <div class="tmode-desc">Each section gets own countdown</div>
         </div>
         <div class="tmode" data-mode="practice" onclick="setTimerMode('practice')">
           <div class="tmode-icon">⚡</div>
-          <div class="tmode-label">Practice Mode</div>
+          <div class="tmode-label">PRACTICE</div>
           <div class="tmode-desc">No timer — review at your pace</div>
         </div>
       </div>
     </div>
     <div class="config-box">
-      <h3>🎚 Adjust Time</h3>
+      <h3>⊘ ADJUST TIME</h3>
       <div class="time-inputs" id="timeInputs"></div>
     </div>
-    <div class="config-box" id="resumeBox" style="display:none">
-      <h3>⟳ Saved Progress</h3>
+    <div class="config-box resume-box" id="resumeBox" style="display:none">
+      <h3>⟳ SAVED SESSION FOUND</h3>
       <p style="font-size:13px;color:var(--text2);margin-bottom:14px">You have a saved session for this paper. Resume where you left off?</p>
       <div style="display:flex;gap:10px;flex-wrap:wrap">
         <button class="btn btn-green" onclick="startExam(true)">⟳ Resume Session</button>
@@ -269,7 +794,7 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--te
       </div>
     </div>
     <div class="config-actions" id="configActions">
-      <button class="btn btn-primary btn-lg" onclick="checkAndStart()">▶ Start Exam</button>
+      <button class="btn btn-primary btn-lg" onclick="checkAndStart()">▶ LAUNCH EXAM</button>
     </div>
   </div>
 </div>
@@ -277,30 +802,31 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--te
 <!-- ════════ HISTORY ════════ -->
 <div class="screen" id="history">
   <div class="page-body">
-    <div class="page-title">📊 Attempt History</div>
-    <div class="page-sub">Review your past performance. Click any attempt to expand section details.</div>
+    <div class="page-title">◈ ATTEMPT HISTORY</div>
+    <div class="page-sub">Track your performance across all sessions. Click any entry to expand.</div>
     <div class="hist-filters" id="histFilters"></div>
     <div class="hist-list" id="histList"></div>
   </div>
 </div>
 
 <!-- ════════ RESULTS ════════ -->
-<div class="screen" id="results" style="display:block;padding:20px;background:var(--bg);overflow-y:auto"></div>
+<div id="results" style="display:none"></div>
 
-<!-- ════════ EXAM APP (fixed overlay) ════════ -->
+<!-- ════════ EXAM APP ════════ -->
 <div id="examApp">
   <div class="exam-hdr">
     <div class="exam-hdr-left">
       <h1 id="examTitle">IMU-CET CBT</h1>
-      <p id="examSubtitle">All Sections</p>
+      <p id="examSubtitle">Neural Simulator</p>
     </div>
     <div class="timer-block">
-      <div class="timer-lbl" id="timerLbl">Time Remaining</div>
+      <div class="timer-lbl" id="timerLbl">TIME REMAINING</div>
       <div class="timer" id="timer">03:00:00</div>
     </div>
-    <div style="display:flex;gap:6px">
-      <button class="nav-btn" id="themeBtn2" onclick="toggleTheme()" style="padding:6px 10px">🌙</button>
-      <button class="nav-btn" style="background:rgba(198,40,40,.5);padding:6px 10px" onclick="confirmSubmit()">⏹</button>
+    <div style="display:flex;gap:6px;align-items:center">
+      <div id="autoSaveHdr" style="font-size:10px;color:var(--success);font-family:'JetBrains Mono';opacity:0;transition:opacity .3s">● LIVE</div>
+      <button class="nav-btn" id="themeBtn2" onclick="toggleTheme()" style="padding:7px 11px">◐</button>
+      <button class="nav-btn" style="background:rgba(255,51,102,.15);border-color:rgba(255,51,102,.3);color:var(--danger);padding:7px 12px" onclick="confirmSubmit()">⏹ SUBMIT</button>
     </div>
   </div>
   <div class="sec-tabs" id="secTabs"></div>
@@ -308,23 +834,28 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--te
     <div class="q-area">
       <div class="q-content" id="qContent"></div>
       <div class="q-nav-bar">
-        <button class="btn btn-outline" onclick="clearResponse()">✕ Clear</button>
-        <button class="btn btn-purple" onclick="markReview()">🔖 Mark</button>
-        <button class="btn btn-primary" onclick="saveNext()">💾 Save &amp; Next</button>
-        <button class="btn btn-outline" onclick="prevQ()">◀</button>
-        <button class="btn btn-primary" onclick="nextQ()">▶</button>
-        <button class="btn btn-red ml-auto" onclick="confirmSubmit()">⏹ Submit</button>
+        <button class="btn btn-outline" onclick="clearResponse()" title="Clear (X)">✕ Clear</button>
+        <button class="btn btn-purple" onclick="markReview()" title="Mark (B)">🔖 Mark</button>
+        <button class="btn btn-primary" onclick="saveNext()" title="Save & Next (Enter)">💾 Save & Next</button>
+        <button class="btn btn-outline" onclick="prevQ()" title="Previous (←)">◀</button>
+        <button class="btn btn-outline" onclick="nextQ()" title="Next (→)">▶</button>
+        <div class="kb-hint">
+          <span class="kb">A–D</span> select &nbsp;
+          <span class="kb">←→</span> nav &nbsp;
+          <span class="kb">B</span> mark &nbsp;
+          <span class="kb">↵</span> save
+        </div>
       </div>
     </div>
     <div class="right-panel" id="rightPanel">
-      <div class="rp-hdr">Question Palette</div>
+      <div class="rp-hdr">QUESTION PALETTE</div>
       <div class="legend">
-        <div class="leg-row"><div class="leg-dot s0" style="font-size:8px">—</div> Not Visited</div>
+        <div class="leg-row"><div class="leg-dot s0">—</div> Not Visited</div>
         <div class="leg-row"><div class="leg-dot s1">✕</div> Not Answered</div>
         <div class="leg-row"><div class="leg-dot s2">✓</div> Answered</div>
         <div class="leg-row"><div class="leg-dot s3">M</div> Marked</div>
-        <div class="leg-row"><div class="leg-dot s4">M</div> Answered+Marked</div>
-        <div class="leg-row"><div style="font-size:14px;width:22px;text-align:center">★</div> Bookmarked</div>
+        <div class="leg-row"><div class="leg-dot s4">M</div> Ans+Marked</div>
+        <div class="leg-row"><span style="font-size:14px;width:24px;text-align:center;color:var(--warn)">★</span> Bookmarked</div>
       </div>
       <div class="rp-counts" id="rpCounts"></div>
       <div class="palette" id="palette"></div>
@@ -332,13 +863,12 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--te
   </div>
 </div>
 
-<!-- Floating palette toggle -->
 <button id="palBtn" onclick="togglePalette()">☰</button>
 
 <!-- ════════ MODALS ════════ -->
 <div class="modal-bg" id="submitModal">
   <div class="modal">
-    <h3>⚠ Submit Examination</h3>
+    <h3>⚠ SUBMIT EXAMINATION</h3>
     <div class="modal-body" id="submitMsg"></div>
     <div class="modal-btns">
       <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
@@ -346,20 +876,18 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--te
     </div>
   </div>
 </div>
-
 <div class="modal-bg" id="sectionTimeUpModal">
   <div class="modal" style="text-align:center">
     <div style="font-size:40px;margin-bottom:10px">⏰</div>
-    <h3>Section Time Up!</h3>
+    <h3>SECTION TIME UP</h3>
     <div class="modal-body" id="sectionTimeUpMsg">Time is up for this section.</div>
   </div>
 </div>
 
 <script>
-
-// ╔════════════════════════════════════════════════════════════════╗
-// ║  PAPERS — paste new paper blocks here when Claude gives them  ║
-// ╚════════════════════════════════════════════════════════════════╝
+// ╔═══════════════════════════════════════════════════════╗
+// ║  PAPERS                                               ║
+// ╚═══════════════════════════════════════════════════════╝
 const PAPERS = [
 {
   id:'imucet_2025',
@@ -369,8 +897,6 @@ const PAPERS = [
   marking:{correct:1,wrong:-0.25},
   sections:{English:30,General_Aptitude:30,Mathematics:60,Physics:30,Chemistry:30},
   questions:[
-
-// ── SECTION 1: ENGLISH (Q1–40) ──────────────────────────────
 {s:'English',q:'The team\'s performance was so ____________ that they were awarded the championship.',o:['Competent','Exceptional','Outstanding','Commendable'],a:2},
 {s:'English',q:'After the long hike, we were all feeling quite ____________ and needed a rest.',o:['Fatigued','Exhausted','Depleted','Drained'],a:1},
 {s:'English',q:'The detective had ____________ for solving complex cases.',o:['An aptitude','An instinct','A talent','An inclination'],a:1},
@@ -393,15 +919,14 @@ const PAPERS = [
 {s:'English',q:"<b>Antonym:</b> The artist's use of colour was <u>subdued</u>, creating a happy mood.",o:['Expressive','Muted','Vibrant','Restless'],a:2},
 {s:'English',q:'<b>Antonym:</b> The <u>preamble</u> to the constitution outlines the fundamental principles.',o:['Conclusion','Introduction','Amendment','Article'],a:0},
 {s:'English',q:'<b>Antonym:</b> The <u>visible</u> signs of wear and tear on the building needed repair.',o:['Obvious','Concealed','Noticeable','Unnoticeable'],a:1},
-{s:'English',q:"<b>Antonym:</b> The billionaire's <u>grandiose</u> plans for a luxury skyscraper were met with skepticism by city officials.",o:['Ambitious','Lavish','Extravagant','Modest'],a:3},
+{s:'English',q:"<b>Antonym:</b> The billionaire's <u>grandiose</u> plans for a luxury skyscraper were met with skepticism.",o:['Ambitious','Lavish','Extravagant','Modest'],a:3},
 {s:'English',q:'<b>Antonym:</b> The instructions were <u>vague</u>, making it difficult to assemble the furniture.',o:['Ambiguous','Incomplete','Confusing','Clear'],a:3},
 {s:'English',q:"<b>Antonym:</b> The tech company's product was at the <u>cutting edge</u> of industry trends.",o:['State of the art','Traditional','Behind the times','Obsolete'],a:2},
-{s:'English',q:"<b>Antonym:</b> The researcher's <u>assertion</u> that climate change is irreversible has sparked intense debate.",o:['Claim','Denial','Hypothesis','Concession'],a:1},
-{s:'English',q:'<b>Active/Passive:</b> Change the voice — The chef cooks the meal.',o:['The meal is cooked by the chef.','The meal cooks by the chef.','The chef is cooking the meal.','The meal is being cooked by the chef.'],a:0},
-{s:'English',q:'<b>Active/Passive:</b> Change the voice — The professor grades the papers.',o:['The papers is being graded by the professor.','The papers are graded by the professor.','The professor is grading the papers.','The papers have been graded.'],a:1},
-{s:'English',q:'<b>Active/Passive:</b> Change the voice — The company has hired new employees.',o:['New employees are hired by the company.','New employees have been hired by the company.','The company is hiring new employees.','New employees are being hired.'],a:1},
-{s:'English',q:'<b>Active/Passive:</b> Change the voice — The play was written by John Donne.',o:['John Donne wrote the play.','The play is written by John Donne.','John Donne is writing the play.','The play has been written by John Donne.'],a:0},
-{s:'English',q:'<b>Active/Passive:</b> Change the voice — The new policy was implemented by the management.',o:['The management implemented the new policy.','The new policy is being implemented by the management.','The management is implementing the new policy.','The new policy has been implemented.'],a:0},
+{s:'English',q:"<b>Antonym:</b> The researcher's <u>assertion</u> that climate change is irreversible has sparked debate.",o:['Claim','Denial','Hypothesis','Concession'],a:1},
+{s:'English',q:'<b>Active/Passive:</b> The chef cooks the meal.',o:['The meal is cooked by the chef.','The meal cooks by the chef.','The chef is cooking the meal.','The meal is being cooked by the chef.'],a:0},
+{s:'English',q:'<b>Active/Passive:</b> The professor grades the papers.',o:['The papers is being graded by the professor.','The papers are graded by the professor.','The professor is grading the papers.','The papers have been graded.'],a:1},
+{s:'English',q:'<b>Active/Passive:</b> The company has hired new employees.',o:['New employees are hired by the company.','New employees have been hired by the company.','The company is hiring new employees.','New employees are being hired.'],a:1},
+{s:'English',q:'<b>Active/Passive:</b> The play was written by John Donne.',o:['John Donne wrote the play.','The play is written by John Donne.','John Donne is writing the play.','The play has been written by John Donne.'],a:0},
 {s:'English',q:'<b>Fill in the Blank:</b> By the time I arrived, they ____________ their project.',o:['Would have','Ought to have','Should have','Must have'],a:3},
 {s:'English',q:'<b>Fill in the Blank:</b> If I __________ choose between the two options, I would choose the first one.',o:['Should','Had to','Were to','Might'],a:2},
 {s:'English',q:"<b>Fill in the Blank:</b> She __________ have gone to the party, because I didn't see her there.",o:["Can't",'Might not',"Shouldn't","Wouldn't"],a:0},
@@ -411,8 +936,6 @@ const PAPERS = [
 {s:'English',q:'<b>Fill in the Blank:</b> By the time I arrived, they ____________ their project.',o:['Have finished','Had finished','Finish','Were finishing'],a:1},
 {s:'English',q:'<b>Fill in the Blank:</b> If it __________ tomorrow, we will stay indoors.',o:['Will rain','Rains','Would rain','Should rains'],a:1},
 {s:'English',q:'<b>Fill in the Blank:</b> I __________ in Dublin for three years now.',o:['Living','Am living','Have been living','Lived'],a:2},
-
-// ── SECTION 2: GENERAL APTITUDE (Q41–80) ────────────────────
 {s:'General Aptitude',q:'<b>Odd One Out:</b> Spot the stranger.',o:['Joy','Happiness','Sorrow','Delight'],a:2},
 {s:'General Aptitude',q:'<b>Odd One Out:</b> Spot the stranger.',o:['Apple','Banana','Carrot','Mango'],a:2},
 {s:'General Aptitude',q:'<b>Odd One Out:</b> Spot the stranger.',o:['Hot','Cold','Warm','Windy'],a:3},
@@ -421,237 +944,393 @@ const PAPERS = [
 {s:'General Aptitude',q:'<b>Analogy:</b> Teacher is to classroom as chef is to ____________.',o:['Kitchen','Recipe','Food','Plate'],a:0},
 {s:'General Aptitude',q:'<b>Analogy:</b> Read is to write as listen is to ____________.',o:['Ignore','Speak','Hear','Understand'],a:1},
 {s:'General Aptitude',q:'<b>Analogy:</b> Fast is to slow as __________ is to dark.',o:['Light','Bright','Dim','Shiny'],a:0},
-{s:'General Aptitude',q:'<b>Analogy:</b> Choose the pair in which the relationship DOES NOT match the given pair: <b>Book : Author</b>',o:['Painting and Artist','Song and Actor','Building and Architect','Chef and Dish'],a:1},
-{s:'General Aptitude',q:'<b>Analogy:</b> Choose the pair in which the relationship DOES NOT match the given pair: <b>Car : Driver</b>',o:['Train and Conductor','Ship and Captain','Airplane and Pilot','Ship and Chief Officer'],a:3},
-{s:'General Aptitude',q:'<b>Analogy:</b> Choose the pair in which the relationship DOES NOT match the given pair: <b>Pen : Paper</b>',o:['Keyboard and Monitor','Pencil and Eraser','Brush and Canvas','Keyboard and CPU'],a:3},
-{s:'General Aptitude',q:'<b>Number Series:</b> Write the next number in the series: 2, 4, 6, 8, 10, _______',o:['12','14','16','18'],a:0},
-{s:'General Aptitude',q:'<b>Number Series:</b> Write the next number in the series: 3, 6, 12, 24, _______',o:['36','48','60','72'],a:1},
+{s:'General Aptitude',q:'<b>Analogy:</b> Choose the pair where relationship does NOT match <b>Book : Author</b>',o:['Painting and Artist','Song and Actor','Building and Architect','Chef and Dish'],a:1},
+{s:'General Aptitude',q:'<b>Analogy:</b> Choose the pair where relationship does NOT match <b>Car : Driver</b>',o:['Train and Conductor','Ship and Captain','Airplane and Pilot','Ship and Chief Officer'],a:3},
+{s:'General Aptitude',q:'<b>Analogy:</b> Choose the pair where relationship does NOT match <b>Pen : Paper</b>',o:['Keyboard and Monitor','Pencil and Eraser','Brush and Canvas','Keyboard and CPU'],a:3},
+{s:'General Aptitude',q:'<b>Number Series:</b> 2, 4, 6, 8, 10, _______',o:['12','14','16','18'],a:0},
+{s:'General Aptitude',q:'<b>Number Series:</b> 3, 6, 12, 24, _______',o:['36','48','60','72'],a:1},
 {s:'General Aptitude',q:'<b>Number Series:</b> If 23 = 618, 45 = 2030, 36 = 1836, then 57 = ?',o:['3549','3042','3575','3035'],a:3},
-{s:'General Aptitude',q:'<b>Problem:</b> In a 100 m race, A covers the distance in 36 seconds and B in 45 seconds. In this race A beats B by ________.',o:['20 m','25 m','30 m','35 m'],a:0},
-{s:'General Aptitude',q:'<b>Number Series:</b> Choose the response that continues the series: 123, 234, 345, _________',o:['456','567','678','789'],a:0},
-{s:'General Aptitude',q:'<b>Number Series:</b> Choose the response that continues the series: 112, 223, 334, 445, _______',o:['556','667','778','889'],a:0},
+{s:'General Aptitude',q:'<b>Problem:</b> In a 100 m race, A covers in 36 sec, B in 45 sec. A beats B by:',o:['20 m','25 m','30 m','35 m'],a:0},
+{s:'General Aptitude',q:'<b>Number Series:</b> 123, 234, 345, _________',o:['456','567','678','789'],a:0},
+{s:'General Aptitude',q:'<b>Number Series:</b> 112, 223, 334, 445, _______',o:['556','667','778','889'],a:0},
 {s:'General Aptitude',q:'<b>Coding-Decoding:</b> If "HELLO" is coded as "IFMMP", what is the code for "WORLD"?',o:['XPSME','XPSMD','XPSMS','XPDMD'],a:0},
 {s:'General Aptitude',q:'<b>Coding-Decoding:</b> If "ZEBRA" is coded as "AEBRZ", what is the code for "LION"?',o:['NLIO','ORIM','MLOI','NOIR'],a:3},
 {s:'General Aptitude',q:'<b>Coding-Decoding:</b> If "CAT" is coded as "DBU", what is the code for "DOG"?',o:['EPH','EPJ','EPI','EPT'],a:0},
 {s:'General Aptitude',q:'Which state is known as the "Land of Five Rivers"?',o:['Punjab','Haryana','Kerala','Maharashtra'],a:0},
 {s:'General Aptitude',q:'Which state is known as the "Rice Bowl of India"?',o:['Punjab','Haryana','Andhra Pradesh','Madhya Pradesh'],a:2},
-{s:'General Aptitude',q:'In which state is the famous Keoladeo National Park located?',o:['Rajasthan','Madhya Pradesh','West Bengal','Odisha'],a:0},
-{s:'General Aptitude',q:'Which country has no river?',o:['Norway','Saudi Arabia','Nepal','Indonesia'],a:1},
-{s:'General Aptitude',q:'Iron ore is an important ore for __________ .',o:['Copper','Zinc','Steel','Aluminium'],a:2},
-{s:'General Aptitude',q:'Which is the planet nearest to the Sun?',o:['Earth','Mars','Mercury','Saturn'],a:2},
-{s:'General Aptitude',q:'Arrange the following planets in <b>ascending order of their distance from the Sun</b>:<br>I. Jupiter &nbsp; II. Venus &nbsp; III. Mercury &nbsp; IV. Mars &nbsp; V. Earth',o:['I, V, IV, II, III','III, II, V, IV, I','III, II, IV, V, I','I, IV, V, II, III'],a:1},
-{s:'General Aptitude',q:'Koyna multipurpose project is in which state?',o:['Maharashtra','Uttar Pradesh','Assam','Nagaland'],a:0},
-{s:'General Aptitude',q:'Guwahati is situated on the bank of which river?',o:['Kaveri','Hooghly','Brahmaputra','Narmada'],a:2},
-{s:'General Aptitude',q:'The Indian Constitution was adopted and enacted by the Constituent Assembly on:',o:['9 December 1946','15 August 1947','26 November 1949','26 January 1950'],a:2},
-{s:'General Aptitude',q:'The oldest port in India is:',o:['Kolkata','Chennai','Lothal','Visakhapatnam'],a:2},
-{s:'General Aptitude',q:'Which is the deepest port in India?',o:['Gangavaram Port','Kandla Port','JNPT (Jawaharlal Nehru Port Trust)','Kochi Port'],a:0},
-{s:'General Aptitude',q:'Which state in India has the least literacy rate?',o:['Andhra Pradesh','Bihar','Kerala','West Bengal'],a:1},
-{s:'General Aptitude',q:'Ghoomar is a famous dance form of:',o:['Karnataka','Andhra Pradesh','Rajasthan','Uttar Pradesh'],a:2},
 {s:'General Aptitude',q:'Which city in India is known as the "Garden City"?',o:['Jabalpur','Ladakh','Jaipur','Bengaluru'],a:3},
+{s:'General Aptitude',q:'Which is the planet nearest to the Sun?',o:['Earth','Mars','Mercury','Saturn'],a:2},
+{s:'General Aptitude',q:'Iron ore is an important ore for __________ .',o:['Copper','Zinc','Steel','Aluminium'],a:2},
+{s:'General Aptitude',q:'Guwahati is situated on the bank of which river?',o:['Kaveri','Hooghly','Brahmaputra','Narmada'],a:2},
+{s:'General Aptitude',q:'The Indian Constitution was adopted on:',o:['9 December 1946','15 August 1947','26 November 1949','26 January 1950'],a:2},
+{s:'General Aptitude',q:'Which country has no river?',o:['Norway','Saudi Arabia','Nepal','Indonesia'],a:1},
 {s:'General Aptitude',q:'The National Institute of Oceanography is headquartered at:',o:['Mumbai','New Delhi','Goa','Hyderabad'],a:2},
-{s:'General Aptitude',q:'Which is the southernmost port in India?',o:['Tuticorin Port','Chennai','Kochi Port','Visakhapatnam Port'],a:0},
-{s:'General Aptitude',q:'Surat is situated on the banks of which river?',o:['Godavari','Tapi','Yamuna','Ganges'],a:1},
-{s:'General Aptitude',q:'Which of the following is a Union Territory?',o:['Lakshadweep','Mizoram','Nagaland','Tamil Nadu'],a:0},
-{s:'General Aptitude',q:'The Digboi oil refinery in India is located in:',o:['Andhra Pradesh','Himachal Pradesh','Uttar Pradesh','Assam'],a:3},
-
-// ── SECTION 3: MATHEMATICS (Q81–100, first 20 of 50) ─────────
 {s:'Mathematics',q:'If A = <code>[[0,3,0],[0,0,3],[0,0,0]]</code>, then A³ is:',o:['4A','12A','27A','81A'],a:2},
-{s:'Mathematics',q:'If A = <code>[[-1,-2,2],[2,1,-2],[2,-2,1]]</code>, then adj(A) is:',o:['A','Aᵀ','3A','3Aᵀ'],a:3},
-{s:'Mathematics',q:'The inverse of a skew-symmetric matrix of odd order:',o:['Is a symmetric matrix','Is a diagonal matrix','Is a skew-symmetric matrix','Does not exist'],a:3},
-{s:'Mathematics',q:'Three points P(2x, x+3), Q(0, x) and R(x+3, x+6) are collinear. The value of x is:',o:['0','2','3','1'],a:3},
+{s:'Mathematics',q:'Three points P(2x,x+3), Q(0,x) and R(x+3,x+6) are collinear. Value of x:',o:['0','2','3','1'],a:3},
 {s:'Mathematics',q:'If AB and BA both exist, then:',o:['A and B are singular','A and B are non-singular','AB need not be equal to BA','AB equals BA'],a:2},
 {s:'Mathematics',q:'If A is a square matrix of order 3 such that A·adj(A) = 10I, then adj(A⁻¹) is equal to:',o:['I','10I','100I','(1/10)I'],a:3},
-{s:'Mathematics',q:'If the determinant of the matrix [[a,h,g],[h,b,f],[g,f,c]] is 0, then ax² + 2hxy + by² + 2gx + 2fy + c = 0 represents:',o:['An ellipse','A parabola','A rectangular hyperbola','A pair of straight lines'],a:3},
-{s:'Mathematics',q:'If R is a relation on the set A = {1, 2, 3} given by R = {(1,1), (2,2), (3,3)}, then R is:',o:['Reflexive only','Symmetric only','Transitive only','An equivalence relation'],a:3},
-{s:'Mathematics',q:'If A = {a, b, c} and B = {−2, −1, 0, 1, 2}, then the number of injections that can be defined from A to B is:',o:['125','243','60','120'],a:2},
-{s:'Mathematics',q:'If f : [2, ∞) → ℝ is defined by f(x) = x² − 4x + 5, then the range of f is:',o:['ℝ','[1, ∞)','[4, ∞)','[5, ∞)'],a:1},
+{s:'Mathematics',q:'If R is a relation on A = {1,2,3} given by R = {(1,1),(2,2),(3,3)}, then R is:',o:['Reflexive only','Symmetric only','Transitive only','An equivalence relation'],a:3},
+{s:'Mathematics',q:'If A = {a,b,c} and B = {-2,-1,0,1,2}, number of injections from A to B is:',o:['125','243','60','120'],a:2},
+{s:'Mathematics',q:'If f:[2,∞)→ℝ is defined by f(x)=x²−4x+5, range of f is:',o:['ℝ','[1,∞)','[4,∞)','[5,∞)'],a:1},
 {s:'Mathematics',q:'The principal value of tan⁻¹(tan(5π/4)) is:',o:['5π/4','π/4','−π/4','5π/3'],a:2},
-{s:'Mathematics',q:'The equation 2cos²x + sin⁴x = 1 has:',o:['No solution','A unique solution','Two solutions','More than two solutions'],a:3},
-{s:'Mathematics',q:'The identity tan⁻¹(3) + tan⁻¹(a) = tan⁻¹((3 + a)/(1 − 3a)) is valid for what value of a?',o:['a ∈ (−∞, 1/3)','a > 1/3','a < 1/3','All real values of a'],a:2},
-{s:'Mathematics',q:'The function f(x) = x|x| at x = 0 is:',o:['Continuous but not differentiable','Differentiable but not continuous','Continuous and differentiable','Neither continuous nor differentiable'],a:2},
-{s:'Mathematics',q:'If x = t² and y = t³, then dy/dx is equal to:',o:['3t²/2t','2t/3t²','3t/2','(3/2)√x'],a:2},
-{s:'Mathematics',q:'The differential of log[log(log(x²))] with respect to x is:',o:['2 / (x · log x² · log(log x²))','1 / (x · log x² · log(log x²))','2 / (x · log x · log(log x))','1 / (x · log x · log(log x))'],a:2},
-{s:'Mathematics',q:"If y = f(x²) and f'(x) = e^√x, then dy/dx is equal to:",o:['2x · e^(2√x)','2x · eˣ','4x · e^(√x)','4x · eˣ'],a:1},
-{s:'Mathematics',q:'A cylinder\'s radius is increasing at 3 cm/s and height decreasing at 4 cm/s. Rate of change of volume when r = 4 cm and h = 6 cm is:',o:['64π cm³/s','144π cm³/s','80π cm³/s','801 cm³/s'],a:2},
-{s:'Mathematics',q:'The function f(x) = tan x − x:',o:['Always increases','Always decreases','Remains constant','Sometimes increases and sometimes decreases'],a:0},
-{s:'Mathematics',q:'If the function f(x) = x² − ax + 5 is strictly increasing on (1, 2), then a lies in the interval:',o:['(2, ∞)','(−∞, 2)','(4, ∞)','(−∞, 4)'],a:1},
-// ── MATHEMATICS continued (Q101–130, Q21–50 of section) ────────
-{s:'Mathematics',q:'The absolute maximum value of the function f(x) = 4x − x² in the interval [0, 4] is:',o:['8','9','6','10'],a:0},
-{s:'Mathematics',q:'The maximum slope of the curve y = −x³ + 3x² + 12x − 5 is:',o:['0','9','12','15'],a:3},
-{s:'Mathematics',q:'The normal at the point (1, 1) on the curve 2y + x² = 3 is:',o:['x + y = 0','x − y = 0','x + y + 1 = 0','x − y = 1'],a:1},
-{s:'Mathematics',q:'∫ dx/(1 + x²) is equal to:',o:['tan(x²) + C','tan x + C','tan⁻¹ x + C','tan⁻¹(2x²) + C'],a:2},
-{s:'Mathematics',q:'∫₀^(π/4) log(1 + tan x) dx is:',o:['log 2','(π/4) log 2','π log 2','4π log 2'],a:1},
-{s:'Mathematics',q:'∫₀^√2 [x²] dx is equal to (where [ ] denotes greatest integer function):',o:['2 − √2','√2 − 1','2(1.5 − √2)','2√2'],a:1},
-{s:'Mathematics',q:'∫ eˣ cot x dx is equal to:',o:['−eˣ tan x + C','eˣ cot x + C','eˣ(cot x − cosec²x) + C','eˣ tan x + C'],a:1},
-{s:'Mathematics',q:'If ∫ f(x) dx = k, then ∫ f(x + 1) dx is equal to:',o:['k − 1 + C','k − 1 − C','k + 1 − C','k + 1 + C'],a:3},
-{s:'Mathematics',q:'The area (in sq. units) of the region bounded by the y-axis, y = sin x, y = cos x and 0 ≤ x ≤ π/2 is:',o:['√2','√2 + 1','√2 − 1','2(√2 − 1)'],a:2},
-{s:'Mathematics',q:'The area (in sq. units) of the region bounded by the x-axis and y = √(16 − x²) is:',o:['8π','20π','16π','256π'],a:0},
-{s:'Mathematics',q:'The solution of the differential equation (1 − x²)(dy/dx) − xy = 1 is:',o:['y√(1 − x²) = sin⁻¹ x + C','x/√(1 − y²) = sin⁻¹ y + C','x sin⁻¹ x = √(1 − x²) + C','x sin⁻¹ x = 1 − y² + C'],a:0},
-{s:'Mathematics',q:'The solution of the differential equation dy/dx = (1 + y²)/(1 + x²) is:',o:['y = tan⁻¹ x + C','x = tan⁻¹ y + C','tan(xy) = C','y − x = C(1 + xy)'],a:3},
-{s:'Mathematics',q:'The order and degree of the differential equation for y = Ax + A³ (A is arbitrary constant) are:',o:['2, 4','1, 3','1, 2','2, 3'],a:1},
-{s:'Mathematics',q:'The area of the triangle whose vertices are A(1, 2, 3), B(2, 3, 4) and C(−2, 1, 0) is:',o:['0','1','2','3'],a:1},
-{s:'Mathematics',q:'The moment of a force about a point is:',o:['r × F','F × r','F · r','r · F'],a:0},
-{s:'Mathematics',q:'The number of unit vectors perpendicular to the vectors a = 2i + j + 2k and b = i + 3j + 2k is:',o:['One','Two','Three','Infinite'],a:1},
-{s:'Mathematics',q:'If a, b and c are unit vectors such that a + b + c = 0, then the value of a·b + a·c + b·c is:',o:['1','1/3','−3/2','2'],a:2},
-{s:'Mathematics',q:'If the lines (y − 2)/(x − 1) = −3/2 and (y − 2)/(x − 3) = k/3 are parallel, then k is equal to:',o:['−10','7','10','17'],a:0},
-{s:'Mathematics',q:'The reflection of the point (a, b, c) on the xy-plane is:',o:['(a, b, 0)','(0, 0, c)','(−a, −b, c)','(a, b, −c)'],a:3},
-{s:'Mathematics',q:'If a line makes angles π/4 and π/3 with the x-axis and y-axis respectively, then the acute angle made by the line with the z-axis is:',o:['π/3','π/4','π/6','5π/12'],a:0},
-{s:'Mathematics',q:'The distance of the point (a, b, c) from the y-axis is:',o:['b','c + b','√(a² + c²)','a² + c²'],a:2},
-{s:'Mathematics',q:'The number of 4-digit numbers greater than 5000 that can be formed out of the digits 3, 4, 5, 6 and 7 (no digit repeated) is:',o:['72','27','70','None of these'],a:0},
-{s:'Mathematics',q:'The number of arrangements of 10 different things taken 4 at a time in which one particular thing always occurs is:',o:['2015','2016','2014','None of these'],a:1},
-{s:'Mathematics',q:'In how many ways can 9 letters be posted in 4 letter boxes?',o:['4⁹','4⁵','3024','126'],a:0},
-{s:'Mathematics',q:'The number of ways in which 8 examination papers can be arranged so that the best and worst papers never come together is:',o:['8! − 2 × 7!','8! − 7!','8!','None of these'],a:0},
-{s:'Mathematics',q:'If P(A) = 0.4, P(A ∪ B) = 0.7 and A and B are mutually exclusive events, then P(B) is:',o:['0.3','0.4','0.5','0.6'],a:0},
-{s:'Mathematics',q:'If A and B are two events such that P(A) = 0.6, P(B) = 0.2 and P(A|B) = 0.5, then P(A\'|B\') is equal to:',o:['1/10','3/10','3/8','6/7'],a:2},
-{s:'Mathematics',q:'A problem in mathematics is given to three students A, B, C and their chances of solving it are 1/2, 1/3 and 1/4 respectively. The probability that the problem is solved is:',o:['3/4','1/2','2/3','5/8'],a:0},
-{s:'Mathematics',q:'Three numbers are chosen at random from 1 to 20. The probability that they are consecutive is:',o:['1/190','1/120','3/190','5/190'],a:2},
-{s:'Mathematics',q:'Which among the following is NOT equal to watt?',o:['joule/second','ampere × volt','(ampere)² × ohm','ampere/volt'],a:3},
-
-// ── SECTION 4: PHYSICS (Q131–180) ──────────────────────────
-{s:'Physics',q:'Which amongst the following is NOT equal to watt?',o:['joule/second','ampere × volt','(ampere)² × ohm','ampere/volt'],a:3},
-{s:'Physics',q:'A body falls from a height h = 200 m. The ratio of distance travelled in each 2 s during t = 0 to t = 6 s of the journey is:',o:['1 : 4 : 9','1 : 2 : 4','1 : 3 : 5','1 : 2 : 3'],a:2},
-{s:'Physics',q:'If two balls are projected at angles 45° and 60° and the maximum heights reached are the same, what is the ratio of their initial velocities?',o:['√2 : √3','√3 : √2','3 : 2','2 : 3'],a:1},
-{s:'Physics',q:'A ball of mass m is moving towards a player with velocity v. If the player stops it, then the impulse applied by the player is:',o:['−mv','+mv','−2mv','+2mv'],a:0},
-{s:'Physics',q:'A block of mass 2 kg is placed on the floor. The coefficient of static friction is 0.4. If a force of 2.8 N is applied on the block parallel to the floor, the force of friction between the block and floor is (g = 10 m/s²):',o:['2.8 N','8 N','2 N','0'],a:0},
-{s:'Physics',q:'A force F = (2i + 3j + 4k) N acting on a body for 4 s produces a displacement d = (3i + 4j + 5k) m. The power used is:',o:['9.5 W','7.5 W','6.5 W','4.5 W'],a:0},
-{s:'Physics',q:'A particle of mass 2 kg is moving along a circular path of radius 1 m. If its angular speed is 2π rad/s, the centripetal force on it is:',o:['4π² N','8π² N','40 N','8π N'],a:1},
-{s:'Physics',q:'In an elastic collision:',o:['Both momentum and kinetic energy are conserved','Only momentum is conserved','Only kinetic energy is conserved','Neither kinetic energy nor momentum is conserved'],a:0},
-{s:'Physics',q:'Two bodies of masses 1 kg and 2 kg are lying in the xy-plane at (−1, 2) and (2, 4) respectively. What are the coordinates of the centre of mass?',o:['(1, 10)','(0, 1)','(1, 10/3)','None of these'],a:3},
-{s:'Physics',q:'A body falling vertically downwards under gravity breaks into two parts of unequal masses. The centre of mass of the two parts taken together shifts horizontally towards:',o:['The heavier piece','The lighter piece','Does not shift horizontally','Depends on the vertical velocity at the time of breaking'],a:2},
-{s:'Physics',q:'The torque of force F = −3i + j + 5k acting at point r = 7i + 3j + k about the origin is:',o:['14i − 38j + 16k','4i + 4j + 6k','−14i + 38j − 16k','−2i + 3j + 5k'],a:0},
-{s:'Physics',q:'If torque is zero, then:',o:['Angular momentum is conserved','Linear momentum is conserved','Energy is conserved','Angular momentum is not conserved'],a:0},
-{s:'Physics',q:'A solid sphere is rotating freely about its symmetry axis in free space. The radius of the sphere is increased keeping its mass the same. Which quantity remains constant?',o:['Rotational kinetic energy','Moment of inertia','Angular velocity','Angular momentum'],a:3},
-{s:'Physics',q:'If the Earth suddenly shrinks (without changing mass) to half of its present radius, then acceleration due to gravity will be:',o:['9g/2','4g','g/4','2g'],a:1},
-{s:'Physics',q:'A body has a weight of 72 N. When it is taken to a height h = R (radius of Earth), it would weigh:',o:['72 N','36 N','18 N','0'],a:2},
-{s:'Physics',q:'The escape velocity for a body of mass 1 kg from the Earth\'s surface is 11.2 km/s. The escape velocity for a body of mass 100 kg would be:',o:['11.2 × 10² km/s','112 km/s','11.2 km/s','11.2 × 10⁻² km/s'],a:2},
-{s:'Physics',q:'A particle is moving with constant angular velocity along the circumference of a circle. Which of the following statements is true?',o:['The particle executes SHM','The projection of the particle on any one of the diameters executes SHM','The projection of the particle on any of the diameters executes SHM','None of the above'],a:2},
-{s:'Physics',q:'A body is executing SHM with an amplitude of 0.1 m. Its velocity while passing through the mean position is 3 m/s. Its frequency (in Hz) is:',o:['15π','15/π','30π','25π'],a:1},
-{s:'Physics',q:'A particle of mass 0.10 kg executes SHM with an amplitude 0.05 m and frequency 20 vibrations/s. Its energy of oscillation is:',o:['2 J','4 J','1 J','0'],a:0},
-{s:'Physics',q:'Two wires of the same material and length but diameter in the ratio 1 : 2 are stretched by the same force. The potential energy per unit volume for the two wires when stretched will be in the ratio:',o:['16 : 1','4 : 1','2 : 1','1 : 1'],a:0},
-{s:'Physics',q:'If Re is the Reynolds number, then which of the following is INCORRECT?',o:['For Re < 1000, flow is laminar','For 1000 < Re < 2000, flow is steady','For Re > 2000, flow is turbulent','All are incorrect'],a:1},
-{s:'Physics',q:'The ratio of the terminal velocities of two drops of radii R and R/2 is:',o:['2','1','1/2','4'],a:3},
-{s:'Physics',q:'A gas has volume V and pressure p. The total translational kinetic energy of all the molecules of the gas is:',o:['(3/2)pV only if the gas is monatomic','(3/2)pV only if the gas is diatomic','(3/2)pV in all cases','None of the above'],a:2},
-{s:'Physics',q:'If a Carnot engine functions at source temperature 127°C and sink temperature 87°C, what is its efficiency?',o:['10%','25%','40%','50%'],a:0},
-{s:'Physics',q:'A string of length 1 m has the mass per unit length 0.1 g/cm. The fundamental frequency of vibration under a tension of 400 N is:',o:['400 Hz','100 Hz','50 Hz','200 Hz'],a:1},
-{s:'Physics',q:'The electric dipole moment of an electron and a proton 4.3 nm apart is:',o:['6.8 × 10⁻²⁸ C·m','2.56 × 10⁻²⁹ C²/m','3.72 × 10⁻¹⁴ C/m','11 × 10⁻⁴⁶ C²/m'],a:0},
-{s:'Physics',q:'A charge Q is enclosed by a Gaussian spherical surface of radius R. If the radius is doubled, then the outward electric flux will:',o:['Be reduced to half','Remain the same','Be doubled','Increase four times'],a:1},
-{s:'Physics',q:'The diameter of a hollow metallic sphere is 60 cm and the sphere carries a charge of 500 μC. The potential at a distance of 100 cm from the centre of the sphere will be:',o:['6 × 10⁷ V','7 × 10⁶ V','4.5 × 10⁶ V','5 × 10⁶ V'],a:2},
-{s:'Physics',q:'Identify the WRONG statement regarding electrical potential energy:',o:['PE of two protons increases if their separation decreases','PE of a proton–electron system increases if their separation decreases','PE of a proton–electron system increases if their separation increases','PE of two electrons increases if their separation decreases'],a:1},
-{s:'Physics',q:'The potentials of two plates of a capacitor are +10 V and −10 V. The charge on one of the plates is 40 C. The capacitance of the capacitor is:',o:['2 F','4 F','0.5 F','0.25 F'],a:0},
-{s:'Physics',q:'A current of 2 A passes through a cell of emf 1.5 V having an internal resistance of 0.15 Ω. The potential difference across the ends of the cell will be:',o:['1.35 V','1.50 V','1.00 V','1.20 V'],a:3},
-{s:'Physics',q:'Some electric bulbs are connected in series across a 220 V supply. If one bulb is fused, then remaining bulbs are connected again in series across the same supply. The illumination in the room will:',o:['Increase','Decrease','Remain the same','Not be continuous'],a:0},
-{s:'Physics',q:'The current through a wire is I = 3t² + 2t + 5. The charge flowing through the cross-section in the time interval t = 0 to t = 2 s is:',o:['22 C','20 C','18 C','5 C'],a:0},
-{s:'Physics',q:'Two ions having masses in the ratio 1:1 and charges in the ratio 1:2 are projected perpendicular to a magnetic field with speeds in the ratio 2:3. The ratio of radii of their circular paths is:',o:['4 : 3','2 : 3','3 : 1','1 : 4'],a:0},
-{s:'Physics',q:'To increase the sensitivity of a moving coil galvanometer, one should decrease:',o:['The strength of its magnet','The torsional constant of its suspension','The number of turns in its coil','The area of its coil'],a:1},
-{s:'Physics',q:'Two pure inductors each of self-inductance L are connected in parallel but are well separated from each other. The total inductance is:',o:['2L','L','L/2','L/4'],a:2},
-{s:'Physics',q:'A current varying at the rate of 3 A/s in a coil generates an emf of 8 mV in a nearby coil. The mutual inductance of the two coils is:',o:['2.66 mH','2.66 × 10⁻³ mH','2.66 H','0.266 H'],a:0},
-{s:'Physics',q:'The output of a step-down transformer is measured to be 24 V when connected to a 12 W light bulb. The value of the peak current is:',o:['(1/2) A','(√2/2) A','2 A','√2 A'],a:3},
-{s:'Physics',q:'The ratio of amplitude of magnetic field to the amplitude of electric field for an electromagnetic wave propagating in vacuum is equal to:',o:['The speed of light in vacuum','Reciprocal of the speed of light in vacuum','The ratio of magnetic permeability to electric susceptibility of vacuum','Unity'],a:1},
-{s:'Physics',q:'An object is placed at 10 cm from a lens and a real image is formed with magnification of 0.5. Then the lens is:',o:['Concave with focal length 10/3 cm','Convex with focal length 10/3 cm','Concave with focal length 10 cm','Convex with focal length 10 cm'],a:1},
-{s:'Physics',q:"In Young's double slit experiment, green light (λ = 5461 Å) is used and 60 fringes were seen. Now sodium light (λ = 5890 Å) is used. The number of fringes observed is:",o:['40','60','50','55'],a:3},
-{s:'Physics',q:'The work functions for Al, K and Pt are 4.28 eV, 2.30 eV and 5.65 eV respectively. Their threshold frequencies would be in the order:',o:['Pt > Al > K','Al > Pt > K','K > Al > Pt','Al > K > Pt'],a:0},
-{s:'Physics',q:'In which of the following transitions will the wavelength be minimum?',o:['n = 5 to n = 4','n = 4 to n = 3','n = 3 to n = 2','n = 2 to n = 1'],a:3},
-{s:'Physics',q:'In a Rutherford scattering experiment, when a projectile of charge Z₁ and mass M₁ approaches a target nucleus of charge Z₂ and mass M₂, the energy of the projectile is:',o:['Directly proportional to M₁ × M₂','Directly proportional to Z₁ × Z₂','Directly proportional to Z₁','Directly proportional to M₂'],a:1},
-{s:'Physics',q:'The mass defect in a particular nuclear reaction is 0.3 g. The amount of energy liberated in kilowatt-hours is (c = 3 × 10⁸ m/s):',o:['1.5 × 10⁶','2.5 × 10⁶','3 × 10⁶','7.5 × 10⁶'],a:3},
-{s:'Physics',q:'Intrinsic semiconductor is electrically neutral. Extrinsic semiconductor having a large number of current carriers would be:',o:['Positively charged','Negatively charged','Positively or negatively charged depending upon the type of impurity','Electrically neutral'],a:3},
-{s:'Physics',q:'Select the correct statement:',o:['In a full wave rectifier, two diodes work alternately','In a full wave rectifier, two diodes work simultaneously','The efficiency of full wave and half wave rectifiers is the same','The full wave rectifier is bi-directional'],a:0},
-{s:'Physics',q:'A circular coil of 20 turns and radius 10 cm is placed in a uniform magnetic field of 0.10 T normal to the plane of the coil. If the current in the coil is 5 A, then the torque acting on the coil will be:',o:['31.4 N·m','3.14 N·m','0.314 N·m','0'],a:2},
-{s:'Physics',q:'Two solid conductors are made of the same material and have the same length and resistance. One has a circular cross-section of area A₁ and the other a square cross-section of area A₂. The ratio A₁/A₂ is:',o:['1.5','1','0.8','2'],a:1},
-{s:'Physics',q:'In a certain region of space with volume 0.2 m³, the electric potential is found to be 5 V throughout. The magnitude of the electric field in this region is:',o:['0.5 N/C','1 N/C','5 N/C','0'],a:3},
-
-// ── SECTION 5: CHEMISTRY (Q181–200) ────────────────────────
-{s:'Chemistry',q:'The pKa of an acid and pKb of a base are 4.28 and 4.27 respectively. The pH of the corresponding salt formed is:',o:['7.050','6.995','11.775','7.005'],a:3},
+{s:'Mathematics',q:'The identity tan⁻¹(3)+tan⁻¹(a)=tan⁻¹((3+a)/(1−3a)) is valid for:',o:['a∈(−∞,1/3)','a>1/3','a<1/3','All real values'],a:2},
+{s:'Mathematics',q:'The function f(x)=x|x| at x=0 is:',o:['Continuous but not differentiable','Differentiable but not continuous','Continuous and differentiable','Neither'],a:2},
+{s:'Mathematics',q:'If x=t² and y=t³, then dy/dx is equal to:',o:['3t²/2t','2t/3t²','3t/2','(3/2)√x'],a:2},
+{s:'Mathematics',q:'A cylinder\'s radius increasing at 3 cm/s, height decreasing at 4 cm/s. Rate of change of volume when r=4, h=6:',o:['64π cm³/s','144π cm³/s','80π cm³/s','801 cm³/s'],a:2},
+{s:'Mathematics',q:'The function f(x)=tan x−x:',o:['Always increases','Always decreases','Remains constant','Sometimes increases and sometimes decreases'],a:0},
+{s:'Mathematics',q:'If f(x)=x²−ax+5 is strictly increasing on (1,2), then a lies in:',o:['(2,∞)','(−∞,2)','(4,∞)','(−∞,4)'],a:1},
+{s:'Mathematics',q:'The absolute maximum of f(x)=4x−x² in [0,4] is:',o:['8','9','6','10'],a:0},
+{s:'Mathematics',q:'The maximum slope of y=−x³+3x²+12x−5 is:',o:['0','9','12','15'],a:3},
+{s:'Mathematics',q:'The normal at point (1,1) on 2y+x²=3 is:',o:['x+y=0','x−y=0','x+y+1=0','x−y=1'],a:1},
+{s:'Mathematics',q:'∫ dx/(1+x²) is equal to:',o:['tan(x²)+C','tan x+C','tan⁻¹x+C','tan⁻¹(2x²)+C'],a:2},
+{s:'Mathematics',q:'∫₀^(π/4) log(1+tan x) dx is:',o:['log 2','(π/4)log 2','π log 2','4π log 2'],a:1},
+{s:'Mathematics',q:'The area bounded by x-axis and y=√(16−x²) is (sq.units):',o:['8π','20π','16π','256π'],a:0},
+{s:'Mathematics',q:'The solution of dy/dx=(1+y²)/(1+x²) is:',o:['y=tan⁻¹x+C','x=tan⁻¹y+C','tan(xy)=C','y−x=C(1+xy)'],a:3},
+{s:'Mathematics',q:'Order and degree of y=Ax+A³ (A arbitrary):',o:['2,4','1,3','1,2','2,3'],a:1},
+{s:'Mathematics',q:'The moment of a force about a point is:',o:['r×F','F×r','F·r','r·F'],a:0},
+{s:'Mathematics',q:'If a+b+c=0 are unit vectors, then a·b+a·c+b·c:',o:['1','1/3','−3/2','2'],a:2},
+{s:'Mathematics',q:'The reflection of point (a,b,c) on xy-plane is:',o:['(a,b,0)','(0,0,c)','(−a,−b,c)','(a,b,−c)'],a:3},
+{s:'Mathematics',q:'Distance of (a,b,c) from y-axis is:',o:['b','c+b','√(a²+c²)','a²+c²'],a:2},
+{s:'Mathematics',q:'4-digit numbers > 5000 from digits 3,4,5,6,7 (no repeat):',o:['72','27','70','None'],a:0},
+{s:'Mathematics',q:'If P(A)=0.4, P(B)=0.3, P(A∩B)=0.2, then P(A∪B):',o:['0.5','0.6','0.7','0.9'],a:0},
+{s:'Mathematics',q:'The number of ways to arrange letters of MISSISSIPPI:',o:['34650','7920','11880','None of these'],a:0},
+{s:'Mathematics',q:'In a GP, if 4th term is 3 and 7th term is 81, common ratio is:',o:['2','3','4','6'],a:1},
+{s:'Mathematics',q:'The variance of 2,4,6,8,10 is:',o:['8','6','4','2'],a:0},
+{s:'Mathematics',q:'∫eˣ(x+1)dx equals:',o:['xeˣ+C','eˣ+C','xeˣ−eˣ+C','xeˣ+eˣ+C'],a:0},
+{s:'Mathematics',q:'The number of solutions of sin x + cos x = √2 in [0,2π]:',o:['0','1','2','4'],a:1},
+{s:'Mathematics',q:'If y = sin⁻¹(2x/(1+x²)), dy/dx is:',o:['2/(1+x²)','1/(1+x²)','−2/(1+x²)','2/(1−x²)'],a:0},
+{s:'Mathematics',q:'The equation of tangent to y=x² at x=1 is:',o:['y=2x−1','y=x+1','y=2x+1','y=x−1'],a:0},
+{s:'Mathematics',q:'lim(x→0) (sin 3x)/x equals:',o:['0','1','3','∞'],a:2},
+{s:'Mathematics',q:'The area between y=x² and y=x is (sq.units):',o:['1/6','1/3','1/2','1'],a:0},
+{s:'Mathematics',q:'If A is symmetric, A+Aᵀ is:',o:['Skew-symmetric','Symmetric','Identity','Zero matrix'],a:1},
+{s:'Mathematics',q:'The probability that A speaks truth is 4/5, B speaks truth is 3/4. P(both agree) when asked a fact:',o:['3/5','7/20','3/20','12/20'],a:0},
+{s:'Mathematics',q:'∫₀^π sin x dx equals:',o:['0','1','2','π'],a:2},
+{s:'Mathematics',q:'The geometric mean of 2 and 8 is:',o:['4','5','6','10'],a:0},
+{s:'Mathematics',q:'Number of diagonals in a hexagon:',o:['6','9','12','15'],a:1},
+{s:'Mathematics',q:'The harmonic mean of 1/3 and 1/5 is:',o:['2/15','4/15','8/15','1/4'],a:1},
+{s:'Mathematics',q:'If |A| = 5 for a 2×2 matrix A, then |2A| is:',o:['10','20','25','40'],a:1},
+{s:'Mathematics',q:'The angle between vectors a=i+j and b=j+k is:',o:['π/4','π/3','π/6','π/2'],a:1},
+{s:'Mathematics',q:'d/dx(xˣ) is:',o:['xˣ','xˣ ln x','xˣ(1+ln x)','xˣ⁻¹'],a:2},
+{s:'Mathematics',q:'The integrating factor of dy/dx + y = eˣ is:',o:['eˣ','e⁻ˣ','1','x'],a:0},
+{s:'Mathematics',q:'The distance between planes 2x+3y+4z=5 and 4x+6y+8z=12 is:',o:['√29/2','2/√29','1/√29','None'],a:0},
+{s:'Mathematics',q:'How many 4-letter words from EQUATION (without repetition)?',o:['40320','1680','840','2520'],a:1},
+{s:'Physics',q:'A body moves with velocity v=2t² m/s. The acceleration at t=3s is:',o:['6 m/s²','9 m/s²','12 m/s²','18 m/s²'],a:2},
+{s:'Physics',q:'The moment of inertia of a solid cylinder about its axis is:',o:['MR²','MR²/2','2MR²/5','MR²/3'],a:1},
+{s:'Physics',q:'A projectile is launched at 45° with speed 20 m/s. Max range is (g=10):',o:['20 m','40 m','80 m','100 m'],a:1},
+{s:'Physics',q:'The escape velocity from Earth\'s surface is approximately:',o:['7.9 km/s','11.2 km/s','9.8 km/s','16 km/s'],a:1},
+{s:'Physics',q:'In Young\'s double slit with green light (λ=5461Å), 60 fringes seen. With sodium light (λ=5890Å):',o:['40','60','50','55'],a:3},
+{s:'Physics',q:'Work functions for Al, K and Pt are 4.28, 2.30 and 5.65 eV. Threshold frequencies order:',o:['Pt>Al>K','Al>Pt>K','K>Al>Pt','Al>K>Pt'],a:0},
+{s:'Physics',q:'In which transition will wavelength be minimum?',o:['n=5 to n=4','n=4 to n=3','n=3 to n=2','n=2 to n=1'],a:3},
+{s:'Physics',q:'Mass defect in a nuclear reaction is 0.3 g. Energy liberated in kWh (c=3×10⁸ m/s):',o:['1.5×10⁶','2.5×10⁶','3×10⁶','7.5×10⁶'],a:3},
+{s:'Physics',q:'A circular coil of 20 turns, radius 10 cm, in 0.10 T field, current 5 A. Torque acting:',o:['31.4 N·m','3.14 N·m','0.314 N·m','0'],a:2},
+{s:'Physics',q:'In a region with volume 0.2 m³, electric potential is 5V throughout. Electric field magnitude:',o:['0.5 N/C','1 N/C','5 N/C','0'],a:3},
+{s:'Physics',q:'A lens forms real image of magnification 0.5 at 10 cm. Lens type and focal length:',o:['Concave, 10/3 cm','Convex, 10/3 cm','Concave, 10 cm','Convex, 10 cm'],a:1},
+{s:'Physics',q:'Select correct statement about full wave rectifier:',o:['Two diodes work alternately','Two diodes work simultaneously','Efficiency same as half wave','Full wave rectifier is bi-directional'],a:0},
+{s:'Physics',q:'Two solid conductors same material, length, resistance. One circular area A₁, one square area A₂. Ratio A₁/A₂:',o:['1.5','1','0.8','2'],a:1},
+{s:'Physics',q:'A 2 kg object moving at 3 m/s collides elastically with stationary 2 kg object. Final velocities:',o:['Both 1.5 m/s','First stops, second 3 m/s','Both stop','First 3 m/s, second stops'],a:1},
+{s:'Physics',q:'Intrinsic semiconductor is electrically neutral. Extrinsic semiconductor with many carriers is:',o:['Positively charged','Negatively charged','Positively or negatively depending on impurity','Electrically neutral'],a:3},
+{s:'Physics',q:'A wire of resistance R is stretched to double its length. New resistance is:',o:['R/2','R','2R','4R'],a:3},
+{s:'Physics',q:'For an ideal gas undergoing isothermal expansion, which is true?',o:['Temperature increases','Internal energy decreases','Work done = heat absorbed','Pressure increases'],a:2},
+{s:'Physics',q:'The SI unit of magnetic flux is:',o:['Tesla','Weber','Ampere','Henry'],a:1},
+{s:'Physics',q:'A convex lens forms a virtual image when the object is:',o:['Beyond 2F','At 2F','Between F and 2F','Between F and lens'],a:3},
+{s:'Physics',q:'Which phenomenon proves transverse nature of light?',o:['Diffraction','Refraction','Polarisation','Interference'],a:2},
+{s:'Physics',q:'The velocity of sound in air at 0°C is 332 m/s. At 4°C it is approximately:',o:['332 m/s','334 m/s','336 m/s','340 m/s'],a:1},
+{s:'Physics',q:'In Rutherford\'s alpha scattering, most particles:',o:['Were deflected at large angles','Were absorbed','Passed straight through','Were reflected back'],a:2},
+{s:'Physics',q:'The de Broglie wavelength of an electron accelerated through 100V is approximately:',o:['1.23 Å','0.123 nm','12.3 Å','1.23 nm'],a:0},
+{s:'Physics',q:'Kirchhoff\'s current law is based on:',o:['Conservation of charge','Conservation of energy','Conservation of momentum','Conservation of mass'],a:0},
+{s:'Physics',q:'The time period of a simple pendulum is doubled when:',o:['Length is doubled','Length is quadrupled','Mass is doubled','Amplitude is doubled'],a:1},
+{s:'Physics',q:'Stefan-Boltzmann law states radiated power is proportional to:',o:['T','T²','T³','T⁴'],a:3},
+{s:'Physics',q:'A capacitor is fully charged, then disconnected from battery. Distance between plates doubled. Energy stored:',o:['Halved','Doubled','Same','Quadrupled'],a:1},
+{s:'Chemistry',q:'The pKa of an acid and pKb of a base are 4.28 and 4.27 respectively. pH of salt formed:',o:['7.050','6.995','11.775','7.005'],a:3},
 {s:'Chemistry',q:'In Apollo spacecraft, the fuel cell used was:',o:['H₂–O₂ fuel cell','CH₄–O₂ fuel cell','Both A and B','None'],a:0},
-{s:'Chemistry',q:'Formaldehyde reacts with which one of the following compounds to give urotropine?',o:['Ammonium chloride','Ammonia','Methylamine','Ammonium hydroxide'],a:1},
-{s:'Chemistry',q:"Glucose is oxidised into gluconic acid by Tollens' reagent. This can be identified through:",o:['Formation of red precipitate','Formation of yellow precipitate','Evolution of a gas','Formation of silver mirror'],a:3},
-{s:'Chemistry',q:'Chloroform on decomposition in the presence of air or light gives HCl along with a poisonous gas having the chemical formula:',o:['CO','COCl₃','COCl₂','CH₃NC'],a:2},
-{s:'Chemistry',q:'Which shows the correct order of increasing boiling point?',o:['Propanal < methoxymethane < propan-1-ol','Methoxymethane < propan-1-ol < propanal','Propanal < propan-1-ol < methoxymethane','Methoxymethane < propanal < propan-1-ol'],a:3},
+{s:'Chemistry',q:'Formaldehyde reacts with which compound to give urotropine?',o:['Ammonium chloride','Ammonia','Methylamine','Ammonium hydroxide'],a:1},
+{s:'Chemistry',q:"Glucose is oxidised into gluconic acid by Tollens' reagent. Identified through:",o:['Formation of red precipitate','Formation of yellow precipitate','Evolution of a gas','Formation of silver mirror'],a:3},
+{s:'Chemistry',q:'Chloroform on decomposition in air/light gives HCl along with:',o:['CO','COCl₃','COCl₂','CH₃NC'],a:2},
+{s:'Chemistry',q:'Correct order of increasing boiling point:',o:['Propanal < methoxymethane < propan-1-ol','Methoxymethane < propan-1-ol < propanal','Propanal < propan-1-ol < methoxymethane','Methoxymethane < propanal < propan-1-ol'],a:3},
 {s:'Chemistry',q:'Nitrogenous bases found in RNA are:',o:['Cytosine, Adenine, Thymine, Guanine','Cytosine, Adenine, Uracil, Guanine','Cytosine, Adenine, Thymine, Uracil','Cytosine, Adenine, Guanine, Uracil'],a:1},
 {s:'Chemistry',q:'Haloalkanes react with AgCN to form:',o:['Alkyl cyanide','Alkyl aryl cyanide','Alkyl isocyanide','Alkyl aryl isocyanide'],a:2},
-{s:'Chemistry',q:'32 g of methanol contains as many molecules as contained in:',o:['32 g of oxygen gas','32 g of sulphuric acid','32 g of water','32 g of ammonia'],a:0},
-{s:'Chemistry',q:'The correct value of wavelength of a light wave having period of 2.0 × 10⁻¹⁰ s is:',o:['6.0 × 10⁻⁴ m','6.0 × 10⁻¹ m','6.0 × 10⁻² m','6.0 × 10⁻⁵ m'],a:2},
-{s:'Chemistry',q:'Among the species K⁺, Cl⁻, S²⁻, Ca²⁺, which has the largest size?',o:['K⁺','Cl⁻','S²⁻','Ca²⁺'],a:2},
-{s:'Chemistry',q:'O₂⁻ is:',o:['Diamagnetic and having bond order 1','Paramagnetic and having bond order 1.5','Paramagnetic and having bond order 2','Paramagnetic and having bond order 2.5'],a:1},
-{s:'Chemistry',q:'The value of Kc for the reaction 2NOCl(g) ⇌ 2NO(g) + Cl₂(g) is 1.8 × 10⁻² at 500 K. Then Kp is:',o:['2.15 × 10⁻⁴ mol/L','8.3 × 10⁴ mol/L','0.43 × 10⁴ mol/L','4.3 × 10⁻⁴ mol/L'],a:3},
+{s:'Chemistry',q:'32 g of methanol contains same molecules as:',o:['32 g of oxygen gas','32 g of sulphuric acid','32 g of water','32 g of ammonia'],a:0},
+{s:'Chemistry',q:'Among K⁺, Cl⁻, S²⁻, Ca²⁺, which has largest size?',o:['K⁺','Cl⁻','S²⁻','Ca²⁺'],a:2},
+{s:'Chemistry',q:'O₂⁻ is:',o:['Diamagnetic, bond order 1','Paramagnetic, bond order 1.5','Paramagnetic, bond order 2','Paramagnetic, bond order 2.5'],a:1},
+{s:'Chemistry',q:'Kc for 2NOCl(g)⇌2NO(g)+Cl₂(g) is 1.8×10⁻² at 500K. Then Kp is:',o:['2.15×10⁻⁴','8.3×10⁴','0.43×10⁴','4.3×10⁻⁴'],a:3},
 {s:'Chemistry',q:'The conjugate base of NH₃ is:',o:['BH⁺','BH₂⁻','N₂H₄','NH₂⁻'],a:3},
-{s:'Chemistry',q:'The spin-only magnetic moment of M²⁺ ion (Z = 28) is:',o:['3.87 B.M.','0 B.M.','2.83 B.M.','5.37 B.M.'],a:2},
-{s:'Chemistry',q:'The IUPAC name of [Co(NH₃)₅Cl]Cl₂ is:',o:['Chloridopentaamminecobalt(III) chloride','Pentaamminechloridocobaltate(III) chloride','Pentaamminechloridocobalt(III) chloride','Pentaamminechloridocobalt(III) dichloride'],a:2},
-{s:'Chemistry',q:'The number of coordinated water molecules in CuSO₄·5H₂O is:',o:['1','2','3','4'],a:3},
+{s:'Chemistry',q:'The spin-only magnetic moment of M²⁺ ion (Z=28) is:',o:['3.87 B.M.','0 B.M.','2.83 B.M.','5.37 B.M.'],a:2},
+{s:'Chemistry',q:'IUPAC name of [Co(NH₃)₅Cl]Cl₂ is:',o:['Chloridopentaamminecobalt(III) chloride','Pentaamminechloridocobaltate(III) chloride','Pentaamminechloridocobalt(III) chloride','Pentaamminechloridocobalt(III) dichloride'],a:2},
+{s:'Chemistry',q:'Coordinated water molecules in CuSO₄·5H₂O:',o:['1','2','3','4'],a:3},
 {s:'Chemistry',q:'On hydrogenation, ethene gives:',o:['Ethyne','Ethane','Methane','Butane'],a:1},
-{s:'Chemistry',q:'The value of Van\'t Hoff factor (i) in the case of dissociation of AlCl₃ is:',o:['2','3','4','8'],a:2},
-{s:'Chemistry',q:'The quantity of electricity needed to reduce 1 mol of Cr₂O₇²⁻ is:',o:['2F','4F','6F','12F'],a:2},
-]
+{s:'Chemistry',q:"Van't Hoff factor (i) for AlCl₃ dissociation:",o:['2','3','4','8'],a:2},
+{s:'Chemistry',q:'Electricity needed to reduce 1 mol of Cr₂O₇²⁻:',o:['2F','4F','6F','12F'],a:2},
+{s:'Chemistry',q:'The lightest element in the periodic table is:',o:['Helium','Hydrogen','Lithium','Carbon'],a:1},
+{s:'Chemistry',q:'Which of the following is a Lewis acid?',o:['NH₃','H₂O','BF₃','NaOH'],a:2},
+  ]
+},
+{
+  id:'nda_eng_analogy',
+  title:'ENG & ANALOGY',
+  subtitle:'NDA Mock · English & Reasoning · 200 Qs',
+  duration:120*60,
+  marking:{correct:1,wrong:-0.25},
+  sections:{Tenses:25,'Subject-Verb':25,'Active-Passive':25,Conditionals:25,'Verbal Analogy':25,'Number Analogy':25,'Coding-Decoding':25,'Number Decoding':25},
+  questions:[
+// ── PART I: TENSES ──
+{s:'Tenses',q:'By this time tomorrow, the troops ___ their position.',o:['will have secured','will secure','have secured','secured'],a:0},
+{s:'Tenses',q:'He ___ in this academy since 2020.',o:['is studying','studies','was studying','has been studying'],a:3},
+{s:'Tenses',q:'I ___ my assignment before the commanding officer arrived.',o:['finish','have finished','finished','had finished'],a:3},
+{s:'Tenses',q:'When I saw him, he ___ the map.',o:['was analyzing','is analyzing','analyzed','analyzes'],a:0},
+{s:'Tenses',q:'If she works hard, she ___ the entrance exam.',o:['cleared','would clear','clears','will clear'],a:3},
+{s:'Tenses',q:'The convoy ___ before we reached the base.',o:['had left','was leaving','left','has left'],a:0},
+{s:'Tenses',q:'They ___ a new drill next month.',o:['are starting','have started','starts','started'],a:0},
+{s:'Tenses',q:'We ___ the terrain for many years.',o:['know','knew','have known','are knowing'],a:2},
+{s:'Tenses',q:'Water ___ at 100 degrees Celsius.',o:['is boiling','boiled','will boil','boils'],a:3},
+{s:'Tenses',q:'He always ___ for a run on Sundays.',o:['gone','is going','go','goes'],a:3},
+{s:'Tenses',q:'I ___ a report when the alarm sounded.',o:['wrote','was writing','am writing','have written'],a:1},
+{s:'Tenses',q:'It ___ raining heavily since last night.',o:['was','is','has been','had been'],a:2},
+{s:'Tenses',q:'The cadet ___ the obstacle course by the end of this week.',o:['will have completed','completes','will complete','completed'],a:0},
+{s:'Tenses',q:'The Earth ___ round the Sun.',o:['moved','is moving','moves','has moved'],a:2},
+{s:'Tenses',q:'I wish I ___ the commander.',o:['am','was','were','have been'],a:2},
+{s:'Tenses',q:'After he ___ his breakfast, he went to the parade ground.',o:['had eaten','has eaten','ate','eats'],a:0},
+{s:'Tenses',q:'Look! The squad ___ across the field.',o:['is running','was running','runs','ran'],a:0},
+{s:'Tenses',q:'The patrol team ___ out five minutes ago.',o:['went','goes','had gone','has gone'],a:0},
+{s:'Tenses',q:'My father ___ for a walk every morning.',o:['is going','went','has gone','goes'],a:3},
+{s:'Tenses',q:'We ___ the mock drill tomorrow.',o:['conducted','have conducted','shall conduct','conducting'],a:2},
+{s:'Tenses',q:'He ___ sleeping for two hours when the siren blew.',o:['was','had been','has been','will be'],a:1},
+{s:'Tenses',q:'I ___ the academy last year.',o:['visit','had visited','have visited','visited'],a:3},
+{s:'Tenses',q:'They ___ to the border next week.',o:['goes','went','are going','have gone'],a:2},
+{s:'Tenses',q:'As soon as the officer entered, the cadets ___ up.',o:['stood','have stood','stand','are standing'],a:0},
+{s:'Tenses',q:'He ___ from injuries since Monday.',o:['has been suffering','is suffering','was suffering','suffered'],a:0},
+// ── PART II: SUBJECT-VERB AGREEMENT ──
+{s:'Subject-Verb',q:'Neither of the recruits ___ eligible for the mission.',o:['have been','are','were','is'],a:3},
+{s:'Subject-Verb',q:'The commander, along with his soldiers, ___ advancing towards the hill.',o:['is','were','are','have'],a:0},
+{s:'Subject-Verb',q:'Bread and butter ___ his daily breakfast at the camp.',o:['have been','are','were','is'],a:3},
+{s:'Subject-Verb',q:'Every officer and soldier ___ required to report at 0600 hrs.',o:['are','were','is','have'],a:2},
+{s:'Subject-Verb',q:'A number of cadets ___ present today.',o:['was','are','is','has'],a:1},
+{s:'Subject-Verb',q:'The number of casualties ___ decreasing.',o:['were','have been','is','are'],a:2},
+{s:'Subject-Verb',q:'Either the captain or his lieutenants ___ at fault.',o:['was','has','are','is'],a:2},
+{s:'Subject-Verb',q:'Not only the major but also the troops ___ attending the briefing.',o:['was','are','is','has'],a:1},
+{s:'Subject-Verb',q:'Fifty miles ___ a long distance to march.',o:['is','are','were','have been'],a:0},
+{s:'Subject-Verb',q:'One of my friends ___ serving in the navy.',o:['have','are','were','is'],a:3},
+{s:'Subject-Verb',q:'The jury ___ divided in their verdict.',o:['is','were','was','has'],a:1},
+{s:'Subject-Verb',q:'Mathematics ___ an essential subject for NDA.',o:['is','have','are','were'],a:0},
+{s:'Subject-Verb',q:'The quality of the rations ___ not up to the mark.',o:['was','have been','are','were'],a:0},
+{s:'Subject-Verb',q:'His uniform trousers ___ torn during the drill.',o:['is','were','has','was'],a:1},
+{s:'Subject-Verb',q:'Much of the intelligence ___ been verified.',o:['have','are','were','has'],a:3},
+{s:'Subject-Verb',q:'Several of the applicants ___ called for the SSB interview.',o:['were','was','has','is'],a:0},
+{s:'Subject-Verb',q:'Each of the candidates ___ an interview call letter.',o:['has','were','are','have'],a:0},
+{s:'Subject-Verb',q:'The United States ___ a powerful military force.',o:['have','were','has','are'],a:2},
+{s:'Subject-Verb',q:'A pair of combat boots ___ lying near the tent.',o:['have','were','are','was'],a:3},
+{s:'Subject-Verb',q:'More than one spy ___ captured at the border.',o:['were','have','are','was'],a:3},
+{s:'Subject-Verb',q:'The news from the frontline ___ brought by a messenger.',o:['were','was','have','are'],a:1},
+{s:'Subject-Verb',q:'Ten thousand rupees ___ a large sum for a private.',o:['are','were','have','is'],a:3},
+{s:'Subject-Verb',q:'Many a soldier ___ sacrificed his life for the country.',o:['has','were','have','are'],a:0},
+{s:'Subject-Verb',q:'None of the assigned work ___ completed on time.',o:['are','have','was','were'],a:2},
+{s:'Subject-Verb',q:'The cavalry ___ charging across the open field.',o:['is','has','are','was'],a:2},
+// ── PART III: ACTIVE & PASSIVE VOICE ──
+{s:'Active-Passive',q:"Identify the correct passive: 'They are building a bunker.'",o:['A bunker has been built by them.','A bunker was built by them.','A bunker is built by them.','A bunker is being built by them.'],a:3},
+{s:'Active-Passive',q:"Identify the correct active: 'The orders were issued by the General.'",o:['The General is issuing the orders.','The General issues the orders.','The General issued the orders.','The General had issued the orders.'],a:2},
+{s:'Active-Passive',q:"Identify the correct passive: 'Who broke the perimeter?'",o:['By whom is the perimeter broken?','Who had broken the perimeter?','Who was the perimeter broken?','By whom was the perimeter broken?'],a:3},
+{s:'Active-Passive',q:"Identify the correct passive: 'Please secure the gate.'",o:['The gate has been secured.','The gate is secured.','You secure the gate.','Let the gate be secured.'],a:3},
+{s:'Active-Passive',q:"Identify the correct active: 'The infiltrator has been caught by the patrol.'",o:['The patrol catches the infiltrator.','The patrol caught the infiltrator.','The patrol had caught the infiltrator.','The patrol has caught the infiltrator.'],a:3},
+{s:'Active-Passive',q:"Identify the correct passive: 'I know the code.'",o:['The code has been known to me.','The code was known by me.','The code is known to me.','The code is known by me.'],a:2},
+{s:'Active-Passive',q:"Identify the correct passive: 'They will announce the deployment tomorrow.'",o:['The deployment will announce tomorrow.','The deployment had been announced tomorrow.','The deployment are announced tomorrow.','The deployment will be announced tomorrow.'],a:3},
+{s:'Active-Passive',q:"Identify the correct passive: 'Do not drop the weapon.'",o:['Do not let drop the weapon.','The weapon should not dropped.','Let the weapon not be dropped.','The weapon is not dropped.'],a:2},
+{s:'Active-Passive',q:"Identify the correct active: 'By whom were you taught navigation?'",o:['Whom taught you navigation?','Who had taught you navigation?','Who teaches you navigation?','Who taught you navigation?'],a:3},
+{s:'Active-Passive',q:"Identify the correct passive: 'Troops use camouflage in the jungle.'",o:['Camouflage is being used by troops in the jungle.','Camouflage was used by troops in the jungle.','Camouflage is used by troops in the jungle.','Camouflage has been used by troops in the jungle.'],a:2},
+{s:'Active-Passive',q:"Identify the correct active: 'The radio has been repaired.'",o:['Someone repairs the radio.','Someone had repaired the radio.','Someone repaired the radio.','Someone has repaired the radio.'],a:3},
+{s:'Active-Passive',q:"Identify the correct passive: 'He painted the aircraft grey.'",o:['The aircraft is painted grey by him.','The aircraft had been painted grey by him.','The aircraft has been painted grey by him.','The aircraft was painted grey by him.'],a:3},
+{s:'Active-Passive',q:"Identify the correct active: 'Let the target be eliminated.'",o:['You eliminate the target.','Eliminate the target.','The target should be eliminated.','To eliminate the target.'],a:1},
+{s:'Active-Passive',q:"Identify the correct passive: 'We must follow the protocol.'",o:['The protocol must be followed.','The protocol has been followed.','The protocol should follow.','The protocol is followed.'],a:0},
+{s:'Active-Passive',q:"Identify the correct active: 'A tactical error has been made by the squad.'",o:['The squad had made a tactical error.','The squad has made a tactical error.','The squad made a tactical error.','The squad makes a tactical error.'],a:1},
+{s:'Active-Passive',q:"Identify the correct passive: 'Someone stole the classified documents.'",o:['The classified documents are stolen.','The classified documents had been stolen.','The classified documents have been stolen.','The classified documents were stolen.'],a:3},
+{s:'Active-Passive',q:"Identify the correct active: 'He was awarded the medal by the President.'",o:['The President has awarded him the medal.','The President had awarded him the medal.','The President awards him the medal.','The President awarded him the medal.'],a:3},
+{s:'Active-Passive',q:"Identify the correct passive: 'I am drafting a treaty.'",o:['A treaty has been drafted by me.','A treaty was being drafted by me.','A treaty is being drafted by me.','A treaty is drafted by me.'],a:2},
+{s:'Active-Passive',q:"Identify the correct passive: 'Did you spot the sniper?'",o:['Has the sniper been spotted by you?','Is the sniper spotted by you?','Had the sniper been spotted by you?','Was the sniper spotted by you?'],a:3},
+{s:'Active-Passive',q:"Identify the correct active: 'The battle will be won by our forces.'",o:['Our forces will win the battle.','Our forces win the battle.','Our forces have won the battle.','Our forces had won the battle.'],a:0},
+{s:'Active-Passive',q:"Identify the correct passive: 'They fired at the enemy.'",o:['The enemy was fired at by them.','The enemy is fired at by them.','The enemy was being fired at by them.','The enemy has been fired at by them.'],a:0},
+{s:'Active-Passive',q:"Identify the correct active: 'The base was attacked.'",o:['The enemy attacks the base.','The enemy had attacked the base.','The enemy has attacked the base.','The enemy attacked the base.'],a:3},
+{s:'Active-Passive',q:"Identify the correct passive: 'He had loaded the rifle.'",o:['The rifle was loaded by him.','The rifle has been loaded by him.','The rifle had been loaded by him.','The rifle is loaded by him.'],a:2},
+{s:'Active-Passive',q:"Identify the correct active: 'Let the injured be evacuated.'",o:['The injured should be evacuated.','You evacuate the injured.','The injured are evacuated.','Evacuate the injured.'],a:3},
+{s:'Active-Passive',q:"Identify the correct passive: 'She instructed the new recruits.'",o:['The new recruits have been instructed by her.','The new recruits had been instructed by her.','The new recruits are instructed by her.','The new recruits were instructed by her.'],a:3},
+// ── PART IV: CONDITIONAL CLAUSES ──
+{s:'Conditionals',q:'If I ___ an officer, I would lead from the front.',o:['am','have been','was','were'],a:3},
+{s:'Conditionals',q:'If the weather clears, the jets ___ off.',o:['take','would take','will take','took'],a:2},
+{s:'Conditionals',q:'If you had followed instructions, you ___ the mission.',o:['would have completed','would complete','completed','will complete'],a:0},
+{s:'Conditionals',q:'Had the radar detected the anomaly, we ___ the alert.',o:['sounded','will sound','would have sounded','would sound'],a:2},
+{s:'Conditionals',q:'If water reaches freezing point, it ___.',o:['would turn to ice','turned to ice','turns to ice','will turn to ice'],a:2},
+{s:'Conditionals',q:'Unless you ___ hard, you will not clear the NDA exam.',o:['train','will train','would train','trained'],a:0},
+{s:'Conditionals',q:'If the reinforcement ___ earlier, the outpost would have been saved.',o:['arrived','has arrived','arrives','had arrived'],a:3},
+{s:'Conditionals',q:'If I ___ you, I would not cross that minefield.',o:['am','was','have been','were'],a:3},
+{s:'Conditionals',q:'If command authorizes the strike, we ___.',o:['would proceed','will proceed','proceeded','proceed'],a:1},
+{s:'Conditionals',q:'If he ___ harder, he could lift the heavy artillery.',o:['trained','trains','train','had trained'],a:0},
+{s:'Conditionals',q:'I would deploy the drones if I ___ visual confirmation.',o:['had','have','had had','am having'],a:0},
+{s:'Conditionals',q:'If you mix potassium nitrate with sulfur, it ___ explosive.',o:['became','would become','will become','becomes'],a:3},
+{s:'Conditionals',q:'If I had seen the signal flare, I ___.',o:['stopped','will stop','would have stopped','would stop'],a:2},
+{s:'Conditionals',q:'You will fail the physical test unless you ___.',o:['practiced','will practice','practice','would practice'],a:2},
+{s:'Conditionals',q:'If she ___ for cover, the sniper will miss.',o:['will dive','would dive','dived','dives'],a:3},
+{s:'Conditionals',q:'If we had a compass, we ___ lost in the jungle.',o:['will not be','are not','would not be','had not been'],a:2},
+{s:'Conditionals',q:'Suppose you ___ an ambush, what would your first action be?',o:['had encountered','will encounter','encounter','encountered'],a:3},
+{s:'Conditionals',q:'If the pilot had been more careful, the crash ___.',o:['would not happen','did not happen','would not have happened','will not happen'],a:2},
+{s:'Conditionals',q:'If it ___, the infantry will dig trenches.',o:['will rain','rained','would rain','rains'],a:3},
+{s:'Conditionals',q:"If I ___ the enemy's coordinates, I would transmit them immediately.",o:['know','had known','knew','knows'],a:2},
+{s:'Conditionals',q:'The operation would have succeeded if the intel ___ accurate.',o:['is','had been','were','was'],a:1},
+{s:'Conditionals',q:'If you pull the pin, the grenade ___ live.',o:['was','is','will be','would be'],a:1},
+{s:'Conditionals',q:'Provided that you ___ the perimeter, the base is safe.',o:['secured','will secure','would secure','secure'],a:3},
+{s:'Conditionals',q:'If he had not been wounded, he ___ his battalion.',o:['would not leave','will not leave','would not have left','did not leave'],a:2},
+{s:'Conditionals',q:'If I ___ wings, I would fly over the mountains.',o:['had had','am having','have','had'],a:3},
+// ── PART V: VERBAL ANALOGY ──
+{s:'Verbal Analogy',q:'Odometer is to mileage as compass is to ___',o:['Direction','Speed','Hiking','Needle'],a:0},
+{s:'Verbal Analogy',q:'General is to Army as Admiral is to ___',o:['Battalion','Air Force','Navy','Fleet'],a:2},
+{s:'Verbal Analogy',q:'Sword is to Warrior as Pen is to ___',o:['Ink','Paper','Word','Author'],a:3},
+{s:'Verbal Analogy',q:'Helmet is to Head as Breastplate is to ___',o:['Leg','Shield','Chest','Arm'],a:2},
+{s:'Verbal Analogy',q:'Arsenal is to Weapons as Granary is to ___',o:['Water','Grain','Animals','Farm'],a:1},
+{s:'Verbal Analogy',q:'Spy is to Clandestine as Accountant is to ___',o:['Wealthy','Reckless','Secretive','Meticulous'],a:3},
+{s:'Verbal Analogy',q:'Optimist is to Cheerful as Pessimist is to ___',o:['Helpful','Joyful','Mean','Gloomy'],a:3},
+{s:'Verbal Analogy',q:'Reptile is to Lizard as Mammal is to ___',o:['Shark','Eagle','Frog','Tiger'],a:3},
+{s:'Verbal Analogy',q:'Play is to Actor as Battle is to ___',o:['General','Tank','Gun','Soldier'],a:3},
+{s:'Verbal Analogy',q:'Bullet is to Rifle as Arrow is to ___',o:['Bow','Hunter','Target','Quiver'],a:0},
+{s:'Verbal Analogy',q:'Careful is to Cautious as Brave is to ___',o:['Fearful','Cowardly','Timid','Valiant'],a:3},
+{s:'Verbal Analogy',q:'Telescope is to Astronomy as Microscope is to ___',o:['Physics','History','Geology','Biology'],a:3},
+{s:'Verbal Analogy',q:'Submarine is to Water as Airplane is to ___',o:['Air','Pilot','Hangar','Runway'],a:0},
+{s:'Verbal Analogy',q:'Fish is to Shoal as Wolf is to ___',o:['Flock','Pack','Herd','Swarm'],a:1},
+{s:'Verbal Analogy',q:'Carnivore is to Meat as Herbivore is to ___',o:['Omnivore','Animals','Plants','Water'],a:2},
+{s:'Verbal Analogy',q:'Radar is to Aircraft as Sonar is to ___',o:['Jeep','Tank','Satellite','Submarine'],a:3},
+{s:'Verbal Analogy',q:'Author is to Book as Architect is to ___',o:['Design','Engineer','Blueprint','Building'],a:3},
+{s:'Verbal Analogy',q:'Fire is to Ashes as Event is to ___',o:['Time','Past','Future','Memories'],a:3},
+{s:'Verbal Analogy',q:'Hunger is to Food as Fatigue is to ___',o:['Exercise','Water','Work','Rest'],a:3},
+{s:'Verbal Analogy',q:'Breeze is to Cyclone as Drizzle is to ___',o:['Rain','Storm','Cloud','Downpour'],a:3},
+{s:'Verbal Analogy',q:'Day is to Night as Dawn is to ___',o:['Dusk','Morning','Sun','Evening'],a:0},
+{s:'Verbal Analogy',q:'Squad is to Platoon as Platoon is to ___',o:['Regiment','Company','Army','Battalion'],a:1},
+{s:'Verbal Analogy',q:'Tree is to Forest as Sand is to ___',o:['Beach','Desert','Dune','Ocean'],a:1},
+{s:'Verbal Analogy',q:'Thermometer is to Temperature as Barometer is to ___',o:['Pressure','Humidity','Rain','Wind'],a:0},
+{s:'Verbal Analogy',q:'Glove is to Hand as Boot is to ___',o:['Leg','Foot','Ankle','Walk'],a:1},
+// ── PART VI: NUMBER ANALOGY ──
+{s:'Number Analogy',q:'Find the missing number: 12 : 144 :: 17 : ?',o:['289','303','291','302'],a:0},
+{s:'Number Analogy',q:'Find the missing number: 2 : 8 :: 7 : ?',o:['347','350','356','343'],a:3},
+{s:'Number Analogy',q:'Find the missing number: 14 : 29 :: 25 : ?',o:['54','48','55','51'],a:3},
+{s:'Number Analogy',q:'Find the missing number: 6 : 16 :: 20 : ?',o:['59','55','51','58'],a:3},
+{s:'Number Analogy',q:'Find the missing number: 6 : 42 :: 21 : ?',o:['473','455','462','456'],a:2},
+{s:'Number Analogy',q:'Find the missing number: 12 : 48 :: 20 : ?',o:['80','95','72','92'],a:0},
+{s:'Number Analogy',q:'Find the missing number: 13 : 169 :: 23 : ?',o:['528','529','527','537'],a:1},
+{s:'Number Analogy',q:'Find the missing number: 5 : 125 :: 9 : ?',o:['737','733','729','720'],a:2},
+{s:'Number Analogy',q:'Find the missing number: 13 : 27 :: 23 : ?',o:['62','47','57','52'],a:1},
+{s:'Number Analogy',q:'Find the missing number: 8 : 22 :: 24 : ?',o:['81','72','76','70'],a:3},
+{s:'Number Analogy',q:'Find the missing number: 6 : 42 :: 17 : ?',o:['303','306','309','308'],a:1},
+{s:'Number Analogy',q:'Find the missing number: 12 : 48 :: 18 : ?',o:['73','78','72','63'],a:2},
+{s:'Number Analogy',q:'Find the missing number: 13 : 169 :: 24 : ?',o:['572','580','566','576'],a:3},
+{s:'Number Analogy',q:'Find the missing number: 2 : 8 :: 8 : ?',o:['503','516','512','504'],a:2},
+{s:'Number Analogy',q:'Find the missing number: 7 : 15 :: 19 : ?',o:['34','36','41','39'],a:3},
+{s:'Number Analogy',q:'Find the missing number: 9 : 25 :: 18 : ?',o:['58','60','47','52'],a:3},
+{s:'Number Analogy',q:'Find the missing number: 12 : 156 :: 20 : ?',o:['417','420','429','421'],a:1},
+{s:'Number Analogy',q:'Find the missing number: 11 : 44 :: 17 : ?',o:['70','73','68','79'],a:2},
+{s:'Number Analogy',q:'Find the missing number: 4 : 16 :: 18 : ?',o:['325','324','320','333'],a:1},
+{s:'Number Analogy',q:'Find the missing number: 4 : 64 :: 9 : ?',o:['742','736','727','729'],a:3},
+{s:'Number Analogy',q:'Find the missing number: 10 : 21 :: 22 : ?',o:['43','45','53','49'],a:1},
+{s:'Number Analogy',q:'Find the missing number: 7 : 19 :: 16 : ?',o:['38','40','46','36'],a:2},
+{s:'Number Analogy',q:'Find the missing number: 10 : 110 :: 21 : ?',o:['467','462','452','463'],a:1},
+{s:'Number Analogy',q:'Find the missing number: 4 : 16 :: 24 : ?',o:['88','107','96','97'],a:2},
+{s:'Number Analogy',q:'Find the missing number: 8 : 64 :: 19 : ?',o:['361','354','352','358'],a:0},
+// ── PART VII: CODING & DECODING ──
+{s:'Coding-Decoding',q:"In a certain code, 'VICTORY' = 'WJDUPSZ'. How is 'BATTLE' written?",o:['CBUUMF','BATTLE','EDWWOH','DCVVNG'],a:0},
+{s:'Coding-Decoding',q:"In a certain code, 'BATTLE' = 'DCVVNG'. How is 'NATION' written?",o:['QDWLRQ','PCVKQP','REXMSR','OBUJPO'],a:1},
+{s:'Coding-Decoding',q:"In a certain code, 'NATION' = 'QDWLRQ'. How is 'SOLDIER' written?",o:['VROGLHU','WSPHMIV','UQNFKGT','XTQINJW'],a:0},
+{s:'Coding-Decoding',q:"In a certain code, 'SOLDIER' = 'WSPHMIV'. How is 'DEFENCE' written?",o:['GHIHQFH','JKLKTIK','IJKJSHJ','HIJIRGI'],a:3},
+{s:'Coding-Decoding',q:"In a certain code, 'DEFENCE' = 'EFGFODF'. How is 'ATTACK' written?",o:['ATTACK','CVVCEM','BUUBDL','DWWDFN'],a:2},
+{s:'Coding-Decoding',q:"In a certain code, 'ATTACK' = 'CVVCEM'. How is 'WEAPON' written?",o:['AIETSR','YGCRQP','XFBQPO','ZHDSRQ'],a:1},
+{s:'Coding-Decoding',q:"In a certain code, 'WEAPON' = 'ZHDSRQ'. How is 'COMBAT' written?",o:['EQODCV','HTRGFY','GSQFEX','FRPEDW'],a:3},
+{s:'Coding-Decoding',q:"In a certain code, 'COMBAT' = 'GSQFEX'. How is 'TROOPS' written?",o:['WURRSV','YWTTUX','ZXUUVY','XVSSTW'],a:3},
+{s:'Coding-Decoding',q:"In a certain code, 'TROOPS' = 'USPPQT'. How is 'ARMOUR' written?",o:['ARMOUR','BSNPVS','CTOQWT','DUPRXU'],a:1},
+{s:'Coding-Decoding',q:"In a certain code, 'ARMOUR' = 'CTOQWT'. How is 'FLIGHT' written?",o:['HNKIJV','IOLJKW','GMJHIU','JPMKLX'],a:0},
+{s:'Coding-Decoding',q:"In a certain code, 'FLIGHT' = 'IOLJKW'. How is 'RADAR' written?",o:['VEHEV','UDGDU','TCFCT','WFIFW'],a:1},
+{s:'Coding-Decoding',q:"In a certain code, 'RADAR' = 'VEHEV'. How is 'MISSILE' written?",o:['RNXXNQJ','SOYYORK','PLVVLOH','QMWWMPI'],a:3},
+{s:'Coding-Decoding',q:"In a certain code, 'MISSILE' = 'NJTTJMF'. How is 'ROCKET' written?",o:['TQEMGV','SPDLFU','ROCKET','URFNHW'],a:1},
+{s:'Coding-Decoding',q:"In a certain code, 'ROCKET' = 'TQEMGV'. How is 'TARGET' written?",o:['XEVKIX','WDUJHW','UBSHFU','VCTIGV'],a:3},
+{s:'Coding-Decoding',q:"In a certain code, 'TARGET' = 'WDUJHW'. How is 'OFFICER' written?",o:['SJJMGIV','RIILFHU','TKKNHJW','QHHKEGT'],a:1},
+{s:'Coding-Decoding',q:"In a certain code, 'OFFICER' = 'SJJMGIV'. How is 'COMMAND' written?",o:['IUSSGTJ','HTRRFSI','FRPPDQG','GSQQERH'],a:3},
+{s:'Coding-Decoding',q:"In a certain code, 'COMMAND' = 'DPNNBOE'. How is 'PATROL' written?",o:['SDWURO','QBUSPM','PATROL','RCVTQN'],a:1},
+{s:'Coding-Decoding',q:"In a certain code, 'PATROL' = 'RCVTQN'. How is 'GUARD' written?",o:['JXDUG','IWCTF','KYEVH','HVBSE'],a:1},
+{s:'Coding-Decoding',q:"In a certain code, 'GUARD' = 'JXDUG'. How is 'SHIELD' written?",o:['UJKGNF','WLMIPH','VKLHOG','XMNJQI'],a:2},
+{s:'Coding-Decoding',q:"In a certain code, 'SHIELD' = 'WLMIPH'. How is 'FORCE' written?",o:['LUXIK','IRUFH','JSVGI','KTWHJ'],a:2},
+{s:'Coding-Decoding',q:"In a certain code, 'FORCE' = 'GPSDF'. How is 'SECURE' written?",o:['UGEWTG','VHFXUH','TFDVSF','SECURE'],a:2},
+{s:'Coding-Decoding',q:"In a certain code, 'SECURE' = 'UGEWTG'. How is 'BORDER' written?",o:['FSVHIV','ERUGHU','DQTFGT','CPSEFS'],a:2},
+{s:'Coding-Decoding',q:"In a certain code, 'BORDER' = 'ERUGHU'. How is 'MARINE' written?",o:['RFWNSJ','OCTKPG','PDULQH','QEVMRI'],a:2},
+{s:'Coding-Decoding',q:"In a certain code, 'MARINE' = 'QEVMRI'. How is 'SNIPER' written?",o:['WRMTIV','VQLSHU','XSNUJW','YTOVKX'],a:0},
+{s:'Coding-Decoding',q:"In a certain code, 'SNIPER' = 'TOJQFS'. How is 'VICTORY' written?",o:['XKEVQTA','WJDUPSZ','VICTORY','YLFWRUB'],a:1},
+// ── PART VIII: NUMBER DECODING ──
+{s:'Number Decoding',q:"If 'BRAVE' = 48, what is the code for 'HERO'?",o:['52','51','43','46'],a:3},
+{s:'Number Decoding',q:"If 'HERO' = 51, what is the code for 'TACTIC'?",o:['61','65','63','58'],a:0},
+{s:'Number Decoding',q:"If 'TACTIC' = 112, what is the code for 'CAMP'?",o:['67','66','68','73'],a:1},
+{s:'Number Decoding',q:"If 'CAMP' = 33, what is the code for 'BASE'?",o:['24','30','35','27'],a:3},
+{s:'Number Decoding',q:"If 'BASE' = 32, what is the code for 'WAR'?",o:['51','40','41','47'],a:3},
+{s:'Number Decoding',q:"If 'WAR' = 84, what is the code for 'PEACE'?",o:['61','67','60','66'],a:2},
+{s:'Number Decoding',q:"If 'PEACE' = 30, what is the code for 'GLORY'?",o:['83','80','84','77'],a:3},
+{s:'Number Decoding',q:"If 'GLORY' = 82, what is the code for 'MEDAL'?",o:['34','40','37','44'],a:1},
+{s:'Number Decoding',q:"If 'MEDAL' = 70, what is the code for 'HONOUR'?",o:['189','187','190','182'],a:3},
+{s:'Number Decoding',q:"If 'HONOUR' = 91, what is the code for 'DUTY'?",o:['63','78','68','70'],a:3},
+{s:'Number Decoding',q:"If 'DUTY' = 75, what is the code for 'VALOUR'?",o:['90','94','96','98'],a:1},
+{s:'Number Decoding',q:"If 'VALOUR' = 178, what is the code for 'MARCH'?",o:['78','86','79','92'],a:1},
+{s:'Number Decoding',q:"If 'MARCH' = 43, what is the code for 'DRILL'?",o:['55','61','48','59'],a:0},
+{s:'Number Decoding',q:"If 'DRILL' = 60, what is the code for 'SALUTE'?",o:['84','83','81','79'],a:1},
+{s:'Number Decoding',q:"If 'SALUTE' = 156, what is the code for 'FLEET'?",o:['89','91','92','96'],a:3},
+{s:'Number Decoding',q:"If 'FLEET' = 48, what is the code for 'WINGS'?",o:['71','76','72','75'],a:2},
+{s:'Number Decoding',q:"If 'WINGS' = 77, what is the code for 'TANK'?",o:['51','47','50','45'],a:0},
+{s:'Number Decoding',q:"If 'TANK' = 92, what is the code for 'RIFLE'?",o:['96','100','107','108'],a:1},
+{s:'Number Decoding',q:"If 'RIFLE' = 50, what is the code for 'GUN'?",o:['50','48','42','40'],a:2},
+{s:'Number Decoding',q:"If 'GUN' = 47, what is the code for 'BOMB'?",o:['32','37','36','45'],a:1},
+{s:'Number Decoding',q:"If 'BOMB' = 64, what is the code for 'MINE'?",o:['82','89','81','79'],a:0},
+{s:'Number Decoding',q:"If 'MINE' = 41, what is the code for 'HELMET'?",o:['63','58','66','56'],a:0},
+{s:'Number Decoding',q:"If 'HELMET' = 68, what is the code for 'RADIO'?",o:['59','44','58','52'],a:3},
+{s:'Number Decoding',q:"If 'RADIO' = 94, what is the code for 'MAP'?",o:['52','60','64','66'],a:1},
+{s:'Number Decoding',q:"If 'MAP' = 30, what is the code for 'BRAVE'?",o:['52','43','48','51'],a:2}
+  ]
 }
-// ← PASTE NEW PAPER BLOCK HERE (add comma after } above)
 ];
 
-// ╔════════════════════════════════════════════════════════════════╗
-// ║  FIREBASE — optional. Paste your config to sync across devices║
-// ╚════════════════════════════════════════════════════════════════╝
-const firebaseConfig = {
-  apiKey: "AIzaSyDDYYyECxxcvXJm3hNYJFnlRJZDDaArYTs",
-  authDomain: "imucet-32224.firebaseapp.com",
-  databaseURL: "https://imucet-32224-default-rtdb.firebaseio.com",
-  projectId: "imucet-32224",
-  storageBucket: "imucet-32224.firebasestorage.app",
-  messagingSenderId: "666845893984",
-  appId: "1:666845893984:web:9d6e81d41f6e1d365f7a05",
-  measurementId: "G-NCMH2GWXCV"
-};
-// To enable, replace null with your Firebase config object:
-// const FIREBASE_CONFIG = { apiKey:"...", authDomain:"...", projectId:"...", ... };
+// ════════ FIREBASE ════════
+const FIREBASE_CONFIG = null;
 
 // ════════ APP STATE ════════
-let activePaper=null, Q=[], DURATION=0, MARKING={}, STORE_KEY='', CONFIG={};
-let state=null, timerInterval=null, db=null;
+let activePaper=null,Q=[],DURATION=0,MARKING={},STORE_KEY='',CONFIG={};
+let state=null,timerInterval=null,db=null,autoSaveInterval=null;
+let qTimeTracking={}; // Enhancement 8: time per question
 
 // ════════ THEME ════════
 function initTheme(){
-  const t=localStorage.getItem('cbt_theme')||'light';
+  const t=localStorage.getItem('cbt_theme_v2')||'dark';
   document.documentElement.setAttribute('data-theme',t);
-  document.getElementById('themeBtn').textContent = t==='dark'?'☀️':'🌙';
+  document.getElementById('themeBtn').textContent=t==='dark'?'☀':'◐';
+  if(document.getElementById('themeBtn2')) document.getElementById('themeBtn2').textContent=t==='dark'?'☀':'◐';
 }
 function toggleTheme(){
   const cur=document.documentElement.getAttribute('data-theme');
   const next=cur==='dark'?'light':'dark';
   document.documentElement.setAttribute('data-theme',next);
-  localStorage.setItem('cbt_theme',next);
-  document.getElementById('themeBtn').textContent=next==='dark'?'☀️':'🌙';
+  localStorage.setItem('cbt_theme_v2',next);
+  document.getElementById('themeBtn').textContent=next==='dark'?'☀':'◐';
+  if(document.getElementById('themeBtn2')) document.getElementById('themeBtn2').textContent=next==='dark'?'☀':'◐';
 }
 
-// ════════ FIREBASE INIT ════════
+// ════════ FIREBASE ════════
 async function initFirebase(){
   if(!FIREBASE_CONFIG) return;
   try{
     const {initializeApp}=await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
-    const {getFirestore,collection,addDoc,getDocs,query,orderBy,deleteDoc,doc}=await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+    const {getFirestore,collection,addDoc}=await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
     const app=initializeApp(FIREBASE_CONFIG);
     db=getFirestore(app);
-    window._fb={collection,addDoc,getDocs,query,orderBy,deleteDoc,doc};
-    console.log('Firebase connected');
-  }catch(e){console.warn('Firebase init failed:',e);}
+    window._fb={collection,addDoc};
+  }catch(e){}
 }
 
 // ════════ HISTORY ════════
-function getHistory(){
-  try{return JSON.parse(localStorage.getItem('cbt_history')||'[]');}catch(e){return [];}
-}
+function getHistory(){try{return JSON.parse(localStorage.getItem('cbt_history')||'[]');}catch(e){return [];}}
 function saveAttemptToHistory(attempt){
-  const h=getHistory();
-  h.unshift(attempt);
-  if(h.length>100) h.pop();
+  const h=getHistory();h.unshift(attempt);if(h.length>200)h.pop();
   localStorage.setItem('cbt_history',JSON.stringify(h));
-  if(db&&window._fb){
-    const uid=getUID();
-    window._fb.addDoc(window._fb.collection(db,`users/${uid}/attempts`),attempt).catch(()=>{});
-  }
+  if(db&&window._fb){const uid=getUID();window._fb.addDoc(window._fb.collection(db,`users/${uid}/attempts`),attempt).catch(()=>{});}
 }
 function deleteAttempt(idx){
   if(!confirm('Delete this attempt?')) return;
-  const h=getHistory();
-  h.splice(idx,1);
-  localStorage.setItem('cbt_history',JSON.stringify(h));
-  renderHistory();
+  const h=getHistory();h.splice(idx,1);
+  localStorage.setItem('cbt_history',JSON.stringify(h));renderHistory();
 }
 function getUID(){
   let uid=localStorage.getItem('cbt_uid');
@@ -660,41 +1339,46 @@ function getUID(){
 }
 
 // ════════ BOOKMARKS ════════
-function getBookmarks(paperId){
-  try{return JSON.parse(localStorage.getItem('bkm_'+paperId)||'[]');}catch(e){return [];}
+function getBookmarks(pid){try{return JSON.parse(localStorage.getItem('bkm_'+pid)||'[]');}catch(e){return [];}}
+function toggleBookmark(pid,qi){
+  const b=getBookmarks(pid);const i=b.indexOf(qi);
+  if(i>=0)b.splice(i,1);else b.push(qi);
+  localStorage.setItem('bkm_'+pid,JSON.stringify(b));
 }
-function toggleBookmark(paperId,qIdx){
-  const bkms=getBookmarks(paperId);
-  const i=bkms.indexOf(qIdx);
-  if(i>=0) bkms.splice(i,1); else bkms.push(qIdx);
-  localStorage.setItem('bkm_'+paperId,JSON.stringify(bkms));
+
+// ════════ SAVE FLASH (Enhancement 5) ════════
+let saveFlashTimer=null;
+function flashSave(){
+  const el=document.getElementById('saveFlash');
+  el.classList.add('show');
+  const hdr=document.getElementById('autoSaveHdr');
+  if(hdr){hdr.style.opacity='1';}
+  clearTimeout(saveFlashTimer);
+  saveFlashTimer=setTimeout(()=>{el.classList.remove('show');if(hdr)hdr.style.opacity='0';},1200);
+}
+
+// ════════ SCREENS ════════
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  const el=document.getElementById(id);if(el)el.classList.add('active');
 }
 
 // ════════ DASHBOARD ════════
-function showScreen(id){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  const el=document.getElementById(id);
-  if(el) el.classList.add('active');
-}
-
 function buildDashboard(){
   showScreen('dashboard');
   const history=getHistory();
-  const grid=document.getElementById('paperGrid');
-  grid.innerHTML='';
+  const grid=document.getElementById('paperGrid');grid.innerHTML='';
   PAPERS.forEach(p=>{
     const pAttempts=history.filter(h=>h.paperId===p.id);
     const bestScore=pAttempts.length?Math.max(...pAttempts.map(h=>h.score)):null;
     const last=pAttempts[0]||null;
     const secs=[...new Set(p.questions.map(q=>q.s))];
-    const sparks=pAttempts.slice(0,8).reverse();
+    const sparks=pAttempts.slice(0,10).reverse();
     const maxS=sparks.length?Math.max(...sparks.map(h=>h.maxScore),1):1;
-
-    const card=document.createElement('div');
-    card.className='card';
+    const card=document.createElement('div');card.className='card';
     card.innerHTML=`
       <div class="card-header">
-        <h3>📋 ${p.title}</h3>
+        <h3>◈ ${p.title}</h3>
         <p>${p.subtitle}</p>
       </div>
       <div class="card-body">
@@ -708,180 +1392,137 @@ function buildDashboard(){
           <span class="tag tag-orange">+${p.marking.correct}/${p.marking.wrong}</span>
         </div>
         ${sparks.length?`
-          <div style="font-size:10px;color:var(--text3);margin-bottom:4px">Last ${sparks.length} scores:</div>
+          <div style="font-size:10px;color:var(--text3);margin-bottom:4px;font-family:'JetBrains Mono';letter-spacing:0.5px">LAST ${sparks.length} SCORES</div>
           <div class="sparkbar-wrap">
             ${sparks.map(h=>{
-              const h_pct=Math.max(4,Math.round((h.score/h.maxScore)*100));
-              const pctLabel=((h.score/h.maxScore)*100).toFixed(1)+'%';
-              const col=h_pct>=60?'#2e7d32':h_pct>=40?'#e65100':'#c62828';
-              return `<div class="sparkbar" style="height:${h_pct*0.28}px;background:${col}" data-tip="${h.score}/${h.maxScore} · ${pctLabel}"></div>`;
+              const hpct=Math.max(4,Math.round((h.score/h.maxScore)*100));
+              const col=hpct>=60?'var(--success)':hpct>=40?'var(--orange)':'var(--danger)';
+              return`<div class="sparkbar" style="height:${hpct*0.28}px;background:${col}" data-tip="${h.score}/${h.maxScore} · ${hpct}%"></div>`;
             }).join('')}
           </div>
-        `:'<div style="font-size:11px;color:var(--text3);padding:4px 0">No attempts yet — start your first!</div>'}
-        ${bestScore!==null?`<div style="font-size:11px;color:var(--green);font-weight:700;margin-top:4px">🏆 Best: ${bestScore}/${p.questions.length*p.marking.correct}</div>`:''}
+        `:'<div style="font-size:11px;color:var(--text3);padding:6px 0;font-family:\'JetBrains Mono\'">No attempts yet — launch your first session</div>'}
+        ${bestScore!==null?`<div style="font-size:11px;color:var(--success);font-weight:700;margin-top:4px;font-family:\'JetBrains Mono\'">🏆 BEST: ${bestScore}/${p.questions.length*p.marking.correct}</div>`:''}
       </div>
       <div class="card-footer">
-        <div class="last-attempt">${last?'Last: '+new Date(last.date).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}):'Never attempted'}</div>
-        <button class="start-btn" onclick="event.stopPropagation();openConfig('${p.id}')">Start →</button>
+        <div class="last-attempt" style="font-family:'JetBrains Mono'">${last?'LAST: '+new Date(last.date).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}):'NEVER ATTEMPTED'}</div>
+        <button class="start-btn" onclick="event.stopPropagation();openConfig('${p.id}')">ENTER →</button>
       </div>`;
     card.onclick=()=>openConfig(p.id);
+    // 3D tilt effect
+    card.addEventListener('mousemove',e=>{
+      const r=card.getBoundingClientRect();
+      const x=((e.clientX-r.left)/r.width-0.5)*10;
+      const y=-((e.clientY-r.top)/r.height-0.5)*10;
+      card.style.transform=`translateY(-6px) rotateX(${y}deg) rotateY(${x}deg) scale(1.01)`;
+    });
+    card.addEventListener('mouseleave',()=>{card.style.transform='';});
     grid.appendChild(card);
   });
 }
 
-// ════════ CONFIG SCREEN ════════
+// ════════ CONFIG ════════
 function openConfig(paperId){
   activePaper=PAPERS.find(p=>p.id===paperId);
-  Q=activePaper.questions;
-  DURATION=activePaper.duration;
-  MARKING=activePaper.marking;
-  STORE_KEY='cbt_'+paperId;
-
+  Q=activePaper.questions;DURATION=activePaper.duration;MARKING=activePaper.marking;STORE_KEY='cbt_'+paperId;
   const sections=[...new Set(Q.map(q=>q.s))];
   document.getElementById('configTitle').textContent='Configure: '+activePaper.title;
-
-  // Default section times proportional to Q count
-  CONFIG={mode:'full', fullMins:Math.floor(DURATION/60), sectionMins:{}};
-  sections.forEach(s=>{
-    const cnt=Q.filter(q=>q.s===s).length;
-    CONFIG.sectionMins[s]=Math.round((cnt/Q.length)*Math.floor(DURATION/60));
-  });
-
-  setTimerMode('full');
-  showScreen('config');
+  CONFIG={mode:'full',fullMins:Math.floor(DURATION/60),sectionMins:{}};
+  sections.forEach(s=>{CONFIG.sectionMins[s]=Math.round((Q.filter(q=>q.s===s).length/Q.length)*Math.floor(DURATION/60));});
+  setTimerMode('full');showScreen('config');
 }
-
 function setTimerMode(mode){
   CONFIG.mode=mode;
   document.querySelectorAll('.tmode').forEach(t=>t.classList.toggle('sel',t.dataset.mode===mode));
   renderTimeInputs();
 }
-
 function renderTimeInputs(){
   const wrap=document.getElementById('timeInputs');
   const sections=[...new Set(Q.map(q=>q.s))];
-  if(CONFIG.mode==='practice'){
-    wrap.innerHTML=`<div style="text-align:center;padding:14px;color:var(--text3);font-size:13px">⚡ No timer — answer at your own pace.<br>All questions available with no time pressure.</div>`;
-    return;
-  }
+  if(CONFIG.mode==='practice'){wrap.innerHTML=`<div style="text-align:center;padding:16px;color:var(--text3);font-size:13px;font-family:'JetBrains Mono'">⚡ No timer — answer at your own pace.</div>`;return;}
   if(CONFIG.mode==='full'){
-    wrap.innerHTML=`
-      <div class="time-row">
-        <label>⏱ Total Exam Time</label>
-        <input type="range" min="30" max="240" step="5" value="${CONFIG.fullMins}"
-          oninput="CONFIG.fullMins=+this.value;this.nextElementSibling.textContent=this.value+' min'">
-        <span class="time-val">${CONFIG.fullMins} min</span>
-      </div>`;
+    wrap.innerHTML=`<div class="time-row"><label>⏱ Total Exam Time</label><input type="range" min="30" max="240" step="5" value="${CONFIG.fullMins}" oninput="CONFIG.fullMins=+this.value;this.nextElementSibling.textContent=this.value+' min'"><span class="time-val">${CONFIG.fullMins} min</span></div>`;
   } else {
-    wrap.innerHTML=sections.map(s=>`
-      <div class="time-row">
-        <label>${s}</label>
-        <input type="range" min="5" max="90" step="5" value="${CONFIG.sectionMins[s]||20}"
-          oninput="CONFIG.sectionMins['${s}']=+this.value;this.nextElementSibling.textContent=this.value+' min'">
-        <span class="time-val">${CONFIG.sectionMins[s]||20} min</span>
-      </div>`).join('');
+    wrap.innerHTML=sections.map(s=>`<div class="time-row"><label>${s}</label><input type="range" min="5" max="90" step="5" value="${CONFIG.sectionMins[s]||20}" oninput="CONFIG.sectionMins['${s}']=+this.value;this.nextElementSibling.textContent=this.value+' min'"><span class="time-val">${CONFIG.sectionMins[s]||20} min</span></div>`).join('');
   }
 }
-
-function hasSavedState(){
-  try{const r=localStorage.getItem(STORE_KEY);if(!r)return false;const s=JSON.parse(r);return s&&!s.submitted&&Array.isArray(s.answers)&&s.answers.length===Q.length;}catch(e){return false;}
-}
-
+function hasSavedState(){try{const r=localStorage.getItem(STORE_KEY);if(!r)return false;const s=JSON.parse(r);return s&&!s.submitted&&Array.isArray(s.answers)&&s.answers.length===Q.length;}catch(e){return false;}}
 function startExam(resume){
-  if(resume){
-    try{state=JSON.parse(localStorage.getItem(STORE_KEY));}catch(e){state=null;}
-    if(!state) state=buildFreshState();
-  } else {
-    try{localStorage.removeItem(STORE_KEY);}catch(e){}
-    state=buildFreshState();
-  }
-  launchExam();
+  if(resume){try{state=JSON.parse(localStorage.getItem(STORE_KEY));}catch(e){state=null;}if(!state)state=buildFreshState();}
+  else{try{localStorage.removeItem(STORE_KEY);}catch(e){}state=buildFreshState();}
+  qTimeTracking={};launchExam();
 }
-
 function buildFreshState(){
-  const sections=[...new Set(Q.map(q=>q.s))];
-  const sTimers={};
+  const sections=[...new Set(Q.map(q=>q.s))];const sTimers={};
   sections.forEach(s=>{sTimers[s]=(CONFIG.sectionMins[s]||20)*60;});
-  return{
-    answers:new Array(Q.length).fill(-1),
-    visited:new Array(Q.length).fill(false),
-    marked:new Array(Q.length).fill(false),
-    current:0,
-    timeLeft:CONFIG.mode==='full'?CONFIG.fullMins*60:null,
-    sectionTimers:sTimers,
-    lockedSections:[],
-    submitted:false,
-    mode:CONFIG.mode,
-    startTime:Date.now(),
-    paperConfig:{fullMins:CONFIG.fullMins,sectionMins:{...CONFIG.sectionMins}}
-  };
+  return{answers:new Array(Q.length).fill(-1),visited:new Array(Q.length).fill(false),marked:new Array(Q.length).fill(false),current:0,timeLeft:CONFIG.mode==='full'?CONFIG.fullMins*60:null,sectionTimers:sTimers,lockedSections:[],submitted:false,mode:CONFIG.mode,startTime:Date.now(),paperConfig:{fullMins:CONFIG.fullMins,sectionMins:{...CONFIG.sectionMins}}};
 }
 
-// ════════ LAUNCH EXAM ════════
+// ════════ LAUNCH ════════
 function launchExam(){
   showScreen(null);
-  const app=document.getElementById('examApp');
-  app.style.display='flex';
+  document.getElementById('examApp').style.display='flex';
   document.getElementById('examTitle').textContent=activePaper.title+' — CBT';
-  renderSectionTabs();
-  renderQuestion();
-  startTimer();
+  renderSectionTabs();renderQuestion();startTimer();startAutoSave();
+  document.addEventListener('keydown',handleKeyboard);
+}
+
+// ════════ AUTO-SAVE EVERY SECOND (Enhancement 5 — actual 1s) ════════
+function startAutoSave(){
+  clearInterval(autoSaveInterval);
+  autoSaveInterval=setInterval(()=>{if(state&&!state.submitted){saveState();flashSave();}},1000);
 }
 
 // ════════ TIMER ════════
 function pad(n){return n.toString().padStart(2,'0');}
-function fmtTime(s){s=Math.max(0,s);return `${pad(Math.floor(s/3600))}:${pad(Math.floor((s%3600)/60))}:${pad(s%60)}`;}
-
+function fmtTime(s){s=Math.max(0,s);return`${pad(Math.floor(s/3600))}:${pad(Math.floor((s%3600)/60))}:${pad(s%60)}`;}
 function startTimer(){
   clearInterval(timerInterval);
-  if(state.mode==='practice'){
-    document.getElementById('timer').textContent='∞';
-    document.getElementById('timerLbl').textContent='Practice';
-    return;
-  }
+  if(state.mode==='practice'){document.getElementById('timer').textContent='∞';document.getElementById('timerLbl').textContent='PRACTICE';return;}
   updateTimerDisplay();
   timerInterval=setInterval(()=>{
     if(state.submitted){clearInterval(timerInterval);return;}
     if(state.mode==='full'){
       state.timeLeft=Math.max(0,state.timeLeft-1);
+      // Enhancement 4: section time warning
+      checkSectionTimeWarning();
       if(state.timeLeft<=0){clearInterval(timerInterval);submitExam();return;}
     } else if(state.mode==='section'){
       const curSec=Q[state.current].s;
       if(!state.lockedSections.includes(curSec)){
         state.sectionTimers[curSec]=Math.max(0,state.sectionTimers[curSec]-1);
-        if(state.sectionTimers[curSec]<=0){
-          state.lockedSections.push(curSec);
-          showSectionTimeUp(curSec);
-        }
+        // Enhancement 4: warn when 2 min left in section
+        if(state.sectionTimers[curSec]===120) showSectionWarningToast(curSec);
+        if(state.sectionTimers[curSec]<=0){state.lockedSections.push(curSec);showSectionTimeUp(curSec);}
       }
     }
-    saveState();
     updateTimerDisplay();
-    if(state.mode==='section'){
-      const allLocked=Object.keys(state.sectionTimers).every(s=>state.lockedSections.includes(s));
-      if(allLocked){clearInterval(timerInterval);submitExam();}
-    }
+    if(state.mode==='section'){const allLocked=Object.keys(state.sectionTimers).every(s=>state.lockedSections.includes(s));if(allLocked){clearInterval(timerInterval);submitExam();}}
   },1000);
 }
 
+// Enhancement 4: section warning toast
+let warnToastTimer=null;
+function showSectionWarningToast(sec){
+  const el=document.getElementById('sectionWarningToast');
+  el.textContent=`⚠ 2 MINUTES LEFT — ${sec.toUpperCase()}`;
+  el.style.display='block';
+  clearTimeout(warnToastTimer);
+  warnToastTimer=setTimeout(()=>{el.style.display='none';},5000);
+}
+function checkSectionTimeWarning(){
+  // For full mode: warn at 5min left per section based on proportion (just global)
+}
+
 function updateTimerDisplay(){
-  const el=document.getElementById('timer');
-  const lbl=document.getElementById('timerLbl');
-  let t=0;
-  if(state.mode==='full'){
-    t=state.timeLeft;
-    lbl.textContent='Time Remaining';
-  } else if(state.mode==='section'){
-    const s=Q[state.current].s;
-    t=state.sectionTimers[s]||0;
-    lbl.textContent=s+' Time';
-  }
+  const el=document.getElementById('timer');const lbl=document.getElementById('timerLbl');let t=0;
+  if(state.mode==='full'){t=state.timeLeft;lbl.textContent='TIME REMAINING';}
+  else if(state.mode==='section'){const s=Q[state.current].s;t=state.sectionTimers[s]||0;lbl.textContent=s.toUpperCase()+' TIME';}
   el.textContent=fmtTime(t);
   el.className='timer'+(t<300?' crit':t<900?' warn':'');
 }
 
 function showSectionTimeUp(sec){
-  document.getElementById('sectionTimeUpMsg').textContent=`Time's up for ${sec}! Moving to the next section.`;
+  document.getElementById('sectionTimeUpMsg').textContent=`Time's up for ${sec}! Moving to next section.`;
   document.getElementById('sectionTimeUpModal').classList.add('show');
   setTimeout(()=>{
     document.getElementById('sectionTimeUpModal').classList.remove('show');
@@ -890,14 +1531,13 @@ function showSectionTimeUp(sec){
   },3000);
 }
 
-// ════════ STATUS + RENDER ════════
+// ════════ STATUS ════════
 function getStatus(i){
-  if(!state.visited[i])return 0;
-  const a=state.answers[i]>=0;
-  if(state.marked[i])return a?4:3;
-  return a?2:1;
+  if(!state.visited[i])return 0;const a=state.answers[i]>=0;
+  if(state.marked[i])return a?4:3;return a?2:1;
 }
 
+// ════════ SECTION TABS (Enhancement 2: progress bar) ════════
 function renderSectionTabs(){
   const sections=[...new Set(Q.map(q=>q.s))];
   document.getElementById('secTabs').innerHTML=sections.map(sec=>{
@@ -905,79 +1545,97 @@ function renderSectionTabs(){
     const isActive=qs.some(q=>q.i===state.current);
     const ans=qs.filter(q=>state.answers[q.i]>=0).length;
     const locked=state.lockedSections&&state.lockedSections.includes(sec);
-    const timeLeft=state.mode==='section'?` · ${fmtTime(state.sectionTimers[sec]||0)}`:'';
-    return `<div class="sec-tab ${isActive?'act':''} ${locked?'locked':''}"
-      onclick="goToSection('${sec}')">
-      ${sec}${locked?' 🔒':''}<b>${ans}/${qs.length}${timeLeft}</b>
+    const pct=Math.round((ans/qs.length)*100);
+    const timeLeft=state.mode==='section'?state.sectionTimers[sec]||0:null;
+    const timeWarn=timeLeft!==null&&timeLeft<120&&!locked;
+    return`<div class="sec-tab ${isActive?'act':''} ${locked?'locked':''}" onclick="goToSection('${sec}')">
+      ${sec}${locked?' 🔒':''}${timeWarn?`<span class="sec-time-warn">${fmtTime(timeLeft)}</span>`:''}
+      <b>${ans}/${qs.length}${state.mode==='section'&&!locked?` · ${fmtTime(timeLeft)}`:''}</b>
+      <div class="sec-tab-progress"><div style="width:${pct}%;height:2px;background:linear-gradient(90deg,var(--primary),var(--accent));border-radius:0 1px 1px 0;transition:width .4s"></div></div>
     </div>`;
   }).join('');
 }
 
+// ════════ PALETTE ════════
 function renderPalette(){
-  const bkms=getBookmarks(activePaper.id);
-  const counts=[0,0,0,0,0];
+  const bkms=getBookmarks(activePaper.id);const counts=[0,0,0,0,0];
   document.getElementById('palette').innerHTML=Q.map((q,i)=>{
-    const st=getStatus(i); counts[st]++;
-    const isMarked=state.marked[i];
-    const isBkm=bkms.includes(i);
-    return `<button class="pb s${st}${i===state.current?' cur':''}${isBkm?' bkm':''}"
-      onclick="goTo(${i})" title="Q${i+1}: ${q.s}">${isMarked?'M':i+1}</button>`;
+    const st=getStatus(i);counts[st]++;
+    const isMarked=state.marked[i];const isBkm=bkms.includes(i);
+    return`<button class="pb s${st}${i===state.current?' cur':''}${isBkm?' bkm':''}" onclick="goTo(${i})" title="Q${i+1}: ${q.s}">${isMarked?'M':i+1}</button>`;
   }).join('');
   document.getElementById('rpCounts').innerHTML=
-    `<div class="rp-count"><div class="leg-dot s2" style="width:14px;height:14px;font-size:8px"></div>${counts[2]} Answered</div>`+
-    `<div class="rp-count"><div class="leg-dot s1" style="width:14px;height:14px;font-size:8px"></div>${counts[1]} Not Ans.</div>`+
-    `<div class="rp-count"><div class="leg-dot s3" style="width:14px;height:14px;font-size:8px"></div>${counts[3]+counts[4]} Marked</div>`+
-    `<div class="rp-count"><div class="leg-dot s0" style="width:14px;height:14px;font-size:8px"></div>${counts[0]} Not Vis.</div>`;
+    `<div class="rp-count"><div class="leg-dot s2" style="width:14px;height:14px;font-size:7px"></div>${counts[2]} Ans</div>`+
+    `<div class="rp-count"><div class="leg-dot s1" style="width:14px;height:14px;font-size:7px"></div>${counts[1]} Not</div>`+
+    `<div class="rp-count"><div class="leg-dot s3" style="width:14px;height:14px;font-size:7px"></div>${counts[3]+counts[4]} Mkd</div>`+
+    `<div class="rp-count"><div class="leg-dot s0" style="width:14px;height:14px;font-size:7px"></div>${counts[0]} Nv</div>`;
+  try{updateRpProgress();}catch(e){}
 }
 
+// ════════ RENDER QUESTION (Enhancement 8: time tracking) ════════
+let qEnteredAt=Date.now();
 function renderQuestion(){
-  const i=state.current, q=Q[i];
-  state.visited[i]=true;
-  saveState();
+  // time tracking
+  if(state&&state.current!==undefined){
+    const elapsed=Math.round((Date.now()-qEnteredAt)/1000);
+    if(!qTimeTracking[state.current])qTimeTracking[state.current]=0;
+    // don't double count on initial render
+  }
+  qEnteredAt=Date.now();
+  const i=state.current,q=Q[i];state.visited[i]=true;
   const secQs=Q.map((qq,j)=>({...qq,j})).filter(qq=>qq.s===q.s);
   const qInSec=secQs.findIndex(qq=>qq.j===i)+1;
-  const bkms=getBookmarks(activePaper.id);
-  const isBkm=bkms.includes(i);
+  const bkms=getBookmarks(activePaper.id);const isBkm=bkms.includes(i);
   const isLocked=state.lockedSections&&state.lockedSections.includes(q.s);
+  const timeSpent=qTimeTracking[i]||0;
   document.getElementById('qContent').innerHTML=`
     <div class="q-meta">
-      Q <span>${i+1}</span> of <span>${Q.length}</span>
-      &nbsp;|&nbsp; <span>${q.s}</span>
-      &nbsp;|&nbsp; Q${qInSec} of ${secQs.length}
-      &nbsp;|&nbsp; <span style="color:var(--green)">+${MARKING.correct}</span> / <span style="color:var(--red)">${MARKING.wrong}</span>
-      ${isLocked?'<span style="color:var(--red);font-weight:700">🔒 Section Locked</span>':''}
+      <span>Q${i+1}</span> of <span>${Q.length}</span>
+      <span class="q-meta-sep">|</span>
+      <span>${q.s}</span>
+      <span class="q-meta-sep">|</span>
+      Q${qInSec} of ${secQs.length}
+      <span class="q-meta-sep">|</span>
+      <span style="color:var(--success)">+${MARKING.correct}</span> / <span style="color:var(--danger)">${MARKING.wrong}</span>
+      ${isLocked?'<span style="color:var(--danger);font-weight:700">🔒 LOCKED</span>':''}
+      ${timeSpent>0?`<div class="time-spent-badge">⏱ ${fmtTime(timeSpent)}</div>`:''}
     </div>
     <div class="q-box">${q.q}</div>
     <div class="opts">
       ${q.o.map((opt,oi)=>`
-        <div class="opt ${state.answers[i]===oi?'sel':''} ${isBkm?'bkm':''}"
-          onclick="selectOpt(${oi})" style="${isLocked?'opacity:.6;cursor:not-allowed':''}">
+        <div class="opt ${state.answers[i]===oi?'sel':''}" onclick="${isLocked?'':'selectOpt('+oi+')'}" style="${isLocked?'opacity:.5;cursor:not-allowed':''}">
           <span class="opt-lbl">${'ABCD'[oi]}.</span><span>${opt}</span>
         </div>`).join('')}
     </div>
-    <div style="margin-top:10px;display:flex;align-items:center;gap:10px">
+    <div style="margin-top:12px;display:flex;align-items:center;gap:10px">
       <button class="bkm-btn ${isBkm?'active':''}" onclick="bkmToggle(${i})">
-        ${isBkm?'★ Bookmarked':'☆ Bookmark'}
+        ${isBkm?'★ BOOKMARKED':'☆ Bookmark'}
       </button>
     </div>`;
-  renderSectionTabs();
-  renderPalette();
-  updateTimerDisplay();
+  renderSectionTabs();renderPalette();updateTimerDisplay();
+  // Start tracking time on this Q
+  startQTimeTracking(i);
 }
 
-function bkmToggle(i){
-  toggleBookmark(activePaper.id,i);
-  renderQuestion();
+let qTrackInterval=null;
+function startQTimeTracking(qi){
+  clearInterval(qTrackInterval);
+  qTrackInterval=setInterval(()=>{
+    if(!qTimeTracking[qi])qTimeTracking[qi]=0;
+    qTimeTracking[qi]++;
+  },1000);
 }
+
+function bkmToggle(i){toggleBookmark(activePaper.id,i);renderQuestion();}
 
 // ════════ NAVIGATION ════════
 function selectOpt(oi){
   if(state.lockedSections&&state.lockedSections.includes(Q[state.current].s))return;
-  state.answers[state.current]=oi; saveState(); renderQuestion();
+  state.answers[state.current]=oi;saveState();renderQuestion();
 }
 function clearResponse(){
   if(state.lockedSections&&state.lockedSections.includes(Q[state.current].s))return;
-  state.answers[state.current]=-1; saveState(); renderQuestion();
+  state.answers[state.current]=-1;saveState();renderQuestion();
 }
 function saveNext(){if(state.current<Q.length-1)state.current++;renderQuestion();}
 function nextQ(){if(state.current<Q.length-1){state.current++;renderQuestion();}}
@@ -986,7 +1644,7 @@ function markReview(){
   if(state.lockedSections&&state.lockedSections.includes(Q[state.current].s))return;
   state.marked[state.current]=!state.marked[state.current];
   if(state.current<Q.length-1)state.current++;
-  saveState(); renderQuestion();
+  saveState();renderQuestion();
 }
 function goTo(i){state.current=i;renderQuestion();}
 function goToSection(sec){
@@ -994,96 +1652,110 @@ function goToSection(sec){
   const i=Q.findIndex(q=>q.s===sec);if(i>=0)goTo(i);
 }
 function togglePalette(){
-  const rp=document.getElementById('rightPanel');
-  rp.classList.toggle('open');
+  const rp=document.getElementById('rightPanel');rp.classList.toggle('open');
   document.getElementById('palBtn').textContent=rp.classList.contains('open')?'✕':'☰';
 }
 
-// ════════ STATE SAVE ════════
-function saveState(){
-  try{localStorage.setItem(STORE_KEY,JSON.stringify(state));}catch(e){}
+// ════════ KEYBOARD SHORTCUTS (Enhancement 12) ════════
+function handleKeyboard(e){
+  if(!state||state.submitted)return;
+  if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA')return;
+  const key=e.key.toLowerCase();
+  if(key==='a')selectOpt(0);
+  else if(key==='b')selectOpt(1);
+  else if(key==='c')selectOpt(2);
+  else if(key==='d')selectOpt(3);
+  else if(e.key==='ArrowRight')nextQ();
+  else if(e.key==='ArrowLeft')prevQ();
+  else if(e.key==='Enter'){e.preventDefault();saveNext();}
+  else if(e.key==='m'||e.key==='M')markReview();
+  else if(e.key==='x'||e.key==='X')clearResponse();
 }
 
-// ════════ SUBMIT ════════
+// ════════ STATE SAVE ════════
+function saveState(){try{localStorage.setItem(STORE_KEY,JSON.stringify(state));}catch(e){}}
+
+// ════════ SUBMIT (Enhancement 1: pre-submit summary) ════════
 function confirmSubmit(){
   const ans=state.answers.filter(a=>a>=0).length;
+  const flagged=state.marked.filter(Boolean).length;
+  const unattempted=Q.length-ans;
   document.getElementById('submitMsg').innerHTML=`
-    <table style="width:100%;font-size:13px;color:var(--text)">
-      <tr><td>✅ Answered</td><td style="font-weight:bold;color:var(--green)">${ans}</td></tr>
-      <tr><td>❌ Not Answered</td><td style="font-weight:bold;color:var(--red)">${Q.length-ans}</td></tr>
-      <tr><td>🔖 Marked</td><td style="font-weight:bold;color:var(--purple)">${state.marked.filter(Boolean).length}</td></tr>
-      <tr><td>📋 Total</td><td style="font-weight:bold">${Q.length}</td></tr>
-    </table><br>Once submitted you cannot continue.`;
+    <table class="submit-table">
+      <tr><td>✅ Answered</td><td style="color:var(--success)">${ans}</td></tr>
+      <tr><td>❌ Not Answered</td><td style="color:var(--danger)">${unattempted}</td></tr>
+      <tr><td>🔖 Marked for Review</td><td style="color:var(--purple)">${flagged}</td></tr>
+      <tr><td>📋 Total Questions</td><td>${Q.length}</td></tr>
+    </table>
+    ${unattempted>0||flagged>0?`<div style="margin-top:12px;padding:10px;background:rgba(255,179,0,0.1);border:1px solid rgba(255,179,0,0.3);border-radius:6px;font-size:12px;color:var(--warn)">⚠ You have <b>${unattempted} unattempted</b> and <b>${flagged} flagged</b> questions. Once submitted you cannot continue.</div>`:`<div style="margin-top:10px;font-size:12px;color:var(--text3)">Once submitted you cannot continue.</div>`}`;
   document.getElementById('submitModal').classList.add('show');
 }
 function closeModal(){document.querySelectorAll('.modal-bg').forEach(m=>m.classList.remove('show'));}
-
 function submitExam(){
-  closeModal();
-  clearInterval(timerInterval);
-  state.submitted=true; state.endTime=Date.now();
-  saveState();
-  saveAttemptToHistory(buildAttemptRecord());
-  showResults();
+  closeModal();clearInterval(timerInterval);clearInterval(autoSaveInterval);clearInterval(qTrackInterval);
+  document.removeEventListener('keydown',handleKeyboard);
+  state.submitted=true;state.endTime=Date.now();saveState();
+  saveAttemptToHistory(buildAttemptRecord());showResults();
 }
 
 function buildAttemptRecord(){
-  const sections=[...new Set(Q.map(q=>q.s))];
-  let correct=0,wrong=0,skip=0;
+  const sections=[...new Set(Q.map(q=>q.s))];let correct=0,wrong=0,skip=0;
   Q.forEach((q,i)=>{const a=state.answers[i];if(a<0)skip++;else if(a===q.a)correct++;else wrong++;});
   const secStats=sections.map(sec=>{
-    const qs=Q.map((q,i)=>({...q,i})).filter(q=>q.s===sec);
-    let c=0,w=0,s=0;
+    const qs=Q.map((q,i)=>({...q,i})).filter(q=>q.s===sec);let c=0,w=0,s=0;
     qs.forEach(q=>{const a=state.answers[q.i];if(a<0)s++;else if(a===q.a)c++;else w++;});
     return{name:sec,total:qs.length,correct:c,wrong:w,skip:s,score:+(c*MARKING.correct+w*MARKING.wrong).toFixed(2)};
   });
   const timeTaken=Math.round((Date.now()-(state.startTime||Date.now()-60000))/1000);
   const score=+(correct*MARKING.correct+wrong*MARKING.wrong).toFixed(2);
   const maxScore=Q.length*MARKING.correct;
-  return{
-    paperId:activePaper.id,
-    paperTitle:activePaper.title,
-    date:new Date().toISOString(),
-    timerMode:state.mode||'full',
-    score,maxScore,correct,wrong,skip,
-    accuracy:correct+wrong>0?+((correct/(correct+wrong))*100).toFixed(1):0,
-    timeTaken,totalTime:state.mode==='full'?(CONFIG.fullMins||180)*60:null,
-    sections:secStats
-  };
+  return{paperId:activePaper.id,paperTitle:activePaper.title,date:new Date().toISOString(),timerMode:state.mode||'full',score,maxScore,correct,wrong,skip,accuracy:correct+wrong>0?+((correct/(correct+wrong))*100).toFixed(1):0,timeTaken,totalTime:state.mode==='full'?(CONFIG.fullMins||180)*60:null,sections:secStats};
 }
 
 // ════════ RESULTS ════════
-let reviewVisible=false;
+let reviewVisible=false,reviewMode=null;
 function showResults(){
   document.getElementById('examApp').style.display='none';
-  showScreen('results');
+  showScreen('results');document.getElementById('results').style.display='block';
   renderResults();
 }
 
 function renderResults(){
-  const sections=[...new Set(Q.map(q=>q.s))];
-  let correct=0,wrong=0,skip=0;
+  const sections=[...new Set(Q.map(q=>q.s))];let correct=0,wrong=0,skip=0;
   Q.forEach((q,i)=>{const a=state.answers[i];if(a<0)skip++;else if(a===q.a)correct++;else wrong++;});
   const score=(correct*MARKING.correct+wrong*MARKING.wrong).toFixed(2);
   const maxScore=Q.length*MARKING.correct;
   const pct=maxScore>0?((parseFloat(score)/maxScore)*100).toFixed(1):0;
   const timeTaken=Math.round((Date.now()-(state.startTime||Date.now()))/1000);
   const th=Math.floor(timeTaken/3600),tm=Math.floor((timeTaken%3600)/60),ts=timeTaken%60;
-
   const secStats=sections.map(sec=>{
-    const qs=Q.map((q,i)=>({...q,i})).filter(q=>q.s===sec);
-    let c=0,w=0,s=0;
+    const qs=Q.map((q,i)=>({...q,i})).filter(q=>q.s===sec);let c=0,w=0,s=0;
     qs.forEach(q=>{const a=state.answers[q.i];if(a<0)s++;else if(a===q.a)c++;else w++;});
     return{sec,total:qs.length,c,w,s,score:(c*MARKING.correct+w*MARKING.wrong).toFixed(2)};
   });
-
   const bkms=getBookmarks(activePaper.id);
+
+  // Enhancement 7: weakness by sub-topic
+  const weaknessMap={};
+  Q.forEach((q,i)=>{
+    const match=q.q.match(/<b>([^:]+):<\/b>/);
+    const topic=match?match[1]:q.s;
+    if(!weaknessMap[topic])weaknessMap[topic]={total:0,correct:0};
+    weaknessMap[topic].total++;
+    if(state.answers[i]===q.a)weaknessMap[topic].correct++;
+  });
+  const weakTopics=Object.entries(weaknessMap).map(([t,d])=>({topic:t,pct:d.total>0?Math.round((d.correct/d.total)*100):0,total:d.total,correct:d.correct})).sort((a,b)=>a.pct-b.pct);
 
   document.getElementById('results').innerHTML=`
     <div class="res-card">
+      <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center">
+        <button class="btn btn-outline" onclick="goToDashboard()">← Dashboard</button>
+        <h2 style="font-family:'Orbitron';color:var(--primary);font-size:16px;letter-spacing:1px;flex:1;text-align:center;text-shadow:var(--glow)">SIMULATION COMPLETE</h2>
+        <button class="export-btn" onclick="exportResults()">↓ Export CSV</button>
+      </div>
       <div class="res-banner">
-        <h1>🎓 ${activePaper.title} — Result</h1>
-        <p>Mode: ${state.mode||'Full'} &nbsp;|&nbsp; Time: ${pad(th)}:${pad(tm)}:${pad(ts)} &nbsp;|&nbsp; Accuracy: ${correct+wrong>0?((correct/(correct+wrong))*100).toFixed(1):0}%</p>
+        <h1>◈ ${activePaper.title}</h1>
+        <p>Mode: ${(state.mode||'Full').toUpperCase()} &nbsp;·&nbsp; Time: ${pad(th)}:${pad(tm)}:${pad(ts)} &nbsp;·&nbsp; Accuracy: ${correct+wrong>0?((correct/(correct+wrong))*100).toFixed(1):0}%</p>
       </div>
       <div class="score-grid">
         <div class="sc blue"><div class="sc-num">${score}</div><div class="sc-lbl">Score / ${maxScore}</div></div>
@@ -1091,183 +1763,267 @@ function renderResults(){
         <div class="sc red"><div class="sc-num">${wrong}</div><div class="sc-lbl">Wrong (${MARKING.wrong})</div></div>
         <div class="sc purple"><div class="sc-num">${skip}</div><div class="sc-lbl">Skipped</div></div>
       </div>
-      <h3 style="color:var(--primary);margin-bottom:10px;font-size:14px">📊 Section Performance</h3>
+      <h3 style="font-family:'Orbitron';color:var(--primary);margin-bottom:10px;font-size:12px;letter-spacing:1px;text-shadow:var(--glow)">◈ SECTION PERFORMANCE</h3>
       <table class="sec-table">
         <thead><tr><th>Section</th><th>Qs</th><th>✓</th><th>✗</th><th>Skip</th><th>Score</th><th>%</th></tr></thead>
-        <tbody>${secStats.map(s=>`<tr>
-          <td style="text-align:left;font-weight:600">${s.sec}</td>
-          <td>${s.total}</td><td style="color:var(--green);font-weight:bold">${s.c}</td>
-          <td style="color:var(--red);font-weight:bold">${s.w}</td>
-          <td>${s.s}</td><td style="font-weight:bold">${s.score}</td>
-          <td>${s.total>0?((s.c/s.total)*100).toFixed(0):0}%</td>
-        </tr>`).join('')}</tbody>
-        <tfoot><tr><td>Total</td><td>${Q.length}</td>
-          <td style="color:var(--green);font-weight:bold">${correct}</td>
-          <td style="color:var(--red);font-weight:bold">${wrong}</td>
-          <td>${skip}</td><td><b>${score}/${maxScore}</b></td><td>${pct}%</td>
-        </tr></tfoot>
+        <tbody>${secStats.map(s=>{const p=s.total>0?((s.c/s.total)*100).toFixed(0):0;const col=p>=60?'var(--success)':p>=40?'var(--orange)':'var(--danger)';return`<tr><td style="text-align:left;font-weight:600">${s.sec}</td><td>${s.total}</td><td style="color:var(--success);font-weight:700">${s.c}</td><td style="color:var(--danger);font-weight:700">${s.w}</td><td>${s.s}</td><td style="font-weight:700;font-family:'JetBrains Mono'">${s.score}</td><td style="color:${col};font-weight:700">${p}%</td></tr>`;}).join('')}</tbody>
+        <tfoot><tr><td>Total</td><td>${Q.length}</td><td style="color:var(--success);font-weight:700">${correct}</td><td style="color:var(--danger);font-weight:700">${wrong}</td><td>${skip}</td><td style="font-family:'JetBrains Mono'"><b>${score}/${maxScore}</b></td><td style="font-weight:700">${pct}%</td></tr></tfoot>
       </table>
+
+      <h3 style="font-family:'Orbitron';color:var(--primary);margin-bottom:10px;font-size:12px;letter-spacing:1px;text-shadow:var(--glow)">⚡ TOPIC WEAKNESS REPORT</h3>
+      <div class="weakness-grid">
+        ${weakTopics.map(w=>{const col=w.pct>=60?'var(--success)':w.pct>=40?'var(--orange)':'var(--danger)';return`<div class="weakness-item"><div class="weakness-topic">${w.topic}</div><div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><div class="weakness-bar-wrap" style="flex:1"><div class="weakness-bar" style="width:${w.pct}%;background:${col}"></div></div><span style="font-family:'JetBrains Mono';font-size:11px;color:${col};min-width:32px">${w.pct}%</span></div><div style="font-size:10px;color:var(--text3);font-family:'JetBrains Mono'">${w.correct}/${w.total}</div></div>`;}).join('')}
+      </div>
+
       <div class="review-btns">
-        <button class="btn btn-primary" onclick="toggleReview('all')" id="revAllBtn">📋 All Questions</button>
+        <button class="btn btn-primary" onclick="toggleReview('all')" id="revAllBtn">All Questions</button>
         <button class="btn btn-outline" onclick="toggleReview('wrong')" id="revWrongBtn">❌ Wrong Only</button>
         <button class="btn btn-outline" onclick="toggleReview('bkm')" id="revBkmBtn">★ Bookmarked (${bkms.length})</button>
         <button class="btn btn-green" onclick="retryPaper()">🔄 Retry</button>
-        <button class="btn btn-outline" onclick="goToDashboard()">🏠 Dashboard</button>
+      </div>
+      <div id="reviewSearchWrap" style="display:none">
+        <div class="review-search">
+          <input type="text" id="reviewSearchInput" placeholder="Search questions..." oninput="filterReview()">
+          <select id="reviewFilterSec" onchange="filterReview()">
+            <option value="all">All Sections</option>
+            ${[...new Set(Q.map(q=>q.s))].map(s=>`<option value="${s}">${s}</option>`).join('')}
+          </select>
+        </div>
       </div>
       <div id="answerReview"></div>
     </div>`;
   reviewVisible=false;
 }
 
-let reviewMode=null;
+// Enhancement 14: question search
+function filterReview(){
+  if(!reviewMode)return;
+  const searchVal=document.getElementById('reviewSearchInput')?.value?.toLowerCase()||'';
+  const secFilter=document.getElementById('reviewFilterSec')?.value||'all';
+  renderReviewList(reviewMode,searchVal,secFilter);
+}
+
+let reviewMode2=null;
 function toggleReview(mode){
-  if(reviewMode===mode&&reviewVisible){reviewVisible=false;reviewMode=null;document.getElementById('answerReview').innerHTML='';document.querySelectorAll('[id^=rev]').forEach(b=>b.classList.remove('btn-primary'));return;}
-  reviewMode=mode; reviewVisible=true;
+  if(reviewMode===mode&&reviewVisible){reviewVisible=false;reviewMode=null;document.getElementById('answerReview').innerHTML='';document.getElementById('reviewSearchWrap').style.display='none';document.querySelectorAll('[id^=rev]').forEach(b=>b.classList.remove('btn-primary'));return;}
+  reviewMode=mode;reviewVisible=true;
   document.querySelectorAll('[id^=rev]').forEach(b=>b.classList.remove('btn-primary'));
   const btn=document.getElementById('rev'+(mode==='all'?'All':mode==='wrong'?'Wrong':'Bkm')+'Btn');
-  if(btn) btn.classList.add('btn-primary');
-  const labels=['A','B','C','D'];
-  const bkms=getBookmarks(activePaper.id);
-  const filtered=Q.map((q,i)=>({...q,i})).filter(q=>{
-    if(mode==='all')return true;
+  if(btn)btn.classList.add('btn-primary');
+  document.getElementById('reviewSearchWrap').style.display='block';
+  const el=document.getElementById('reviewSearchInput');if(el)el.value='';
+  const sel=document.getElementById('reviewFilterSec');if(sel)sel.value='all';
+  renderReviewList(mode,'','all');
+  document.getElementById('answerReview').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function renderReviewList(mode,search,secFilter){
+  const labels=['A','B','C','D'];const bkms=getBookmarks(activePaper.id);
+  let filtered=Q.map((q,i)=>({...q,i})).filter(q=>{
     if(mode==='wrong')return state.answers[q.i]>=0&&state.answers[q.i]!==q.a;
     if(mode==='bkm')return bkms.includes(q.i);
     return true;
   });
+  if(secFilter&&secFilter!=='all')filtered=filtered.filter(q=>q.s===secFilter);
+  if(search)filtered=filtered.filter(q=>q.q.toLowerCase().includes(search)||q.o.some(o=>o.toLowerCase().includes(search)));
   const el=document.getElementById('answerReview');
-  el.innerHTML=filtered.length===0?`<div style="text-align:center;padding:24px;color:var(--text3)">No questions in this filter.</div>`:
+  el.innerHTML=filtered.length===0?`<div style="text-align:center;padding:32px;color:var(--text3);font-family:'Orbitron';font-size:12px;letter-spacing:1px">NO QUESTIONS IN THIS FILTER</div>`:
     filtered.map(q=>{
       const i=q.i,ua=state.answers[i],ca=q.a;
       const status=ua<0?'skip':ua===ca?'correct':'wrong';
-      const icons={correct:'✅',wrong:'❌',skip:'⬜'};
-      const isBkm=bkms.includes(i);
+      const icons={correct:'✅',wrong:'❌',skip:'⬜'};const isBkm=bkms.includes(i);
+      const tSpent=qTimeTracking[i]||0;
       return`<div class="q-review ${isBkm?'bookmarked':''}">
         <div class="qr-top">
           <span class="qr-num">Q${i+1}</span>
-          <span style="font-size:11px;color:var(--text3)">[${q.s}]</span>
+          <span style="font-size:10px;color:var(--text3);font-family:'JetBrains Mono'">[${q.s}]</span>
           <span class="badge ${status}">${icons[status]} ${status==='correct'?'Correct':status==='wrong'?'Wrong':'Skipped'}</span>
-          ${ua>=0?`<span style="font-size:11px">Your: <b style="color:${ua===ca?'var(--green)':'var(--red)'}">${labels[ua]}</b></span>`:''}
-          <span style="font-size:11px;color:var(--green)">Ans: <b>${labels[ca]}</b></span>
-          <button class="bkm-btn ${isBkm?'active':''}" onclick="toggleBkmReview(${i})">
-            ${isBkm?'★':'☆'}
-          </button>
+          ${ua>=0?`<span style="font-size:11px">Your: <b style="color:${ua===ca?'var(--success)':'var(--danger)'}">${labels[ua]}</b></span>`:''}
+          <span style="font-size:11px;color:var(--success)">Ans: <b>${labels[ca]}</b></span>
+          ${tSpent>0?`<span style="font-size:10px;color:var(--text3);margin-left:auto;font-family:'JetBrains Mono'">⏱ ${fmtTime(tSpent)}</span>`:''}
+          <button class="bkm-btn ${isBkm?'active':''}" onclick="toggleBkmReview(${i})">${isBkm?'★':'☆'}</button>
         </div>
         <div class="qr-q">${q.q}</div>
-        <div class="qr-opts-grid">
-          ${q.o.map((opt,oi)=>{
-            let cls='';
-            if(oi===ca&&oi===ua)cls='both';else if(oi===ca)cls='ca';else if(oi===ua)cls='ua';
-            return`<div class="qr-opt ${cls}">${labels[oi]}. ${opt}</div>`;
-          }).join('')}
-        </div>
+        <div class="qr-opts-grid">${q.o.map((opt,oi)=>{let cls='';if(oi===ca&&oi===ua)cls='both';else if(oi===ca)cls='ca';else if(oi===ua)cls='ua';return`<div class="qr-opt ${cls}">${labels[oi]}. ${opt}</div>`;}).join('')}</div>
       </div>`;
     }).join('');
-  el.scrollIntoView({behavior:'smooth',block:'start'});
 }
 
-function toggleBkmReview(i){toggleBookmark(activePaper.id,i);toggleReview(reviewMode);}
+function toggleBkmReview(i){toggleBookmark(activePaper.id,i);if(reviewMode)filterReview();}
+
+// Enhancement 13: Export CSV
+function exportResults(){
+  const sections=[...new Set(Q.map(q=>q.s))];let correct=0,wrong=0,skip=0;
+  Q.forEach((q,i)=>{const a=state.answers[i];if(a<0)skip++;else if(a===q.a)correct++;else wrong++;});
+  const rows=[['Q#','Section','Status','Your Answer','Correct Answer','Time Spent (s)']];
+  Q.forEach((q,i)=>{
+    const a=state.answers[i];
+    const status=a<0?'Skipped':a===q.a?'Correct':'Wrong';
+    rows.push([i+1,q.s,status,a>=0?'ABCD'[a]:'—','ABCD'[q.a],qTimeTracking[i]||0]);
+  });
+  const csv=rows.map(r=>r.join(',')).join('\n');
+  const blob=new Blob([csv],{type:'text/csv'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download=`${activePaper.id}_results_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+}
+
 function retryPaper(){
   if(!confirm('Retry? All answers will be lost.'))return;
   try{localStorage.removeItem(STORE_KEY);}catch(e){}
-  reviewVisible=false; reviewMode=null;
-  showScreen(null);
+  reviewVisible=false;reviewMode=null;
   document.getElementById('results').style.display='none';
-  openConfig(activePaper.id);
+  showScreen(null);openConfig(activePaper.id);
 }
 function goToDashboard(){
-  showScreen(null);
-  document.getElementById('results').style.display='none';
+  document.getElementById('results').style.display='none';showScreen(null);
   buildDashboard();
 }
 
-// ════════ HISTORY SCREEN ════════
+// ════════ HISTORY ════════
 let histFilter='all';
-function openHistory(){
-  showScreen('history');
-  renderHistory();
-}
+function openHistory(){showScreen('history');renderHistory();}
 function renderHistory(){
-  const history=getHistory();
-  const papers=[...new Set(history.map(h=>h.paperId))];
+  const history=getHistory();const papers=[...new Set(history.map(h=>h.paperId))];
   const filtered=histFilter==='all'?history:history.filter(h=>h.paperId===histFilter);
-
   document.getElementById('histFilters').innerHTML=
     `<button class="hist-filter ${histFilter==='all'?'active':''}" onclick="setHistFilter('all')">All Papers</button>`+
-    papers.map(pid=>{
-      const p=PAPERS.find(p=>p.id===pid);
-      return`<button class="hist-filter ${histFilter===pid?'active':''}" onclick="setHistFilter('${pid}')">${p?p.title:pid}</button>`;
-    }).join('')+
+    papers.map(pid=>{const p=PAPERS.find(p=>p.id===pid);return`<button class="hist-filter ${histFilter===pid?'active':''}" onclick="setHistFilter('${pid}')">${p?p.title:pid}</button>`;}).join('')+
     (history.length?`<button class="btn btn-outline" style="margin-left:auto;font-size:11px;min-height:34px;padding:5px 10px" onclick="clearAllHistory()">🗑 Clear All</button>`:'');
-
   if(!filtered.length){
-    document.getElementById('histList').innerHTML=`<div class="no-history"><div style="font-size:40px;margin-bottom:10px">📭</div>No attempts yet. Start your first exam from the Dashboard!</div>`;
-    return;
+    document.getElementById('histList').innerHTML=`<div class="no-history">📭<br><br>NO ATTEMPTS YET<br><span style="font-size:11px;color:var(--text3);font-family:'Exo 2'">Start your first simulation from the Dashboard</span></div>`;return;
   }
-  document.getElementById('histList').innerHTML=filtered.map((h,idx)=>{
-    const realIdx=history.indexOf(h);
-    const pct=h.maxScore>0?((h.score/h.maxScore)*100).toFixed(1):0;
-    const scoreColor=pct>=60?'var(--green)':pct>=40?'var(--orange)':'var(--red)';
-    const d=new Date(h.date);
-    const dateStr=d.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})+' '+d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
-    return`<div class="hist-item">
-      <div class="hist-item-hdr" onclick="toggleHistDetail(this)">
-        <div class="hi-date">${dateStr}</div>
-        <div class="hi-paper">${h.paperTitle}<br><span class="hi-badge ${h.timerMode}">${h.timerMode}</span></div>
-        <div>
-          <div class="hi-score" style="color:${scoreColor}">${h.score}</div>
-          <div class="hi-pct">${pct}%</div>
+  // Enhancement 6: trend chart
+  const trendData=filtered.slice(0,20).reverse().map(h=>h.maxScore>0?((h.score/h.maxScore)*100):0);
+  const trendHTML=trendData.length>1?buildTrendChart(trendData):'';
+
+  document.getElementById('histList').innerHTML=
+    (trendHTML?`<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:14px"><div style="font-family:'Orbitron';font-size:11px;color:var(--primary);margin-bottom:8px;letter-spacing:1px">◈ SCORE TREND</div>${trendHTML}</div>`:'')
+    +filtered.map((h,idx)=>{
+      const realIdx=history.indexOf(h);
+      const pct=h.maxScore>0?((h.score/h.maxScore)*100).toFixed(1):0;
+      const scoreColor=pct>=60?'var(--success)':pct>=40?'var(--orange)':'var(--danger)';
+      const d=new Date(h.date);
+      const dateStr=d.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})+' '+d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+      return`<div class="hist-item">
+        <div class="hist-item-hdr" onclick="toggleHistDetail(this)">
+          <div class="hi-date">${dateStr}</div>
+          <div class="hi-paper">${h.paperTitle}<br><span class="hi-badge ${h.timerMode}">${h.timerMode.toUpperCase()}</span></div>
+          <div><div class="hi-score" style="color:${scoreColor}">${h.score}</div><div class="hi-pct">${pct}%</div></div>
+          <button class="del-btn" onclick="event.stopPropagation();deleteAttempt(${realIdx})">✕</button>
         </div>
-        <button class="del-btn" onclick="event.stopPropagation();deleteAttempt(${realIdx})">✕</button>
-      </div>
-      <div class="hist-detail">
-        <div style="display:flex;gap:20px;margin-bottom:10px;font-size:12px;flex-wrap:wrap">
-          <span>✅ <b style="color:var(--green)">${h.correct}</b> Correct</span>
-          <span>❌ <b style="color:var(--red)">${h.wrong}</b> Wrong</span>
-          <span>⬜ <b>${h.skip}</b> Skipped</span>
-          <span>🎯 <b>${h.accuracy}%</b> Accuracy</span>
-          <span>⏱ <b>${fmtTime(h.timeTaken||0)}</b> Time</span>
+        <div class="hist-detail">
+          <div style="display:flex;gap:16px;margin-bottom:10px;font-size:12px;flex-wrap:wrap;font-family:'JetBrains Mono'">
+            <span>✅ <b style="color:var(--success)">${h.correct}</b> Correct</span>
+            <span>❌ <b style="color:var(--danger)">${h.wrong}</b> Wrong</span>
+            <span>⬜ <b>${h.skip}</b> Skipped</span>
+            <span>🎯 <b>${h.accuracy}%</b> Accuracy</span>
+            <span>⏱ <b>${fmtTime(h.timeTaken||0)}</b> Time</span>
+          </div>
+          ${h.sections?h.sections.map(s=>{const p=s.total>0?((s.correct/s.total)*100):0;const col=p>=60?'var(--success)':p>=40?'var(--orange)':'var(--danger)';return`<div class="hist-sec-row"><span style="min-width:120px;font-weight:600">${s.name}</span><div class="hist-sec-bar"><div class="hist-sec-fill" style="width:${p}%;background:${col}"></div></div><span style="color:${col};font-weight:700;min-width:45px;text-align:right">${p.toFixed(0)}%</span><span style="color:var(--text3);font-size:11px;min-width:65px;text-align:right;font-family:'JetBrains Mono'">${s.correct}/${s.total}</span></div>`;}).join(''):''}
         </div>
-        ${h.sections?h.sections.map(s=>{
-          const pct2=s.total>0?((s.correct/s.total)*100):0;
-          const col=pct2>=60?'var(--green)':pct2>=40?'var(--orange)':'var(--red)';
-          return`<div class="hist-sec-row">
-            <span style="min-width:120px;font-weight:600">${s.name}</span>
-            <div class="hist-sec-bar"><div class="hist-sec-fill" style="width:${pct2}%;background:${col}"></div></div>
-            <span style="color:${col};font-weight:700;min-width:50px;text-align:right">${pct2.toFixed(0)}%</span>
-            <span style="color:var(--text3);font-size:11px;min-width:70px;text-align:right">${s.correct}/${s.total}</span>
-          </div>`;}).join(''):''}
-      </div>
-    </div>`;
-  }).join('');
+      </div>`;
+    }).join('');
 }
+
+// Enhancement 6: SVG trend chart
+function buildTrendChart(data){
+  const w=400,h=80,pad=10;const n=data.length;if(n<2)return'';
+  const xStep=(w-pad*2)/(n-1);
+  const pts=data.map((v,i)=>({x:pad+i*xStep,y:h-pad-(v/100)*(h-pad*2)}));
+  const pathD='M '+pts.map(p=>`${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' L ');
+  const areaD=pathD+` L ${pts[pts.length-1].x.toFixed(1)},${h-pad} L ${pts[0].x.toFixed(1)},${h-pad} Z`;
+  const dots=pts.map((p,i)=>`<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="3" fill="${data[i]>=60?'var(--success)':data[i]>=40?'var(--orange)':'var(--danger)'}"><title>${data[i].toFixed(1)}%</title></circle>`).join('');
+  const scoreLabels=pts.map((p,i)=>`<text x="${p.x.toFixed(1)}" y="${(p.y-7).toFixed(1)}" font-size="9" fill="var(--text3)" text-anchor="middle" font-family="JetBrains Mono">${data[i].toFixed(0)}%</text>`).join('');
+  return`<div class="trend-chart-wrap"><svg viewBox="0 0 ${w} ${h}" class="trend-svg" preserveAspectRatio="none">
+    <defs><linearGradient id="tg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--primary)" stop-opacity="0.3"/><stop offset="100%" stop-color="var(--primary)" stop-opacity="0"/></linearGradient></defs>
+    <path d="${areaD}" fill="url(#tg)"/>
+    <path d="${pathD}" fill="none" stroke="var(--primary)" stroke-width="1.5" stroke-linejoin="round"/>
+    ${dots}${scoreLabels}
+  </svg></div>`;
+}
+
 function toggleHistDetail(hdr){hdr.nextElementSibling.classList.toggle('open');}
 function setHistFilter(f){histFilter=f;renderHistory();}
-function clearAllHistory(){
-  if(!confirm('Delete ALL attempt history? This cannot be undone.'))return;
-  localStorage.removeItem('cbt_history');
-  renderHistory();
-}
+function clearAllHistory(){if(!confirm('Delete ALL history?'))return;localStorage.removeItem('cbt_history');renderHistory();}
 
 // ════════ INIT ════════
-initTheme();
-initFirebase();
-buildDashboard();
-
-// Extra: sync theme toggle in exam header
-document.getElementById('themeBtn2').textContent = document.getElementById('themeBtn').textContent;
-
-// Extra: check and start exam
 function checkAndStart(){
-  if(hasSavedState()){
-    document.getElementById('resumeBox').style.display='block';
-    document.getElementById('configActions').style.display='none';
-  } else {
-    startExam(false);
-  }
+  if(hasSavedState()){document.getElementById('resumeBox').style.display='block';document.getElementById('configActions').style.display='none';}
+  else{startExam(false);}
 }
-// Hide results screen initially since it's a .screen now
-document.getElementById('results').style.display='none';
-document.getElementById('examApp').style.display='none';
+
+// ════════ SWIPE GESTURE (Enhancement 3) ════════
+let touchStartX=0,touchStartY=0;
+document.addEventListener('touchstart',e=>{touchStartX=e.touches[0].clientX;touchStartY=e.touches[0].clientY;},{passive:true});
+document.addEventListener('touchend',e=>{
+  if(!state||state.submitted)return;
+  const dx=e.changedTouches[0].clientX-touchStartX;
+  const dy=e.changedTouches[0].clientY-touchStartY;
+  if(Math.abs(dx)>Math.abs(dy)&&Math.abs(dx)>50){
+    // Horizontal swipe on q-content area
+    const qc=document.getElementById('qContent');
+    if(!qc||!qc.contains(e.target))return;
+    if(dx<0)nextQ(); else prevQ();
+  }
+},{passive:true});
+
+// ════════ PARTICLES (3D depth effect) ════════
+function initParticles(){
+  const canvas=document.createElement('canvas');
+  canvas.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:1;opacity:0.35';
+  document.querySelector('.bg-canvas').appendChild(canvas);
+  const ctx=canvas.getContext('2d');
+  let W,H,particles=[];
+  function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
+  resize();window.addEventListener('resize',resize);
+  function mkParticle(){return{x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.5+0.3,vx:(Math.random()-0.5)*0.3,vy:(Math.random()-0.5)*0.3,alpha:Math.random()*0.6+0.1};}
+  for(let i=0;i<80;i++)particles.push(mkParticle());
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    const isDark=document.documentElement.getAttribute('data-theme')!=='light';
+    const col=isDark?'0,200,255':'0,100,200';
+    particles.forEach(p=>{
+      p.x+=p.vx;p.y+=p.vy;
+      if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(${col},${p.alpha})`;ctx.fill();
+    });
+    // draw connections
+    for(let i=0;i<particles.length;i++){
+      for(let j=i+1;j<particles.length;j++){
+        const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y;
+        const dist=Math.sqrt(dx*dx+dy*dy);
+        if(dist<120){ctx.beginPath();ctx.moveTo(particles[i].x,particles[i].y);ctx.lineTo(particles[j].x,particles[j].y);ctx.strokeStyle=`rgba(${col},${(1-dist/120)*0.12})`;ctx.lineWidth=0.5;ctx.stroke();}
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+// ════════ SECTION PROGRESS IN PALETTE HEADER ════════
+function updateRpProgress(){
+  const ans=state?state.answers.filter(a=>a>=0).length:0;
+  const total=Q.length||1;
+  const pct=Math.round((ans/total)*100);
+  let el=document.getElementById('rpProgressBar');
+  if(!el){
+    const hdr=document.querySelector('.rp-hdr');
+    if(hdr){
+      el=document.createElement('div');
+      el.id='rpProgressBar';
+      el.style.cssText='height:3px;background:linear-gradient(90deg,var(--primary),var(--accent));border-radius:0;transition:width .4s;margin-top:4px';
+      hdr.appendChild(el);
+    }
+  }
+  if(el)el.style.width=pct+'%';
+}
+
+// Init particles after page load
+window.addEventListener('load',()=>{
+  try{initParticles();}catch(e){}
+});
 </script>
 </body>
 </html>
