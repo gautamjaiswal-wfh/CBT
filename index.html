@@ -948,6 +948,52 @@ code{font-family:'JetBrains Mono';background:rgba(0,200,255,0.08);padding:1px 5p
     <div style="display:flex;gap:12px;margin-top:20px;flex-wrap:wrap">
       <button class="btn btn-outline" onclick="buildDashboard()">Cancel</button>
       <button class="btn btn-primary" id="createBtn" onclick="createCustomPaper()" disabled>✓ Add to Simulator</button>
+      <button class="btn btn-purple" id="exportCodeBtn" onclick="generateCodeExport()" disabled style="margin-left:auto">📋 Export Code for GitHub</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ EXPORT CODE SCREEN ════════ -->
+<div class="screen" id="exportCode">
+  <div class="page-body">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px">
+      <button class="btn btn-outline" style="padding:6px 14px;font-size:12px" onclick="showScreen('uploadPaper')">← Back</button>
+      <div class="page-title" style="margin:0">📋 GENERATED CODE</div>
+    </div>
+    <div class="page-sub" style="margin-bottom:16px">Copy this code and paste it into the <code style="background:rgba(0,200,255,.1);padding:2px 7px;border-radius:4px;font-size:12px;color:var(--primary)">PAPERS</code> array in your <b>index.html</b> on GitHub.</div>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:16px">
+      <!-- Toolbar -->
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid var(--border);background:var(--glass)">
+        <div style="font-family:'Orbitron';font-size:11px;color:var(--primary);letter-spacing:1px">◈ PAPER OBJECT CODE</div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-outline" style="padding:5px 14px;font-size:11px" onclick="selectAllCode()">Select All</button>
+          <button class="btn btn-primary" style="padding:5px 14px;font-size:11px" onclick="copyCode()" id="copyCodeBtn">📋 Copy Code</button>
+        </div>
+      </div>
+      <!-- Code block -->
+      <pre id="codeOutput" style="
+        margin:0;padding:18px 20px;
+        font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.7;
+        color:var(--text);background:rgba(4,8,15,0.7);
+        overflow-x:auto;max-height:55vh;overflow-y:auto;
+        white-space:pre;tab-size:2;
+        border-radius:0 0 12px 12px;
+      "></pre>
+    </div>
+
+    <!-- Stats -->
+    <div class="parse-stats" id="codeStats" style="margin-bottom:16px"></div>
+
+    <!-- How-to instructions -->
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:16px 20px">
+      <div style="font-family:'Orbitron';font-size:11px;color:var(--primary);letter-spacing:1px;margin-bottom:12px">◈ HOW TO ADD TO YOUR GITHUB</div>
+      <ol style="font-size:13px;color:var(--text2);line-height:2;padding-left:20px">
+        <li>Open your <b>index.html</b> on GitHub → click ✏️ Edit</li>
+        <li>Find <code style="background:rgba(0,200,255,.1);padding:1px 6px;border-radius:3px;color:var(--primary)">const PAPERS = [</code> near line 1034</li>
+        <li>Paste the copied code inside the array <b>before the last <code style="background:rgba(0,200,255,.1);padding:1px 6px;border-radius:3px;color:var(--primary)">];</code></b> — add a comma after the previous paper object</li>
+        <li>Commit the change — your new paper will appear on the Dashboard instantly</li>
+      </ol>
     </div>
   </div>
 </div>
@@ -1991,6 +2037,7 @@ async function handleQPdf(inp){
   document.getElementById('qStat').textContent+=` · ${matched} answers · ${solCount} solutions`;
   renderPreview();
   document.getElementById('createBtn').disabled=_pQs.length===0;
+  document.getElementById('exportCodeBtn').disabled=_pQs.length===0;
 }
 
 async function handleSolPdf(inp){
@@ -2031,6 +2078,78 @@ function createCustomPaper(){
   buildDashboard();
 }
 
+// ╔══════════════════════════════════════╗
+// ║  EXPORT CODE FOR GITHUB              ║
+// ╚══════════════════════════════════════╝
+function generateCodeExport(){
+  if(!_pQs.length){alert('No questions parsed yet. Upload a PDF first.');return;}
+  const title=(document.getElementById('upTitle').value||'Custom Paper').trim();
+  const dur=parseInt(document.getElementById('upDuration').value||120);
+  const corr=parseFloat(document.getElementById('upCorrect').value||1);
+  const wrng=parseFloat(document.getElementById('upWrong').value||-0.25);
+
+  // Build unique sections from questions (or default to General)
+  const sectionNames=[...new Set(_pQs.map(q=>q._sec||'General'))];
+  const sectionCounts={};
+  _pQs.forEach(q=>{const s=q._sec||'General';sectionCounts[s]=(sectionCounts[s]||0)+1;});
+
+  const qLines=_pQs.map(q=>{
+    const sec=q._sec||'General';
+    const opts=JSON.stringify(q.o);
+    const ans=Math.max(q.a,0);
+    const solPart=q.sol?`,sol:${JSON.stringify(q.sol)}`:'';
+    return `  {s:${JSON.stringify(sec)},q:${JSON.stringify(q.q)},o:${opts},a:${ans}${solPart}}`;
+  }).join(',\n');
+
+  const secObj=JSON.stringify(sectionCounts,null,0).replace(/"/g,'');
+
+  const code=`{
+  id:'custom_${Date.now()}',
+  title:${JSON.stringify(title)},
+  subtitle:'Uploaded Paper · ${_pQs.length} Questions',
+  duration:${dur}*60,
+  marking:{correct:${corr},wrong:${wrng}},
+  sections:${secObj},
+  questions:[
+${qLines}
+  ]
+}`;
+
+  // Show export screen
+  document.getElementById('codeOutput').textContent=code;
+  const withA=_pQs.filter(q=>q.a>=0).length;
+  const withS=_pQs.filter(q=>q.sol).length;
+  document.getElementById('codeStats').innerHTML=
+    `<div class="parse-stat"><span>${_pQs.length}</span>Questions</div>`+
+    `<div class="parse-stat"><span>${withA}</span>With Answers</div>`+
+    `<div class="parse-stat"><span>${withS}</span>With Solutions</div>`+
+    `<div class="parse-stat"><span>${sectionNames.length}</span>Sections</div>`;
+  showScreen('exportCode');
+}
+
+function copyCode(){
+  const code=document.getElementById('codeOutput').textContent;
+  navigator.clipboard.writeText(code).then(()=>{
+    const btn=document.getElementById('copyCodeBtn');
+    const orig=btn.textContent;btn.textContent='✓ Copied!';btn.style.background='linear-gradient(135deg,var(--success),#00b04a)';
+    setTimeout(()=>{btn.textContent=orig;btn.style.background='';},2000);
+  }).catch(()=>{
+    // Fallback for browsers without clipboard API
+    const ta=document.createElement('textarea');
+    ta.value=code;ta.style.position='fixed';ta.style.opacity='0';
+    document.body.appendChild(ta);ta.select();document.execCommand('copy');
+    document.body.removeChild(ta);
+    const btn=document.getElementById('copyCodeBtn');
+    btn.textContent='✓ Copied!';setTimeout(()=>{btn.textContent='📋 Copy Code';},2000);
+  });
+}
+
+function selectAllCode(){
+  const el=document.getElementById('codeOutput');
+  const range=document.createRange();range.selectNodeContents(el);
+  const sel=window.getSelection();sel.removeAllRanges();sel.addRange(range);
+}
+
 
 // ╔══════════════════════════════════════╗
 // ║  RENAME PAPERS                       ║
@@ -2069,7 +2188,16 @@ function hasActiveSession(paperId){
 }
 
 // ════════ FIREBASE ════════
-const FIREBASE_CONFIG = null;
+const firebaseConfig = {
+  apiKey: "AIzaSyDDYYyECxxcvXJm3hNYJFnlRJZDDaArYTs",
+  authDomain: "imucet-32224.firebaseapp.com",
+  databaseURL: "https://imucet-32224-default-rtdb.firebaseio.com",
+  projectId: "imucet-32224",
+  storageBucket: "imucet-32224.firebasestorage.app",
+  messagingSenderId: "666845893984",
+  appId: "1:666845893984:web:9d6e81d41f6e1d365f7a05",
+  measurementId: "G-NCMH2GWXCV"
+};
 
 // ════════ APP STATE ════════
 let activePaper=null,Q=[],DURATION=0,MARKING={},STORE_KEY='',CONFIG={};
@@ -2167,7 +2295,7 @@ function buildDashboard(){
         <div class="rename-wrap">
           <h3 data-title="${p.title}" style="margin:0;flex:1">◈ ${displayName} ${isCustom?'<span style="font-size:10px;color:var(--purple);background:rgba(179,136,255,.15);padding:2px 7px;border-radius:8px;font-family:JetBrains Mono">CUSTOM</span>':''}${hasSession?'<span class="resume-badge">⟳ IN PROGRESS</span>':''}</h3>
           <button class="rename-btn" title="Rename" onclick="event.stopPropagation();startRename('${p.id}',this)">✏️</button>
-        </div></h3>
+        </div>
         <p>${p.subtitle}</p>
         ${isCustom?`<button onclick="event.stopPropagation();deleteCustomPaper('${p.id}')" style="position:absolute;top:0;right:0;background:rgba(255,51,102,.12);border:1px solid rgba(255,51,102,.25);color:var(--danger);padding:3px 9px;border-radius:6px;font-size:10px;cursor:pointer">✕ Delete</button>`:''}
       </div>
@@ -2690,10 +2818,13 @@ function retryPaper(){
   try{localStorage.removeItem(STORE_KEY);}catch(e){}
   reviewVisible=false;reviewMode=null;
   document.getElementById('results').style.display='none';
+  document.getElementById('examApp').style.display='none';
   showScreen(null);openConfig(activePaper.id);
 }
 function goToDashboard(){
-  document.getElementById('results').style.display='none';showScreen(null);
+  document.getElementById('results').style.display='none';
+  document.getElementById('examApp').style.display='none';
+  showScreen(null);
   buildDashboard();
 }
 
