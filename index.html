@@ -713,7 +713,62 @@ code{font-family:'JetBrains Mono';background:rgba(0,200,255,0.08);padding:1px 5p
   font-family:'JetBrains Mono';animation:pulseWarn 1s ease-in-out infinite;
 }
 @keyframes pulseWarn{0%,100%{opacity:1}50%{opacity:.5}}
+
+/* UPLOAD SCREEN */
+.upload-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px}
+@media(max-width:600px){.upload-grid{grid-template-columns:1fr}}
+.up-field{display:flex;flex-direction:column;gap:6px}
+.up-field label{font-size:11px;color:var(--text3);font-family:'JetBrains Mono';letter-spacing:.5px;text-transform:uppercase}
+.up-input{background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:9px 12px;border-radius:8px;font-family:'Exo 2';font-size:14px;transition:border .2s}
+.up-input:focus{outline:none;border-color:var(--primary);box-shadow:var(--glow)}
+.drop-zone{border:2px dashed var(--border);border-radius:12px;padding:24px 20px;text-align:center;cursor:pointer;transition:all .25s;margin-bottom:12px;background:var(--surface);position:relative}
+.drop-zone:hover,.drop-zone.drag-over{border-color:var(--primary);background:rgba(0,200,255,.06);box-shadow:var(--glow)}
+.drop-zone.done{border-color:var(--success);background:rgba(0,230,118,.05)}
+.drop-zone.error{border-color:var(--danger);background:rgba(255,51,102,.05)}
+.dz-icon{font-size:30px;margin-bottom:6px}
+.dz-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:3px}
+.dz-sub{font-size:11px;color:var(--text3)}
+.dz-status{margin-top:8px;font-size:12px;font-family:'JetBrains Mono';min-height:18px}
+.up-preview{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px;margin-top:8px;max-height:260px;overflow-y:auto}
+.up-prev-q{padding:7px 0;border-bottom:1px solid var(--border2);font-size:12px}
+.up-prev-q:last-child{border-bottom:none}
+.up-prev-num{font-family:'JetBrains Mono';color:var(--primary);font-size:11px;margin-right:6px}
+.up-prev-opts{display:flex;gap:6px;margin-top:4px;flex-wrap:wrap}
+.up-prev-opt{font-size:10px;color:var(--text3);padding:2px 7px;border-radius:4px;background:var(--surface3)}
+.up-prev-opt.ans{color:var(--success);border:1px solid rgba(0,230,118,.4)}
+.parse-stats{display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.parse-stat{background:var(--surface3);padding:8px 14px;border-radius:8px;font-family:'JetBrains Mono';font-size:11px;text-align:center;flex:1}
+.parse-stat span{display:block;font-size:20px;font-weight:700;color:var(--primary)}
+/* SECTION ANALYTICS */
+.sec-analytics{margin:16px 0 20px}
+.sec-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:9px}
+.sec-bar-label{min-width:120px;font-size:12px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sec-bar-track{flex:1;height:16px;background:var(--surface3);border-radius:8px;overflow:hidden}
+.sec-bar-fill{height:100%;border-radius:8px;transition:width .7s cubic-bezier(.4,0,.2,1)}
+.sec-bar-pct{min-width:36px;font-family:'JetBrains Mono';font-size:11px;font-weight:700;text-align:right}
+.sec-badge{min-width:68px;text-align:center;font-size:9px;font-family:'JetBrains Mono';padding:2px 7px;border-radius:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.sb-excellent{color:#00e676;background:rgba(0,230,118,.12);border:1px solid rgba(0,230,118,.3)}
+.sb-strong{color:#64ffda;background:rgba(100,255,218,.1);border:1px solid rgba(100,255,218,.25)}
+.sb-average{color:#ffb300;background:rgba(255,179,0,.1);border:1px solid rgba(255,179,0,.25)}
+.sb-weak{color:#ff6b35;background:rgba(255,107,53,.12);border:1px solid rgba(255,107,53,.3)}
+.sb-critical{color:#ff3366;background:rgba(255,51,102,.1);border:1px solid rgba(255,51,102,.3)}
+.focus-box{background:var(--surface2);border-radius:10px;padding:12px 14px;margin:12px 0;border-left:3px solid var(--danger)}
+.focus-box h4,.strength-box h4{font-family:'Orbitron';font-size:10px;letter-spacing:1px;margin-bottom:8px}
+.focus-box h4{color:var(--danger)}
+.strength-box{background:var(--surface2);border-radius:10px;padding:12px 14px;margin:12px 0;border-left:3px solid var(--success)}
+.strength-box h4{color:var(--success)}
+.analytics-item{display:flex;align-items:center;gap:8px;margin-bottom:5px;font-size:12px}
+.analytics-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+/* SOLUTION BLOCK */
+.sol-block{margin-top:10px}
+.sol-toggle{background:rgba(0,200,255,.07);border:1px solid var(--border);color:var(--primary);padding:6px 12px;width:100%;text-align:left;cursor:pointer;font-family:'JetBrains Mono';font-size:10px;letter-spacing:.5px;transition:background .2s;border-radius:8px;display:flex;align-items:center;gap:6px}
+.sol-toggle:hover{background:rgba(0,200,255,.14)}
+.sol-toggle.open{border-radius:8px 8px 0 0}
+.sol-body{display:none;background:rgba(0,200,255,.04);border:1px solid var(--border);border-top:none;padding:12px;font-size:12px;color:var(--text);line-height:1.75;border-radius:0 0 8px 8px}
+.sol-body.open{display:block}
+
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 </head>
 <body>
 <div class="bg-canvas">
@@ -750,6 +805,9 @@ code{font-family:'JetBrains Mono';background:rgba(0,200,255,0.08);padding:1px 5p
   <div class="page-body">
     <div class="page-title">◈ EXAM BANK</div>
     <div class="page-sub">Select a paper to enter simulation. Progress saves every second automatically.</div>
+    <div style="display:flex;justify-content:flex-end;margin-bottom:12px">
+      <button class="btn btn-primary" style="font-size:13px;padding:9px 18px" onclick="showScreen('uploadPaper')">📄 + Upload Paper from PDF</button>
+    </div>
     <div class="card-grid" id="paperGrid"></div>
   </div>
 </div>
@@ -806,6 +864,47 @@ code{font-family:'JetBrains Mono';background:rgba(0,200,255,0.08);padding:1px 5p
     <div class="page-sub">Track your performance across all sessions. Click any entry to expand.</div>
     <div class="hist-filters" id="histFilters"></div>
     <div class="hist-list" id="histList"></div>
+  </div>
+</div>
+
+
+<!-- UPLOAD PAPER -->
+<div class="screen" id="uploadPaper">
+  <div class="page-body">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px">
+      <button class="btn btn-outline" style="padding:6px 14px;font-size:12px" onclick="buildDashboard()">← Back</button>
+      <div class="page-title" style="margin:0">📄 UPLOAD EXAM PAPER</div>
+    </div>
+    <div class="page-sub" style="margin-bottom:18px">Upload any exam PDF — questions are auto-detected with answers &amp; solutions.</div>
+    <div class="upload-grid">
+      <div class="up-field"><label>Exam Title</label><input class="up-input" id="upTitle" placeholder="e.g. NDA Mock Paper 3"/></div>
+      <div class="up-field"><label>Duration (minutes)</label><input class="up-input" type="number" id="upDuration" value="120" min="5"/></div>
+      <div class="up-field"><label>Marks for Correct</label><input class="up-input" type="number" id="upCorrect" value="1" step="0.25"/></div>
+      <div class="up-field"><label>Penalty for Wrong</label><input class="up-input" type="number" id="upWrong" value="-0.25" step="0.25"/></div>
+    </div>
+    <div id="qDropZone" class="drop-zone" onclick="document.getElementById('qPdfIn').click()"
+         ondragover="dzOver(event,'qDropZone')" ondragleave="dzLeave('qDropZone')" ondrop="dzDrop(event,'qPdfIn')">
+      <input type="file" id="qPdfIn" accept=".pdf" style="display:none" onchange="handleQPdf(this)">
+      <div class="dz-icon">📋</div><div class="dz-title">Questions PDF</div>
+      <div class="dz-sub">Click to browse or drag &amp; drop</div>
+      <div class="dz-status" id="qStat"></div>
+    </div>
+    <div id="solDropZone" class="drop-zone" onclick="document.getElementById('solPdfIn').click()"
+         ondragover="dzOver(event,'solDropZone')" ondragleave="dzLeave('solDropZone')" ondrop="dzDrop(event,'solPdfIn')">
+      <input type="file" id="solPdfIn" accept=".pdf" style="display:none" onchange="handleSolPdf(this)">
+      <div class="dz-icon">💡</div><div class="dz-title">Solutions / Answers PDF <span style="font-size:11px;color:var(--text3)">(optional)</span></div>
+      <div class="dz-sub">Upload if separate — also works if answers are in the same Questions PDF</div>
+      <div class="dz-status" id="solStat"></div>
+    </div>
+    <div id="upPreview" style="display:none">
+      <div class="parse-stats" id="parseStats"></div>
+      <h4 style="font-family:'Orbitron';font-size:11px;color:var(--primary);letter-spacing:1px;margin-bottom:8px">◈ PREVIEW (first 5 questions)</h4>
+      <div class="up-preview" id="prevList"></div>
+    </div>
+    <div style="display:flex;gap:12px;margin-top:20px;flex-wrap:wrap">
+      <button class="btn btn-outline" onclick="buildDashboard()">Cancel</button>
+      <button class="btn btn-primary" id="createBtn" onclick="createCustomPaper()" disabled>✓ Add to Simulator</button>
+    </div>
   </div>
 </div>
 
@@ -1281,8 +1380,394 @@ const PAPERS = [
 {s:'Number Decoding',q:"If 'RADIO' = 94, what is the code for 'MAP'?",o:['52','60','64','66'],a:1},
 {s:'Number Decoding',q:"If 'MAP' = 30, what is the code for 'BRAVE'?",o:['52','43','48','51'],a:2}
   ]
+},
+{
+  id:'imu_eng_mock',
+  title:'IMU-CET English',
+  subtitle:'Mock Exam · 200 Questions · 8 Topics',
+  duration:120*60,
+  marking:{correct:1,wrong:-0.25},
+  sections:{Tenses:25,'Subject-Verb':25,'Active-Passive':25,Conditionals:25,Synonyms:25,Antonyms:25,'One-Word Sub':25,'Noun-Pronoun':25},
+  questions:[
+// TENSES
+{s:'Tenses',q:'By the time Rahul arrived, the team ___ for four hours.',o:['is waiting','had been waiting','has waited','waits'],a:1,sol:'Past Perfect Continuous is used for an action that was ongoing up to a certain point in the past.'},
+{s:'Tenses',q:'By the time Priya arrived, the team ___ since morning.',o:['is waiting','has waited','had been waiting','waits'],a:2,sol:'Past Perfect Continuous is used for an action that was ongoing up to a certain point in the past.'},
+{s:'Tenses',q:'By the time Amit arrived, the team ___ all day.',o:['waits','had been waiting','has waited','is waiting'],a:1,sol:'Past Perfect Continuous is used for an action that was ongoing up to a certain point in the past.'},
+{s:'Tenses',q:'By the time Sneha arrived, the team ___ for a long time.',o:['had been waiting','waits','has waited','is waiting'],a:0,sol:'Past Perfect Continuous is used for an action that was ongoing up to a certain point in the past.'},
+{s:'Tenses',q:'By the time Karan arrived, the team ___ since 2 PM.',o:['waits','has waited','had been waiting','is waiting'],a:2,sol:'Past Perfect Continuous is used for an action that was ongoing up to a certain point in the past.'},
+{s:'Tenses',q:'I usually ___ to the office, but today I am walking. (a)',o:['am driving','drive','will drive','drove'],a:1,sol:'Simple present is used for habitual actions indicated by words like "usually".'},
+{s:'Tenses',q:'I usually ___ to the office, but today I am walking. (b)',o:['am driving','drove','drive','will drive'],a:2,sol:'Simple present is used for habitual actions indicated by words like "usually".'},
+{s:'Tenses',q:'I usually ___ to the office, but today I am walking. (c)',o:['am driving','drive','drove','will drive'],a:1,sol:'Simple present is used for habitual actions indicated by words like "usually".'},
+{s:'Tenses',q:'I usually ___ to the office, but today I am walking. (d)',o:['drove','will drive','drive','am driving'],a:2,sol:'Simple present is used for habitual actions indicated by words like "usually".'},
+{s:'Tenses',q:'I usually ___ to the office, but today I am walking. (e)',o:['am driving','drive','will drive','drove'],a:1,sol:'Simple present is used for habitual actions indicated by words like "usually".'},
+{s:'Tenses',q:'Next year, she ___ from her master\'s program. (a)',o:['graduates','will graduate','has graduated','graduated'],a:1,sol:'Future tense is required for actions scheduled to happen next year.'},
+{s:'Tenses',q:'Next year, she ___ from her master\'s program. (b)',o:['will graduate','has graduated','graduated','graduates'],a:0,sol:'Future tense is required for actions scheduled to happen next year.'},
+{s:'Tenses',q:'Next year, she ___ from her master\'s program. (c)',o:['will graduate','graduates','has graduated','graduated'],a:0,sol:'Future tense is required for actions scheduled to happen next year.'},
+{s:'Tenses',q:'Next year, she ___ from her master\'s program. (d)',o:['graduates','has graduated','will graduate','graduated'],a:2,sol:'Future tense is required for actions scheduled to happen next year.'},
+{s:'Tenses',q:'Next year, she ___ from her master\'s program. (e)',o:['graduated','will graduate','graduates','has graduated'],a:1,sol:'Future tense is required for actions scheduled to happen next year.'},
+{s:'Tenses',q:'It ___ heavily since early morning. (a)',o:['rained','was raining','is raining','has been raining'],a:3,sol:'"Since morning" indicates an action started in the past and still continuing — use Present Perfect Continuous.'},
+{s:'Tenses',q:'It ___ heavily since early morning. (b)',o:['was raining','is raining','has been raining','rained'],a:2,sol:'"Since morning" indicates an action started in the past and still continuing — use Present Perfect Continuous.'},
+{s:'Tenses',q:'It ___ heavily since early morning. (c)',o:['is raining','rained','has been raining','was raining'],a:2,sol:'"Since morning" indicates an action started in the past and still continuing — use Present Perfect Continuous.'},
+{s:'Tenses',q:'It ___ heavily since early morning. (d)',o:['is raining','rained','has been raining','was raining'],a:2,sol:'"Since morning" indicates an action started in the past and still continuing — use Present Perfect Continuous.'},
+{s:'Tenses',q:'It ___ heavily since early morning. (e)',o:['rained','is raining','has been raining','was raining'],a:2,sol:'"Since morning" indicates an action started in the past and still continuing — use Present Perfect Continuous.'},
+{s:'Tenses',q:'Whenever Rahul visits the orphanage, he ___ gifts.',o:['is bringing','brings','bring','brought'],a:1,sol:'Simple present is used for habitual or repeated actions occurring in the present.'},
+{s:'Tenses',q:'Whenever Priya visits the orphanage, he ___ gifts.',o:['brings','bring','is bringing','brought'],a:0,sol:'Simple present is used for habitual or repeated actions occurring in the present.'},
+{s:'Tenses',q:'Whenever Amit visits the orphanage, he ___ gifts.',o:['brings','is bringing','bring','brought'],a:0,sol:'Simple present is used for habitual or repeated actions occurring in the present.'},
+{s:'Tenses',q:'Whenever Sneha visits the orphanage, he ___ gifts.',o:['brought','bring','is bringing','brings'],a:3,sol:'Simple present is used for habitual or repeated actions occurring in the present.'},
+{s:'Tenses',q:'Whenever Karan visits the orphanage, he ___ gifts.',o:['brings','brought','bring','is bringing'],a:0,sol:'Simple present is used for habitual or repeated actions occurring in the present.'},
+// SUBJECT-VERB
+{s:'Subject-Verb',q:'Either Rahul or Rohan ___ responsible for this task.',o:['were','are','have','is'],a:3,sol:'When two singular subjects are joined by "either...or", the verb must be singular.'},
+{s:'Subject-Verb',q:'Either Priya or Kavya ___ responsible for this task.',o:['were','are','have','is'],a:3,sol:'When two singular subjects are joined by "either...or", the verb must be singular.'},
+{s:'Subject-Verb',q:'Either Amit or Vikram ___ responsible for this task.',o:['is','are','have','were'],a:0,sol:'When two singular subjects are joined by "either...or", the verb must be singular.'},
+{s:'Subject-Verb',q:'Either Sneha or Neha ___ responsible for this task.',o:['were','have','is','are'],a:2,sol:'When two singular subjects are joined by "either...or", the verb must be singular.'},
+{s:'Subject-Verb',q:'Either Karan or Arjun ___ responsible for this task.',o:['are','have','were','is'],a:3,sol:'When two singular subjects are joined by "either...or", the verb must be singular.'},
+{s:'Subject-Verb',q:'The collection of books ___ missing from the desk.',o:['are','were','was','have been'],a:2,sol:'The collective noun "collection" acts as a singular unit and takes a singular verb.'},
+{s:'Subject-Verb',q:'The collection of files ___ missing from the desk.',o:['are','have been','were','was'],a:3,sol:'The collective noun "collection" acts as a singular unit and takes a singular verb.'},
+{s:'Subject-Verb',q:'The collection of documents ___ missing from the desk.',o:['have been','were','are','was'],a:3,sol:'The collective noun "collection" acts as a singular unit and takes a singular verb.'},
+{s:'Subject-Verb',q:'The collection of records ___ missing from the desk.',o:['are','have been','was','were'],a:2,sol:'The collective noun "collection" acts as a singular unit and takes a singular verb.'},
+{s:'Subject-Verb',q:'The collection of laptops ___ missing from the desk.',o:['were','was','are','have been'],a:1,sol:'The collective noun "collection" acts as a singular unit and takes a singular verb.'},
+{s:'Subject-Verb',q:'A number of boys ___ gathered outside the hall.',o:['have','is','has','was'],a:0,sol:'"A number of" is always followed by a plural noun and a plural verb.'},
+{s:'Subject-Verb',q:'A number of girls ___ gathered outside the hall.',o:['have','is','has','was'],a:0,sol:'"A number of" is always followed by a plural noun and a plural verb.'},
+{s:'Subject-Verb',q:'A number of students ___ gathered outside the hall.',o:['is','has','was','have'],a:3,sol:'"A number of" is always followed by a plural noun and a plural verb.'},
+{s:'Subject-Verb',q:'A number of players ___ gathered outside the hall.',o:['has','have','is','was'],a:1,sol:'"A number of" is always followed by a plural noun and a plural verb.'},
+{s:'Subject-Verb',q:'A number of members ___ gathered outside the hall.',o:['have','is','was','has'],a:0,sol:'"A number of" is always followed by a plural noun and a plural verb.'},
+{s:'Subject-Verb',q:'Neither of the books ___ working properly.',o:['were','is','have','are'],a:1,sol:'"Neither" is singular and requires a singular verb.'},
+{s:'Subject-Verb',q:'Neither of the files ___ working properly.',o:['were','are','is','have'],a:2,sol:'"Neither" is singular and requires a singular verb.'},
+{s:'Subject-Verb',q:'Neither of the documents ___ working properly.',o:['have','were','is','are'],a:2,sol:'"Neither" is singular and requires a singular verb.'},
+{s:'Subject-Verb',q:'Neither of the records ___ working properly.',o:['are','is','were','have'],a:1,sol:'"Neither" is singular and requires a singular verb.'},
+{s:'Subject-Verb',q:'Neither of the laptops ___ working properly.',o:['have','are','is','were'],a:2,sol:'"Neither" is singular and requires a singular verb.'},
+{s:'Subject-Verb',q:'Mathematics, along with physics, ___ a challenging subject. (a)',o:['were','have been','are','is'],a:3,sol:'When subjects are joined by "along with", the verb agrees with the first (main) subject.'},
+{s:'Subject-Verb',q:'Mathematics, along with physics, ___ a challenging subject. (b)',o:['are','have been','were','is'],a:3,sol:'When subjects are joined by "along with", the verb agrees with the first (main) subject.'},
+{s:'Subject-Verb',q:'Mathematics, along with physics, ___ a challenging subject. (c)',o:['are','have been','were','is'],a:3,sol:'When subjects are joined by "along with", the verb agrees with the first (main) subject.'},
+{s:'Subject-Verb',q:'Mathematics, along with physics, ___ a challenging subject. (d)',o:['is','were','have been','are'],a:0,sol:'When subjects are joined by "along with", the verb agrees with the first (main) subject.'},
+{s:'Subject-Verb',q:'Mathematics, along with physics, ___ a challenging subject. (e)',o:['have been','were','is','are'],a:2,sol:'When subjects are joined by "along with", the verb agrees with the first (main) subject.'},
+// ACTIVE-PASSIVE
+{s:'Active-Passive',q:'Rahul is writing a formal letter. (Choose correct passive)',o:['A formal letter has been written by Rahul.','A formal letter is written by Rahul.','A formal letter was written by Rahul.','A formal letter is being written by Rahul.'],a:3,sol:'Present continuous passive uses "is/are being + past participle".'},
+{s:'Active-Passive',q:'Priya is writing a formal letter. (Choose correct passive)',o:['A formal letter is written by Priya.','A formal letter was written by Priya.','A formal letter is being written by Priya.','A formal letter has been written by Priya.'],a:2,sol:'Present continuous passive uses "is/are being + past participle".'},
+{s:'Active-Passive',q:'Amit is writing a formal letter. (Choose correct passive)',o:['A formal letter is being written by Amit.','A formal letter has been written by Amit.','A formal letter is written by Amit.','A formal letter was written by Amit.'],a:0,sol:'Present continuous passive uses "is/are being + past participle".'},
+{s:'Active-Passive',q:'Sneha is writing a formal letter. (Choose correct passive)',o:['A formal letter is written by Sneha.','A formal letter was written by Sneha.','A formal letter has been written by Sneha.','A formal letter is being written by Sneha.'],a:3,sol:'Present continuous passive uses "is/are being + past participle".'},
+{s:'Active-Passive',q:'Karan is writing a formal letter. (Choose correct passive)',o:['A formal letter has been written by Karan.','A formal letter is being written by Karan.','A formal letter is written by Karan.','A formal letter was written by Karan.'],a:1,sol:'Present continuous passive uses "is/are being + past participle".'},
+{s:'Active-Passive',q:'They will complete the books by tomorrow. (Choose correct passive)',o:['The books will be completed by tomorrow.','The books completes by tomorrow.','The books would be completed by tomorrow.','The books is completed by tomorrow.'],a:0,sol:'Future simple passive uses "will be + past participle".'},
+{s:'Active-Passive',q:'They will complete the files by tomorrow. (Choose correct passive)',o:['The files will be completed by tomorrow.','The files would be completed by tomorrow.','The files is completed by tomorrow.','The files completes by tomorrow.'],a:0,sol:'Future simple passive uses "will be + past participle".'},
+{s:'Active-Passive',q:'They will complete the documents by tomorrow. (Choose correct passive)',o:['The documents is completed by tomorrow.','The documents will be completed by tomorrow.','The documents would be completed by tomorrow.','The documents completes by tomorrow.'],a:1,sol:'Future simple passive uses "will be + past participle".'},
+{s:'Active-Passive',q:'They will complete the records by tomorrow. (Choose correct passive)',o:['The records will be completed by tomorrow.','The records completes by tomorrow.','The records would be completed by tomorrow.','The records is completed by tomorrow.'],a:0,sol:'Future simple passive uses "will be + past participle".'},
+{s:'Active-Passive',q:'They will complete the laptops by tomorrow. (Choose correct passive)',o:['The laptops will be completed by tomorrow.','The laptops is completed by tomorrow.','The laptops completes by tomorrow.','The laptops would be completed by tomorrow.'],a:0,sol:'Future simple passive uses "will be + past participle".'},
+{s:'Active-Passive',q:'Who broke the window? (Choose correct passive)',o:['By who the window was broken?','By whom was the window broken?','The window was broken by who?','Who was the window broken by?'],a:1,sol:'"Who" changes to "By whom" in passive voice questions.'},
+{s:'Active-Passive',q:'Who broke the door? (Choose correct passive)',o:['The door was broken by who?','By whom was the door broken?','Who was the door broken by?','By who the door was broken?'],a:1,sol:'"Who" changes to "By whom" in passive voice questions.'},
+{s:'Active-Passive',q:'Who broke the gate? (Choose correct passive)',o:['By who the gate was broken?','Who was the gate broken by?','By whom was the gate broken?','The gate was broken by who?'],a:2,sol:'"Who" changes to "By whom" in passive voice questions.'},
+{s:'Active-Passive',q:'Who broke the box? (Choose correct passive)',o:['The box was broken by who?','By whom was the box broken?','By who the box was broken?','Who was the box broken by?'],a:1,sol:'"Who" changes to "By whom" in passive voice questions.'},
+{s:'Active-Passive',q:'Who broke the package? (Choose correct passive)',o:['The package was broken by who?','By who the package was broken?','Who was the package broken by?','By whom was the package broken?'],a:3,sol:'"Who" changes to "By whom" in passive voice questions.'},
+{s:'Active-Passive',q:'The teacher has punished Rahul. (Choose correct passive)',o:['Rahul was punished by the teacher.','Rahul had been punished by the teacher.','Rahul is punished by the teacher.','Rahul has been punished by the teacher.'],a:3,sol:'Present perfect passive uses "has/have been + past participle".'},
+{s:'Active-Passive',q:'The teacher has punished Priya. (Choose correct passive)',o:['Priya had been punished by the teacher.','Priya has been punished by the teacher.','Priya was punished by the teacher.','Priya is punished by the teacher.'],a:1,sol:'Present perfect passive uses "has/have been + past participle".'},
+{s:'Active-Passive',q:'The teacher has punished Amit. (Choose correct passive)',o:['Amit was punished by the teacher.','Amit has been punished by the teacher.','Amit is punished by the teacher.','Amit had been punished by the teacher.'],a:1,sol:'Present perfect passive uses "has/have been + past participle".'},
+{s:'Active-Passive',q:'The teacher has punished Sneha. (Choose correct passive)',o:['Sneha had been punished by the teacher.','Sneha was punished by the teacher.','Sneha is punished by the teacher.','Sneha has been punished by the teacher.'],a:3,sol:'Present perfect passive uses "has/have been + past participle".'},
+{s:'Active-Passive',q:'The teacher has punished Karan. (Choose correct passive)',o:['Karan was punished by the teacher.','Karan had been punished by the teacher.','Karan is punished by the teacher.','Karan has been punished by the teacher.'],a:3,sol:'Present perfect passive uses "has/have been + past participle".'},
+{s:'Active-Passive',q:'Open the window. (Choose correct passive)',o:['The window is opened.','Let the window be opened.','The window should open.','Open the window please.'],a:1,sol:'Imperative passive uses "Let + object + be + past participle".'},
+{s:'Active-Passive',q:'Open the door. (Choose correct passive)',o:['Open the door please.','Let the door be opened.','The door should open.','The door is opened.'],a:1,sol:'Imperative passive uses "Let + object + be + past participle".'},
+{s:'Active-Passive',q:'Open the gate. (Choose correct passive)',o:['Open the gate please.','Let the gate be opened.','The gate is opened.','The gate should open.'],a:1,sol:'Imperative passive uses "Let + object + be + past participle".'},
+{s:'Active-Passive',q:'Open the box. (Choose correct passive)',o:['Let the box be opened.','Open the box please.','The box should open.','The box is opened.'],a:0,sol:'Imperative passive uses "Let + object + be + past participle".'},
+{s:'Active-Passive',q:'Open the package. (Choose correct passive)',o:['The package should open.','The package is opened.','Let the package be opened.','Open the package please.'],a:2,sol:'Imperative passive uses "Let + object + be + past participle".'},
+// CONDITIONALS
+{s:'Conditionals',q:'If Rahul ___ a bird, he would fly across the ocean.',o:['had been','was','is','were'],a:3,sol:'Hypothetical conditions use "were" for all subjects in the Second Conditional.'},
+{s:'Conditionals',q:'If Priya ___ a bird, she would fly across the ocean.',o:['were','had been','is','was'],a:0,sol:'Hypothetical conditions use "were" for all subjects in the Second Conditional.'},
+{s:'Conditionals',q:'If Amit ___ a bird, he would fly across the ocean.',o:['were','is','had been','was'],a:0,sol:'Hypothetical conditions use "were" for all subjects in the Second Conditional.'},
+{s:'Conditionals',q:'If Sneha ___ a bird, she would fly across the ocean.',o:['were','had been','is','was'],a:0,sol:'Hypothetical conditions use "were" for all subjects in the Second Conditional.'},
+{s:'Conditionals',q:'If Karan ___ a bird, he would fly across the ocean.',o:['had been','were','is','was'],a:1,sol:'Hypothetical conditions use "were" for all subjects in the Second Conditional.'},
+{s:'Conditionals',q:'Unless you study rigorously, you ___ the exam.',o:['will pass','would not pass','pass','will not pass'],a:3,sol:'"Unless" means "if not" — the main clause requires a negative future outcome.'},
+{s:'Conditionals',q:'Unless you study rigorously, you ___ the test.',o:['pass','will not pass','will pass','would not pass'],a:1,sol:'"Unless" means "if not" — the main clause requires a negative future outcome.'},
+{s:'Conditionals',q:'Unless you study rigorously, you ___ the quiz.',o:['will pass','will not pass','would not pass','pass'],a:1,sol:'"Unless" means "if not" — the main clause requires a negative future outcome.'},
+{s:'Conditionals',q:'Unless you study rigorously, you ___ the assessment.',o:['will not pass','would not pass','will pass','pass'],a:0,sol:'"Unless" means "if not" — the main clause requires a negative future outcome.'},
+{s:'Conditionals',q:'Unless you study rigorously, you ___ the evaluation.',o:['pass','would not pass','will not pass','will pass'],a:2,sol:'"Unless" means "if not" — the main clause requires a negative future outcome.'},
+{s:'Conditionals',q:'Had I seen Rahul earlier, I ___ him.',o:['would have greeted','would greet','will greet','greeted'],a:0,sol:'Third Conditional inversion: "Had + subject + V3" requires "would have + V3" in the main clause.'},
+{s:'Conditionals',q:'Had I seen Priya earlier, I ___ her.',o:['will greet','would have greeted','greeted','would greet'],a:1,sol:'Third Conditional inversion: "Had + subject + V3" requires "would have + V3" in the main clause.'},
+{s:'Conditionals',q:'Had I seen Amit earlier, I ___ him.',o:['will greet','would greet','would have greeted','greeted'],a:2,sol:'Third Conditional inversion: "Had + subject + V3" requires "would have + V3" in the main clause.'},
+{s:'Conditionals',q:'Had I seen Sneha earlier, I ___ her.',o:['would greet','will greet','would have greeted','greeted'],a:2,sol:'Third Conditional inversion: "Had + subject + V3" requires "would have + V3" in the main clause.'},
+{s:'Conditionals',q:'Had I seen Karan earlier, I ___ him.',o:['greeted','would greet','would have greeted','will greet'],a:2,sol:'Third Conditional inversion: "Had + subject + V3" requires "would have + V3" in the main clause.'},
+{s:'Conditionals',q:'If it rains heavily, we ___ the match.',o:['cancel','will cancel','would cancel','cancelled'],a:1,sol:'First Conditional: simple present in if-clause, future (will + V1) in main clause.'},
+{s:'Conditionals',q:'If it rains heavily, we ___ the picnic.',o:['would cancel','cancelled','cancel','will cancel'],a:3,sol:'First Conditional: simple present in if-clause, future (will + V1) in main clause.'},
+{s:'Conditionals',q:'If it rains heavily, we ___ the meeting.',o:['would cancel','will cancel','cancelled','cancel'],a:1,sol:'First Conditional: simple present in if-clause, future (will + V1) in main clause.'},
+{s:'Conditionals',q:'If it rains heavily, we ___ the party.',o:['cancel','would cancel','will cancel','cancelled'],a:2,sol:'First Conditional: simple present in if-clause, future (will + V1) in main clause.'},
+{s:'Conditionals',q:'If it rains heavily, we ___ the trip.',o:['will cancel','would cancel','cancelled','cancel'],a:0,sol:'First Conditional: simple present in if-clause, future (will + V1) in main clause.'},
+{s:'Conditionals',q:'If I won the lottery today, I ___ a new car. (a)',o:['buy','would buy','had bought','will buy'],a:1,sol:'Second Conditional: simple past in if-clause, "would + V1" in main clause.'},
+{s:'Conditionals',q:'If I won the lottery today, I ___ a new car. (b)',o:['had bought','buy','will buy','would buy'],a:3,sol:'Second Conditional: simple past in if-clause, "would + V1" in main clause.'},
+{s:'Conditionals',q:'If I won the lottery today, I ___ a new car. (c)',o:['had bought','buy','will buy','would buy'],a:3,sol:'Second Conditional: simple past in if-clause, "would + V1" in main clause.'},
+{s:'Conditionals',q:'If I won the lottery today, I ___ a new car. (d)',o:['had bought','will buy','would buy','buy'],a:2,sol:'Second Conditional: simple past in if-clause, "would + V1" in main clause.'},
+{s:'Conditionals',q:'If I won the lottery today, I ___ a new car. (e)',o:['buy','would buy','had bought','will buy'],a:1,sol:'Second Conditional: simple past in if-clause, "would + V1" in main clause.'},
+// SYNONYMS
+{s:'Synonyms',q:"Select the synonym of 'ABUNDANT':",o:['Persistent','Bravery','Plentiful','Kind'],a:2,sol:"The synonym of 'Abundant' is 'Plentiful' — both mean existing in large quantities."},
+{s:'Synonyms',q:"Select the synonym of 'CANDID':",o:['Alleviate','Genuine','Frank','Plentiful'],a:2,sol:"The synonym of 'Candid' is 'Frank' — both mean open and honest."},
+{s:'Synonyms',q:"Select the synonym of 'OBSOLETE':",o:['Profitable','Outdated','Beginner','Peculiar'],a:1,sol:"The synonym of 'Obsolete' is 'Outdated' — both mean no longer in use."},
+{s:'Synonyms',q:"Select the synonym of 'MITIGATE':",o:['Alleviate','Peculiar','Sociable','Unavoidable'],a:0,sol:"The synonym of 'Mitigate' is 'Alleviate' — both mean to make less severe."},
+{s:'Synonyms',q:"Select the synonym of 'EPHEMERAL':",o:['Transient','Arrogant','Cloudy','Practical'],a:0,sol:"The synonym of 'Ephemeral' is 'Transient' — both mean lasting for a very short time."},
+{s:'Synonyms',q:"Select the synonym of 'DILIGENT':",o:['Profitable','Industrious','Arrogant','Bravery'],a:1,sol:"The synonym of 'Diligent' is 'Industrious' — both mean hardworking and persistent."},
+{s:'Synonyms',q:"Select the synonym of 'ENIGMATIC':",o:['Kind','Unclear','Beginner','Mysterious'],a:3,sol:"The synonym of 'Enigmatic' is 'Mysterious' — both mean puzzling or hard to understand."},
+{s:'Synonyms',q:"Select the synonym of 'LUCRATIVE':",o:['Profitable','Transient','Persistent','Careful'],a:0,sol:"The synonym of 'Lucrative' is 'Profitable' — both mean producing much money."},
+{s:'Synonyms',q:"Select the synonym of 'TENACIOUS':",o:['Cloudy','Genuine','Sluggish','Persistent'],a:3,sol:"The synonym of 'Tenacious' is 'Persistent' — both mean holding on firmly."},
+{s:'Synonyms',q:"Select the synonym of 'BENEVOLENT':",o:['Postpone','Careful','Genuine','Kind'],a:3,sol:"The synonym of 'Benevolent' is 'Kind' — both mean well-meaning and charitable."},
+{s:'Synonyms',q:"Select the synonym of 'PRAGMATIC':",o:['Beginner','Cloudy','Industrious','Practical'],a:3,sol:"The synonym of 'Pragmatic' is 'Practical' — both mean dealing with things sensibly."},
+{s:'Synonyms',q:"Select the synonym of 'AUTHENTIC':",o:['Unclear','Genuine','Joyful','Frank'],a:1,sol:"The synonym of 'Authentic' is 'Genuine' — both mean real or original."},
+{s:'Synonyms',q:"Select the synonym of 'LETHARGIC':",o:['Peculiar','Industrious','Careful','Sluggish'],a:3,sol:"The synonym of 'Lethargic' is 'Sluggish' — both mean lacking energy."},
+{s:'Synonyms',q:"Select the synonym of 'AMBIGUOUS':",o:['Outdated','Plentiful','Genuine','Unclear'],a:3,sol:"The synonym of 'Ambiguous' is 'Unclear' — both mean open to more than one interpretation."},
+{s:'Synonyms',q:"Select the synonym of 'CALLOUS':",o:['Insensitive','Joyful','Profitable','Mysterious'],a:0,sol:"The synonym of 'Callous' is 'Insensitive' — both mean showing no feeling for others."},
+{s:'Synonyms',q:"Select the synonym of 'DEFER':",o:['Unclear','Transient','Postpone','Sluggish'],a:2,sol:"The synonym of 'Defer' is 'Postpone' — both mean to put off to a later time."},
+{s:'Synonyms',q:"Select the synonym of 'ECCENTRIC':",o:['Peculiar','Mysterious','Sluggish','Cloudy'],a:0,sol:"The synonym of 'Eccentric' is 'Peculiar' — both mean unconventional or odd."},
+{s:'Synonyms',q:"Select the synonym of 'FORTITUDE':",o:['Bravery','Joyful','Genuine','Practical'],a:0,sol:"The synonym of 'Fortitude' is 'Bravery' — both mean courage in difficult situations."},
+{s:'Synonyms',q:"Select the synonym of 'GREGARIOUS':",o:['Transient','Outdated','Sociable','Peculiar'],a:2,sol:"The synonym of 'Gregarious' is 'Sociable' — both mean fond of company."},
+{s:'Synonyms',q:"Select the synonym of 'HAUGHTY':",o:['Kind','Beginner','Arrogant','Peculiar'],a:2,sol:"The synonym of 'Haughty' is 'Arrogant' — both mean having an exaggerated sense of superiority."},
+{s:'Synonyms',q:"Select the synonym of 'INEVITABLE':",o:['Cloudy','Unclear','Unavoidable','Peculiar'],a:2,sol:"The synonym of 'Inevitable' is 'Unavoidable' — both mean certain to happen."},
+{s:'Synonyms',q:"Select the synonym of 'JUBILANT':",o:['Unclear','Unavoidable','Joyful','Kind'],a:2,sol:"The synonym of 'Jubilant' is 'Joyful' — both mean feeling great happiness."},
+{s:'Synonyms',q:"Select the synonym of 'METICULOUS':",o:['Careful','Outdated','Profitable','Unclear'],a:0,sol:"The synonym of 'Meticulous' is 'Careful' — both mean showing great attention to detail."},
+{s:'Synonyms',q:"Select the synonym of 'NOVICE':",o:['Unavoidable','Beginner','Joyful','Cloudy'],a:1,sol:"The synonym of 'Novice' is 'Beginner' — both mean someone new to a skill."},
+{s:'Synonyms',q:"Select the synonym of 'OPAQUE':",o:['Persistent','Unavoidable','Sociable','Cloudy'],a:3,sol:"The synonym of 'Opaque' is 'Cloudy' — both mean not allowing light to pass through."},
+// ANTONYMS
+{s:'Antonyms',q:"Select the antonym of 'ARROGANT':",o:['Definite','Base','Nadir','Humble'],a:3,sol:"The antonym of 'Arrogant' is 'Humble' — arrogant means excessively proud; humble means modest."},
+{s:'Antonyms',q:"Select the antonym of 'BARREN':",o:['Wild','Fertile','Pessimistic','Fake'],a:1,sol:"The antonym of 'Barren' is 'Fertile' — barren means unable to produce; fertile means productive."},
+{s:'Antonyms',q:"Select the antonym of 'CAUTIOUS':",o:['Vanish','Reckless','Rural','Pessimistic'],a:1,sol:"The antonym of 'Cautious' is 'Reckless' — cautious means careful; reckless means careless."},
+{s:'Antonyms',q:"Select the antonym of 'DENSE':",o:['Definite','Rigid','Nadir','Sparse'],a:3,sol:"The antonym of 'Dense' is 'Sparse' — dense means closely packed; sparse means thinly scattered."},
+{s:'Antonyms',q:"Select the antonym of 'EMERGE':",o:['Temporary','Slow','Vanish','Fresh'],a:2,sol:"The antonym of 'Emerge' is 'Vanish' — emerge means to come out; vanish means to disappear."},
+{s:'Antonyms',q:"Select the antonym of 'FLEXIBLE':",o:['Superior','Pessimistic','Rigid','Fertile'],a:2,sol:"The antonym of 'Flexible' is 'Rigid' — flexible means easily bent; rigid means stiff."},
+{s:'Antonyms',q:"Select the antonym of 'GENUINE':",o:['Pessimistic','Resist','Fake','Reckless'],a:2,sol:"The antonym of 'Genuine' is 'Fake' — genuine means real; fake means not real."},
+{s:'Antonyms',q:"Select the antonym of 'HOSTILE':",o:['Friendly','Definite','Nadir','Irrational'],a:0,sol:"The antonym of 'Hostile' is 'Friendly' — hostile means unfriendly; friendly means warm."},
+{s:'Antonyms',q:"Select the antonym of 'INFERIOR':",o:['Rigid','Humble','Superior','Vanish'],a:2,sol:"The antonym of 'Inferior' is 'Superior' — inferior means lower in rank; superior means higher."},
+{s:'Antonyms',q:"Select the antonym of 'JOYFUL':",o:['Pessimistic','Fake','Rigid','Sorrowful'],a:3,sol:"The antonym of 'Joyful' is 'Sorrowful' — joyful means happy; sorrowful means sad."},
+{s:'Antonyms',q:"Select the antonym of 'KEEN':",o:['Wild','Pessimistic','Reluctant','Rigid'],a:2,sol:"The antonym of 'Keen' is 'Reluctant' — keen means eager; reluctant means unwilling."},
+{s:'Antonyms',q:"Select the antonym of 'LOGICAL':",o:['Irrational','Reckless','Friendly','Noisy'],a:0,sol:"The antonym of 'Logical' is 'Irrational' — logical means based on reason; irrational means not."},
+{s:'Antonyms',q:"Select the antonym of 'MINIMUM':",o:['Noisy','Maximum','Wild','Rural'],a:1,sol:"The antonym of 'Minimum' is 'Maximum' — minimum is the least; maximum is the most."},
+{s:'Antonyms',q:"Select the antonym of 'NOBLE':",o:['Poor','Rigid','Base','Vanish'],a:2,sol:"The antonym of 'Noble' is 'Base' — noble means of high moral quality; base means morally low."},
+{s:'Antonyms',q:"Select the antonym of 'OPTIMISTIC':",o:['Reckless','Pessimistic','Sparse','Friendly'],a:1,sol:"The antonym of 'Optimistic' is 'Pessimistic' — optimistic expects the best; pessimistic the worst."},
+{s:'Antonyms',q:"Select the antonym of 'PERMANENT':",o:['Maximum','Wild','Pessimistic','Temporary'],a:3,sol:"The antonym of 'Permanent' is 'Temporary' — permanent means lasting; temporary means short-lived."},
+{s:'Antonyms',q:"Select the antonym of 'QUIET':",o:['Superior','Wild','Rigid','Noisy'],a:3,sol:"The antonym of 'Quiet' is 'Noisy' — quiet means making little sound; noisy means loud."},
+{s:'Antonyms',q:"Select the antonym of 'RAPID':",o:['Irrational','Slow','Wild','Fertile'],a:1,sol:"The antonym of 'Rapid' is 'Slow' — rapid means fast; slow means at low speed."},
+{s:'Antonyms',q:"Select the antonym of 'STALE':",o:['Fake','Maximum','Fresh','Definite'],a:2,sol:"The antonym of 'Stale' is 'Fresh' — stale means no longer fresh; fresh means new."},
+{s:'Antonyms',q:"Select the antonym of 'TAME':",o:['Slow','Wild','Reluctant','Irrational'],a:1,sol:"The antonym of 'Tame' is 'Wild' — tame means domesticated; wild means undomesticated."},
+{s:'Antonyms',q:"Select the antonym of 'URBAN':",o:['Temporary','Rural','Humble','Wild'],a:1,sol:"The antonym of 'Urban' is 'Rural' — urban relates to cities; rural to the countryside."},
+{s:'Antonyms',q:"Select the antonym of 'VAGUE':",o:['Maximum','Slow','Definite','Base'],a:2,sol:"The antonym of 'Vague' is 'Definite' — vague means unclear; definite means clear and precise."},
+{s:'Antonyms',q:"Select the antonym of 'WEALTHY':",o:['Maximum','Poor','Fertile','Reluctant'],a:1,sol:"The antonym of 'Wealthy' is 'Poor' — wealthy means having much money; poor means having little."},
+{s:'Antonyms',q:"Select the antonym of 'YIELD':",o:['Poor','Rural','Definite','Resist'],a:3,sol:"The antonym of 'Yield' is 'Resist' — yield means to give way; resist means to fight against."},
+{s:'Antonyms',q:"Select the antonym of 'ZENITH':",o:['Definite','Nadir','Resist','Reckless'],a:1,sol:"The antonym of 'Zenith' is 'Nadir' — zenith is the highest point; nadir is the lowest."},
+// ONE-WORD SUBSTITUTION
+{s:'One-Word Sub',q:"Give one word for: A person who does not believe in God",o:['Omniscient','Omnipresent','Island','Atheist'],a:3,sol:"'Atheist' — a person who does not believe in the existence of God."},
+{s:'One-Word Sub',q:"Give one word for: A government by the people",o:['Thermometer','Astronomy','Democracy','Hydrophobia'],a:2,sol:"'Democracy' — a form of government in which the people exercise power."},
+{s:'One-Word Sub',q:"Give one word for: One who knows everything",o:['Agenda','Omniscient','Orphanage','Library'],a:1,sol:"'Omniscient' — having complete or unlimited knowledge."},
+{s:'One-Word Sub',q:"Give one word for: A life history written by oneself",o:['Autobiography','Panacea','Illegible','Hydrophobia'],a:0,sol:"'Autobiography' — an account of a person's life written by that person."},
+{s:'One-Word Sub',q:"Give one word for: A place where books are kept",o:['Pediatrician','Astronomy','Library','Atheist'],a:2,sol:"'Library' — a place where books, periodicals, and other material are kept for people to read."},
+{s:'One-Word Sub',q:"Give one word for: A piece of land surrounded by water",o:['Mint','Hydrophobia','Thermometer','Island'],a:3,sol:"'Island' — a piece of land completely surrounded by water."},
+{s:'One-Word Sub',q:"Give one word for: A person who loves mankind",o:['Philanthropist','Glutton','Agenda','Hydrophobia'],a:0,sol:"'Philanthropist' — a person who seeks to promote the welfare of others."},
+{s:'One-Word Sub',q:"Give one word for: That which cannot be read",o:['Island','Thermometer','Illegible','Aquatic'],a:2,sol:"'Illegible' — not clear enough to be read; not legible."},
+{s:'One-Word Sub',q:"Give one word for: One who eats too much",o:['Glutton','Omniscient','Numismatist','Philanthropist'],a:0,sol:"'Glutton' — an excessively greedy eater."},
+{s:'One-Word Sub',q:"Give one word for: A remedy for all diseases",o:['Philanthropist','Panacea','Astronomy','Omnipresent'],a:1,sol:"'Panacea' — a solution or remedy for all difficulties or diseases."},
+{s:'One-Word Sub',q:"Give one word for: An instrument to measure temperature",o:['Island','Omniscient','Thermometer','Mint'],a:2,sol:"'Thermometer' — an instrument for measuring temperature."},
+{s:'One-Word Sub',q:"Give one word for: A place where orphans live",o:['Glutton','Astronomy','Agenda','Orphanage'],a:3,sol:"'Orphanage' — a residential institution for the care of orphans."},
+{s:'One-Word Sub',q:"Give one word for: One who is present everywhere",o:['Illegible','Panacea','Decade','Omnipresent'],a:3,sol:"'Omnipresent' — present everywhere at the same time."},
+{s:'One-Word Sub',q:"Give one word for: Murder of a human being",o:['Democracy','Illegible','Homicide','Aquatic'],a:2,sol:"'Homicide' — the killing of one human being by another."},
+{s:'One-Word Sub',q:"Give one word for: A period of ten years",o:['Thermometer','Opaque','Decade','Insolvent'],a:2,sol:"'Decade' — a period of ten years."},
+{s:'One-Word Sub',q:"Give one word for: Animals that live in water",o:['Aquatic','Glutton','Pessimist','Illegible'],a:0,sol:"'Aquatic' — relating to or living in water."},
+{s:'One-Word Sub',q:"Give one word for: A person unable to pay his debts",o:['Mint','Opaque','Insolvent','Library'],a:2,sol:"'Insolvent' — unable to pay debts owed; bankrupt."},
+{s:'One-Word Sub',q:"Give one word for: The study of stars and planets",o:['Aquatic','Numismatist','Astronomy','Orphanage'],a:2,sol:"'Astronomy' — the branch of science that deals with celestial objects."},
+{s:'One-Word Sub',q:"Give one word for: A list of items to be discussed at a meeting",o:['Illegible','Island','Agenda','Insolvent'],a:2,sol:"'Agenda' — a list of items to be discussed at a formal meeting."},
+{s:'One-Word Sub',q:"Give one word for: That which cannot be seen through",o:['Atheist','Insolvent','Astronomy','Opaque'],a:3,sol:"'Opaque' — not able to be seen through; not transparent."},
+{s:'One-Word Sub',q:"Give one word for: Fear of water",o:['Hydrophobia','Homicide','Mint','Illegible'],a:0,sol:"'Hydrophobia' — extreme or irrational fear of water; also used for rabies."},
+{s:'One-Word Sub',q:"Give one word for: A place where coins are made",o:['Orphanage','Mint','Library','Atheist'],a:1,sol:"'Mint' — a place where money is coined by authority of the government."},
+{s:'One-Word Sub',q:"Give one word for: A person who collects coins",o:['Insolvent','Island','Numismatist','Hydrophobia'],a:2,sol:"'Numismatist' — a person who collects and studies coins, banknotes, and medals."},
+{s:'One-Word Sub',q:"Give one word for: One who looks at the dark side of things",o:['Aquatic','Glutton','Pessimist','Mint'],a:2,sol:"'Pessimist' — a person who tends to see the worst aspect of things."},
+{s:'One-Word Sub',q:"Give one word for: A doctor who treats children",o:['Pediatrician','Orphanage','Glutton','Pessimist'],a:0,sol:"'Pediatrician' — a doctor who specializes in the medical care of children."},
+// NOUN-PRONOUN
+{s:'Noun-Pronoun',q:'The committee submitted ___ final report yesterday. (a)',o:['its','his','their','her'],a:0,sol:"A collective noun acting as a single unit takes the singular pronoun 'its'."},
+{s:'Noun-Pronoun',q:'The committee submitted ___ final report yesterday. (b)',o:['her','his','their','its'],a:3,sol:"A collective noun acting as a single unit takes the singular pronoun 'its'."},
+{s:'Noun-Pronoun',q:'The committee submitted ___ final report yesterday. (c)',o:['its','his','their','her'],a:0,sol:"A collective noun acting as a single unit takes the singular pronoun 'its'."},
+{s:'Noun-Pronoun',q:'The committee submitted ___ final report yesterday. (d)',o:['her','their','its','his'],a:2,sol:"A collective noun acting as a single unit takes the singular pronoun 'its'."},
+{s:'Noun-Pronoun',q:'The committee submitted ___ final report yesterday. (e)',o:['their','his','her','its'],a:3,sol:"A collective noun acting as a single unit takes the singular pronoun 'its'."},
+{s:'Noun-Pronoun',q:"One must respect ___ elders at all times. (a)",o:["her","their","one's","his"],a:2,sol:"The indefinite pronoun 'one' must be followed by its possessive form 'one\'s'."},
+{s:'Noun-Pronoun',q:"One must respect ___ elders at all times. (b)",o:["one's","her","their","his"],a:0,sol:"The indefinite pronoun 'one' must be followed by its possessive form 'one\'s'."},
+{s:'Noun-Pronoun',q:"One must respect ___ elders at all times. (c)",o:["her","his","one's","their"],a:2,sol:"The indefinite pronoun 'one' must be followed by its possessive form 'one\'s'."},
+{s:'Noun-Pronoun',q:"One must respect ___ elders at all times. (d)",o:["their","one's","his","her"],a:1,sol:"The indefinite pronoun 'one' must be followed by its possessive form 'one\'s'."},
+{s:'Noun-Pronoun',q:"One must respect ___ elders at all times. (e)",o:["his","her","one's","their"],a:2,sol:"The indefinite pronoun 'one' must be followed by its possessive form 'one\'s'."},
+{s:'Noun-Pronoun',q:'Between you and ___, this matter is strictly confidential. (a)',o:['mine','myself','me','I'],a:2,sol:"Prepositions like 'between' must be followed by pronouns in the objective case ('me', not 'I')."},
+{s:'Noun-Pronoun',q:'Between you and ___, this matter is strictly confidential. (b)',o:['mine','I','myself','me'],a:3,sol:"Prepositions like 'between' must be followed by pronouns in the objective case ('me', not 'I')."},
+{s:'Noun-Pronoun',q:'Between you and ___, this matter is strictly confidential. (c)',o:['myself','I','mine','me'],a:3,sol:"Prepositions like 'between' must be followed by pronouns in the objective case ('me', not 'I')."},
+{s:'Noun-Pronoun',q:'Between you and ___, this matter is strictly confidential. (d)',o:['myself','I','me','mine'],a:2,sol:"Prepositions like 'between' must be followed by pronouns in the objective case ('me', not 'I')."},
+{s:'Noun-Pronoun',q:'Between you and ___, this matter is strictly confidential. (e)',o:['mine','I','me','myself'],a:2,sol:"Prepositions like 'between' must be followed by pronouns in the objective case ('me', not 'I')."},
+{s:'Noun-Pronoun',q:'The scenery of Kashmir ___ incredibly beautiful.',o:['were','is','are','have been'],a:1,sol:"'Scenery' is an uncountable noun and always takes a singular verb."},
+{s:'Noun-Pronoun',q:'The scenery of Switzerland ___ incredibly beautiful.',o:['are','were','have been','is'],a:3,sol:"'Scenery' is an uncountable noun and always takes a singular verb."},
+{s:'Noun-Pronoun',q:'The scenery of Shimla ___ incredibly beautiful.',o:['were','is','have been','are'],a:1,sol:"'Scenery' is an uncountable noun and always takes a singular verb."},
+{s:'Noun-Pronoun',q:'The scenery of Manali ___ incredibly beautiful.',o:['have been','were','are','is'],a:3,sol:"'Scenery' is an uncountable noun and always takes a singular verb."},
+{s:'Noun-Pronoun',q:'The scenery of Ooty ___ incredibly beautiful.',o:['were','is','are','have been'],a:1,sol:"'Scenery' is an uncountable noun and always takes a singular verb."},
+{s:'Noun-Pronoun',q:'Each of the boys ___ awarded a gold medal.',o:['was','have','were','are'],a:0,sol:"'Each of' is followed by a plural noun but takes a singular verb ('was')."},
+{s:'Noun-Pronoun',q:'Each of the girls ___ awarded a gold medal.',o:['were','are','was','have'],a:2,sol:"'Each of' is followed by a plural noun but takes a singular verb ('was')."},
+{s:'Noun-Pronoun',q:'Each of the students ___ awarded a gold medal.',o:['were','was','are','have'],a:1,sol:"'Each of' is followed by a plural noun but takes a singular verb ('was')."},
+{s:'Noun-Pronoun',q:'Each of the players ___ awarded a gold medal.',o:['were','are','have','was'],a:3,sol:"'Each of' is followed by a plural noun but takes a singular verb ('was')."},
+{s:'Noun-Pronoun',q:'Each of the members ___ awarded a gold medal.',o:['have','were','was','are'],a:2,sol:"'Each of' is followed by a plural noun but takes a singular verb ('was')."}
+  ]
 }
 ];
+
+
+// ╔═════════════════════════════════════════╗
+// ║  CUSTOM PAPERS                          ║
+// ╚═════════════════════════════════════════╝
+function getCustomPapers(){try{return JSON.parse(localStorage.getItem('cbt_custom_papers')||'[]');}catch(e){return [];}}
+function saveCustomPapers(a){localStorage.setItem('cbt_custom_papers',JSON.stringify(a));}
+function getAllPapers(){return[...PAPERS,...getCustomPapers()];}
+function deleteCustomPaper(id){
+  if(!confirm('Delete this custom paper? All its history will remain.'))return;
+  saveCustomPapers(getCustomPapers().filter(p=>p.id!==id));
+  buildDashboard();
+}
+function openPaperById(id){
+  const p=getAllPapers().find(p=>p.id===id);
+  if(p)openConfig(id);
+}
+
+// ╔═════════════════════════════════════════╗
+// ║  PDF UPLOAD & PARSER                    ║
+// ╚═════════════════════════════════════════╝
+let _pQs=[],_pSols={};
+
+function dzOver(e,id){e.preventDefault();document.getElementById(id).classList.add('drag-over');}
+function dzLeave(id){document.getElementById(id).classList.remove('drag-over');}
+function dzDrop(e,inputId){
+  e.preventDefault();e.currentTarget.classList.remove('drag-over');
+  const file=e.dataTransfer.files[0];if(!file)return;
+  const inp=document.getElementById(inputId);
+  try{const dt=new DataTransfer();dt.items.add(file);inp.files=dt.files;}catch(er){}
+  inp.dispatchEvent(new Event('change'));
+}
+
+async function getPdfText(file,statId,zoneId){
+  const zn=document.getElementById(zoneId),st=document.getElementById(statId);
+  zn.classList.remove('done','error');st.style.color='var(--warn)';st.textContent='⏳ Reading PDF…';
+  try{
+    pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    const buf=await file.arrayBuffer();
+    const pdf=await pdfjsLib.getDocument({data:buf}).promise;
+    let pages=[];
+    for(let i=1;i<=pdf.numPages;i++){
+      const page=await pdf.getPage(i);
+      const tc=await page.getTextContent();
+      let prevY=null,line='',lines=[];
+      for(const item of tc.items){
+        const y=Math.round(item.transform[5]);
+        if(prevY!==null&&Math.abs(y-prevY)>4){lines.push(line.trim());line='';}
+        line+=item.str+' ';prevY=y;
+      }
+      if(line.trim())lines.push(line.trim());
+      pages.push(lines.join('\n'));
+    }
+    const text=pages.join('\n');
+    st.style.color='var(--success)';st.textContent=`✓ ${pdf.numPages} pages read`;
+    zn.classList.add('done');return text;
+  }catch(err){
+    st.style.color='var(--danger)';st.textContent='✗ '+err.message;
+    zn.classList.add('error');return null;
+  }
+}
+
+function parseQs(text){
+  const qs=[]; const lines=text.split('\n').map(l=>l.trim()).filter(Boolean);
+  const qRe=/^(?:Q\.?\s*)?([1-9]\d*)[.)]\s+(.+)/i;
+  const oRe=/^\(?([A-Da-d])[.)]\s*(.*)/;
+  const stopRe=/answer\s*key|explanation|detailed\s*answer|ANSWERS?:\s*$|^ANS\.?\s*KEY/i;
+  let cur=null,opts=[],inOpts=false;
+  function push(){if(cur&&opts.length===4&&cur.q.length>4)qs.push({...cur,o:opts.slice(),a:-1});cur=null;opts=[];inOpts=false;}
+  for(let li=0;li<lines.length;li++){
+    const ln=lines[li];
+    if(stopRe.test(ln)){push();break;}
+    const qm=qRe.exec(ln);
+    if(qm&&parseInt(qm[1])===qs.length+1+(cur?1:0)){
+      push();
+      let q=qm[2];
+      while(li+1<lines.length&&!oRe.test(lines[li+1])&&!qRe.exec(lines[li+1]))q+=' '+(lines[++li]);
+      cur={_n:parseInt(qm[1]),q:q.trim()};inOpts=false;continue;
+    }
+    if(cur){
+      const om=oRe.exec(ln);
+      if(om){
+        inOpts=true;let ot=om[2];
+        while(li+1<lines.length&&!oRe.test(lines[li+1])&&!qRe.exec(lines[li+1])&&!stopRe.test(lines[li+1]))ot+=' '+(lines[++li]);
+        opts.push(ot.trim());
+      }else if(!inOpts){cur.q+=' '+ln;}
+    }
+  }
+  push();return qs;
+}
+
+function parseAnsKey(text){
+  const ans={};
+  // Patterns: Q1. (b), Q1. b, 1. B, 1) B, Answer: (b), Ans: b
+  const p=/[Qq]?\.?\s*([1-9]\d*)[.):]?\s*(?:Answer[:\s]+)?(?:Ans[:\s]+)?\(?([A-Da-d])\)?/g;
+  let m;while((m=p.exec(text))!==null)ans[parseInt(m[1])]='abcdABCD'.indexOf(m[2])%4;
+  return ans;
+}
+
+function parseSols(text){
+  const sols={};
+  const lines=text.split('\n').map(l=>l.trim());
+  // Match lines like "Q1. Answer: (b) ...", "Explanation: ..."
+  const solRe=/^[Qq]?\.?\s*([1-9]\d*)[.):]?\s*(?:Answer\s*:\s*\([A-Da-d]\)\s*)?(?:Explanation\s*:?\s*)?(.+)/i;
+  let cur=null,txt='';
+  function push(){if(cur!==null&&txt.trim().length>5)sols[cur]=txt.trim();}
+  for(const ln of lines){
+    if(!ln)continue;
+    const m=solRe.exec(ln);
+    if(m&&parseInt(m[1])>=1&&parseInt(m[1])<=500&&m[2].length>5){
+      push();cur=parseInt(m[1]);txt=m[2];
+    }else if(cur!==null&&ln.length>3){txt+=' '+ln;}
+  }
+  push();return sols;
+}
+
+async function handleQPdf(inp){
+  const file=inp.files[0];if(!file)return;
+  const text=await getPdfText(file,'qStat','qDropZone');if(!text)return;
+  _pQs=parseQs(text);
+  const ak=parseAnsKey(text);
+  let matched=0;
+  _pQs.forEach(q=>{const v=ak[q._n];if(v!==undefined&&v>=0){q.a=v;matched++;}});
+  const solMap=parseSols(text);
+  let solCount=0;
+  _pQs.forEach(q=>{if(solMap[q._n]){q.sol=solMap[q._n];solCount++;}});
+  document.getElementById('qStat').textContent+=` · ${matched} answers · ${solCount} solutions`;
+  renderPreview();
+  document.getElementById('createBtn').disabled=_pQs.length===0;
+}
+
+async function handleSolPdf(inp){
+  const file=inp.files[0];if(!file)return;
+  const text=await getPdfText(file,'solStat','solDropZone');if(!text)return;
+  const ak=parseAnsKey(text);
+  let m=0;_pQs.forEach(q=>{const v=ak[q._n];if(v!==undefined&&v>=0){q.a=v;m++;}});
+  const solMap=parseSols(text);
+  let s=0;_pQs.forEach(q=>{if(solMap[q._n]){q.sol=solMap[q._n];s++;}});
+  document.getElementById('solStat').textContent+=` · ${m} answers matched · ${s} solutions`;
+  renderPreview();
+}
+
+function renderPreview(){
+  const prev=document.getElementById('upPreview');
+  if(!_pQs.length){prev.style.display='none';return;}
+  prev.style.display='block';
+  const withA=_pQs.filter(q=>q.a>=0).length,withS=_pQs.filter(q=>q.sol).length;
+  document.getElementById('parseStats').innerHTML=
+    `<div class="parse-stat"><span>${_pQs.length}</span>Questions</div><div class="parse-stat"><span>${withA}</span>Answers</div><div class="parse-stat"><span>${withS}</span>Solutions</div>`;
+  const L=['A','B','C','D'];
+  document.getElementById('prevList').innerHTML=
+    _pQs.slice(0,5).map(q=>`<div class="up-prev-q"><span class="up-prev-num">Q${q._n}.</span>${q.q.substring(0,110)}${q.q.length>110?'…':''}<div class="up-prev-opts">${q.o.map((o,i)=>`<div class="up-prev-opt ${i===q.a?'ans':''}">${L[i]}. ${o.substring(0,28)}</div>`).join('')}</div></div>`).join('')+
+    (_pQs.length>5?`<div style="text-align:center;padding:8px;color:var(--text3);font-size:11px;font-family:'JetBrains Mono'">… and ${_pQs.length-5} more</div>`:'');
+}
+
+function createCustomPaper(){
+  if(!_pQs.length){alert('No questions detected yet.');return;}
+  const title=(document.getElementById('upTitle').value||'Custom Paper').trim();
+  const dur=parseInt(document.getElementById('upDuration').value||120)*60;
+  const corr=parseFloat(document.getElementById('upCorrect').value||1);
+  const wrng=parseFloat(document.getElementById('upWrong').value||-0.25);
+  const questions=_pQs.map(q=>({s:'General',q:q.q,o:q.o,a:Math.max(q.a,0),...(q.sol?{sol:q.sol}:{})}));
+  const paper={id:'custom_'+Date.now(),title,subtitle:'Custom Upload · '+questions.length+' Qs',duration:dur,marking:{correct:corr,wrong:wrng},sections:{General:questions.length},questions,_custom:true};
+  const arr=getCustomPapers();arr.push(paper);saveCustomPapers(arr);
+  _pQs=[];_pSols={};
+  alert('✓ Paper added! Starting from the Dashboard.');
+  buildDashboard();
+}
 
 // ════════ FIREBASE ════════
 const FIREBASE_CONFIG = null;
@@ -1368,18 +1853,20 @@ function buildDashboard(){
   showScreen('dashboard');
   const history=getHistory();
   const grid=document.getElementById('paperGrid');grid.innerHTML='';
-  PAPERS.forEach(p=>{
+  getAllPapers().forEach(p=>{
     const pAttempts=history.filter(h=>h.paperId===p.id);
     const bestScore=pAttempts.length?Math.max(...pAttempts.map(h=>h.score)):null;
     const last=pAttempts[0]||null;
     const secs=[...new Set(p.questions.map(q=>q.s))];
     const sparks=pAttempts.slice(0,10).reverse();
     const maxS=sparks.length?Math.max(...sparks.map(h=>h.maxScore),1):1;
+    const isCustom=!!getCustomPapers().find(cp=>cp.id===p.id);
     const card=document.createElement('div');card.className='card';
     card.innerHTML=`
-      <div class="card-header">
-        <h3>◈ ${p.title}</h3>
+      <div class="card-header" style="position:relative">
+        <h3>◈ ${p.title} ${isCustom?'<span style="font-size:10px;color:var(--purple);background:rgba(179,136,255,.15);padding:2px 7px;border-radius:8px;font-family:JetBrains Mono">CUSTOM</span>':''}</h3>
         <p>${p.subtitle}</p>
+        ${isCustom?`<button onclick="event.stopPropagation();deleteCustomPaper('${p.id}')" style="position:absolute;top:0;right:0;background:rgba(255,51,102,.12);border:1px solid rgba(255,51,102,.25);color:var(--danger);padding:3px 9px;border-radius:6px;font-size:10px;cursor:pointer">✕ Delete</button>`:''}
       </div>
       <div class="card-body">
         <div class="card-stats">
@@ -1764,6 +2251,32 @@ function renderResults(){
         <div class="sc purple"><div class="sc-num">${skip}</div><div class="sc-lbl">Skipped</div></div>
       </div>
       <h3 style="font-family:'Orbitron';color:var(--primary);margin-bottom:10px;font-size:12px;letter-spacing:1px;text-shadow:var(--glow)">◈ SECTION PERFORMANCE</h3>
+      <div class="sec-analytics">
+        ${secStats.map(s=>{
+          const p=s.total>0?+((s.c/s.total)*100).toFixed(1):0;
+          let cls,lbl;
+          if(p>=80){cls='sb-excellent';lbl='Excellent';}
+          else if(p>=65){cls='sb-strong';lbl='Strong';}
+          else if(p>=45){cls='sb-average';lbl='Average';}
+          else if(p>=25){cls='sb-weak';lbl='Weak';}
+          else{cls='sb-critical';lbl='Critical';}
+          const barCol=p>=65?'var(--success)':p>=45?'var(--warn)':p>=25?'var(--orange)':'var(--danger)';
+          return`<div class="sec-bar-row">
+            <div class="sec-bar-label" title="${s.sec}">${s.sec}</div>
+            <div class="sec-bar-track"><div class="sec-bar-fill" style="width:${p}%;background:${barCol}"></div></div>
+            <div class="sec-bar-pct" style="color:${barCol}">${p}%</div>
+            <div class="sec-badge ${cls}">${lbl}</div>
+          </div>`;
+        }).join('')}
+      </div>
+      ${(()=>{
+        const sorted=[...secStats].sort((a,b)=>(a.c/a.total)-(b.c/b.total));
+        const weak=sorted.filter(s=>s.total>0&&(s.c/s.total)<0.5);
+        const strong=sorted.reverse().filter(s=>s.total>0&&(s.c/s.total)>=0.65);
+        const focusHTML=weak.length?`<div class="focus-box"><h4>🎯 FOCUS AREAS — NEEDS WORK</h4>${weak.map(s=>{const p=+((s.c/s.total)*100).toFixed(0);return`<div class="analytics-item"><div class="analytics-dot" style="background:var(--danger)"></div><span style="font-weight:600">${s.sec}</span> — ${p}% (${s.c}/${s.total} correct)</div>`;}).join('')}</div>`:'';
+        const strongHTML=strong.length?`<div class="strength-box"><h4>💪 YOUR STRENGTHS</h4>${strong.slice(0,3).map(s=>{const p=+((s.c/s.total)*100).toFixed(0);return`<div class="analytics-item"><div class="analytics-dot" style="background:var(--success)"></div><span style="font-weight:600">${s.sec}</span> — ${p}% (${s.c}/${s.total} correct)</div>`;}).join('')}</div>`:'';
+        return focusHTML+strongHTML;
+      })()}
       <table class="sec-table">
         <thead><tr><th>Section</th><th>Qs</th><th>✓</th><th>✗</th><th>Skip</th><th>Score</th><th>%</th></tr></thead>
         <tbody>${secStats.map(s=>{const p=s.total>0?((s.c/s.total)*100).toFixed(0):0;const col=p>=60?'var(--success)':p>=40?'var(--orange)':'var(--danger)';return`<tr><td style="text-align:left;font-weight:600">${s.sec}</td><td>${s.total}</td><td style="color:var(--success);font-weight:700">${s.c}</td><td style="color:var(--danger);font-weight:700">${s.w}</td><td>${s.s}</td><td style="font-weight:700;font-family:'JetBrains Mono'">${s.score}</td><td style="color:${col};font-weight:700">${p}%</td></tr>`;}).join('')}</tbody>
@@ -1845,6 +2358,7 @@ function renderReviewList(mode,search,secFilter){
         </div>
         <div class="qr-q">${q.q}</div>
         <div class="qr-opts-grid">${q.o.map((opt,oi)=>{let cls='';if(oi===ca&&oi===ua)cls='both';else if(oi===ca)cls='ca';else if(oi===ua)cls='ua';return`<div class="qr-opt ${cls}">${labels[oi]}. ${opt}</div>`;}).join('')}</div>
+        ${q.sol?`<div class="sol-block"><button class="sol-toggle" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">💡 EXPLANATION ▾</button><div class="sol-body">${q.sol}</div></div>`:''}
       </div>`;
     }).join('');
 }
@@ -1888,7 +2402,7 @@ function renderHistory(){
   const filtered=histFilter==='all'?history:history.filter(h=>h.paperId===histFilter);
   document.getElementById('histFilters').innerHTML=
     `<button class="hist-filter ${histFilter==='all'?'active':''}" onclick="setHistFilter('all')">All Papers</button>`+
-    papers.map(pid=>{const p=PAPERS.find(p=>p.id===pid);return`<button class="hist-filter ${histFilter===pid?'active':''}" onclick="setHistFilter('${pid}')">${p?p.title:pid}</button>`;}).join('')+
+    papers.map(pid=>{const p=getAllPapers().find(p=>p.id===pid);return`<button class="hist-filter ${histFilter===pid?'active':''}" onclick="setHistFilter('${pid}')">${p?p.title:pid}</button>`;}).join('')+
     (history.length?`<button class="btn btn-outline" style="margin-left:auto;font-size:11px;min-height:34px;padding:5px 10px" onclick="clearAllHistory()">🗑 Clear All</button>`:'');
   if(!filtered.length){
     document.getElementById('histList').innerHTML=`<div class="no-history">📭<br><br>NO ATTEMPTS YET<br><span style="font-size:11px;color:var(--text3);font-family:'Exo 2'">Start your first simulation from the Dashboard</span></div>`;return;
