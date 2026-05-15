@@ -2971,6 +2971,7 @@ function updateRpProgress(){
 // Init particles after page load
 window.addEventListener('load',()=>{
   try{initParticles();}catch(e){}
+  try{initFirebase();}catch(e){}   // ← ADD THIS LINE
 });
 </script>
 </body>
