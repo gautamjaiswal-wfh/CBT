@@ -767,6 +767,50 @@ code{font-family:'JetBrains Mono';background:rgba(0,200,255,0.08);padding:1px 5p
 .sol-body{display:none;background:rgba(0,200,255,.04);border:1px solid var(--border);border-top:none;padding:12px;font-size:12px;color:var(--text);line-height:1.75;border-radius:0 0 8px 8px}
 .sol-body.open{display:block}
 
+
+/* ══ TABLET PERFORMANCE ══ */
+@media(max-width:1024px){
+  *{-webkit-backface-visibility:hidden}
+  .card{transform:none!important;transition:box-shadow .2s,border-color .2s!important}
+  .card:hover{transform:none!important;box-shadow:0 0 16px rgba(0,200,255,.2)!important}
+  .question-card{padding:18px!important}
+  .opt-btn{padding:12px 14px!important;font-size:14px!important;min-height:48px}
+  .nav-btn{padding:10px!important;font-size:12px!important}
+  .header-pill{font-size:11px!important;padding:5px 10px!important}
+  .sec-tab{font-size:11px!important;padding:6px 8px!important}
+}
+@media(max-width:768px){
+  .card-grid{grid-template-columns:1fr!important}
+  .page-title{font-size:16px!important}
+  .opt-btn{font-size:13px!important}
+  .qr-opts-grid{grid-template-columns:1fr!important}
+}
+/* ══ RENAME FEATURE ══ */
+.rename-wrap{display:flex;align-items:center;gap:6px;flex:1}
+.rename-btn{background:none;border:none;color:var(--text3);font-size:13px;cursor:pointer;padding:2px 5px;border-radius:4px;transition:color .2s,background .2s;line-height:1;flex-shrink:0}
+.rename-btn:hover{color:var(--primary);background:rgba(0,200,255,.1)}
+.rename-input{background:var(--surface2);border:1px solid var(--primary);color:var(--text);padding:3px 8px;border-radius:6px;font-family:'Orbitron';font-size:13px;font-weight:700;width:100%;outline:none}
+/* ══ RESUME BADGE ══ */
+.resume-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(0,230,118,.12);border:1px solid rgba(0,230,118,.3);color:var(--success);padding:3px 9px;border-radius:10px;font-size:10px;font-family:'JetBrains Mono';font-weight:700;letter-spacing:.5px;margin-left:6px;animation:pulse-badge 2s infinite}
+@keyframes pulse-badge{0%,100%{opacity:1}50%{opacity:.6}}
+/* ══ REAL EXAM FEEL ══ */
+.question-card{border-left:3px solid var(--primary)!important;background:rgba(10,20,45,.95)!important}
+.opt-btn{border-radius:8px!important;font-family:'Exo 2',sans-serif!important;letter-spacing:.2px!important;text-align:left!important}
+.opt-btn.selected{border-left:3px solid var(--primary)!important}
+.opt-btn.correct-ans{border-left:3px solid var(--success)!important}
+.opt-btn.wrong-ans{border-left:3px solid var(--danger)!important}
+/* ══ IMPROVED BUTTONS ══ */
+.btn{border-radius:8px!important;letter-spacing:.5px!important;font-weight:600!important}
+.btn-primary{background:linear-gradient(135deg,#0090d0,#00c8ff)!important;color:#000!important;box-shadow:0 2px 12px rgba(0,200,255,.3)!important}
+.btn-primary:hover{box-shadow:0 4px 20px rgba(0,200,255,.5)!important;transform:translateY(-1px)!important}
+.btn-green{background:linear-gradient(135deg,#00b050,#00e676)!important;color:#000!important}
+.btn-danger{border-radius:8px!important}
+/* ══ EXAM HEADER IMPROVEMENT ══ */
+.exam-header{border-bottom:2px solid var(--border)!important;background:rgba(4,8,15,.97)!important;backdrop-filter:none!important}
+/* ══ CONTAIN layout for perf ══ */
+.card{contain:layout style}
+.opt-btn{contain:layout}
+
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 </head>
@@ -1598,6 +1642,435 @@ const PAPERS = [
 {s:'Noun-Pronoun',q:'Each of the players ___ awarded a gold medal.',o:['were','are','have','was'],a:3,sol:"'Each of' is followed by a plural noun but takes a singular verb ('was')."},
 {s:'Noun-Pronoun',q:'Each of the members ___ awarded a gold medal.',o:['have','were','was','are'],a:2,sol:"'Each of' is followed by a plural noun but takes a singular verb ('was')."}
   ]
+},
+{
+  id:'nda_imu_unique',
+  title:'NDA/IMU-CET Unique Mock',
+  subtitle:'Comprehensive English · 200 Unique Qs',
+  duration:120*60,
+  marking:{correct:1,wrong:-0.25},
+  sections:{Tenses:25,'Subject-Verb':25,'Active-Passive':25,Conditionals:25,Synonyms:25,Antonyms:25,'One-Word Sub':25,'Noun-Pronoun':25},
+  questions:[
+// TENSES
+{s:'Tenses',q:'By the time the firemen arrived, the building ___ down.',o:['had burned','has burned','was burning','burned'],a:0,sol:'Past perfect is used for an action completed before another past action ("had burned" happened before "arrived").'},
+{s:'Tenses',q:'I ___ this novel for the last two hours.',o:['was reading','have been reading','read','am reading'],a:1,sol:'Present perfect continuous indicates an action that started in the past and is still continuing.'},
+{s:'Tenses',q:'Look at those dark clouds! It ___.',o:['will rain','is raining','rains','is going to rain'],a:3,sol:'"Is going to" is used for predictions based on present visible evidence (dark clouds).'},
+{s:'Tenses',q:'He ___ to London tomorrow.',o:['flew','is flying','flies','has flown'],a:1,sol:'Present continuous can be used for fixed future arrangements ("is flying tomorrow").'},
+{s:'Tenses',q:'They ___ the bridge by next December.',o:['will complete','will have completed','complete','completed'],a:1,sol:'Future perfect ("will have completed") is used for actions that will be finished before a specific future time.'},
+{s:'Tenses',q:'I ___ him since we met at the conference.',o:["haven't seen","hadn't seen","don't see","didn't see"],a:0,sol:'"Since" with a point in time usually takes the present perfect tense.'},
+{s:'Tenses',q:'While she ___ the room, she found her lost ring.',o:['was cleaning','cleaned','is cleaning','has cleaned'],a:0,sol:'Past continuous is used for a longer background action interrupted by a shorter past action.'},
+{s:'Tenses',q:'The train ___ before we reached the station.',o:['was leaving','left','had left','has left'],a:2,sol:'Past perfect ("had left") describes the action that happened first — the train left before we arrived.'},
+{s:'Tenses',q:'Water ___ at 100 degrees Celsius.',o:['is boiling','boils','has boiled','boiled'],a:1,sol:'Simple present is used for scientific facts and general truths.'},
+{s:'Tenses',q:'I ___ my homework when the lights went out.',o:['do','have done','was doing','did'],a:2,sol:'Past continuous ("was doing") sets the scene for an interrupted past action.'},
+{s:'Tenses',q:'She ___ in this company for five years now.',o:['is working','has been working','worked','works'],a:1,sol:'"For" indicating duration up to the present requires the present perfect continuous.'},
+{s:'Tenses',q:'He ___ to the gym every morning.',o:['gone','went','is going','goes'],a:3,sol:'Simple present ("goes") is used for daily habits and routines.'},
+{s:'Tenses',q:'As soon as the teacher entered, the students ___ up.',o:['had stood','stand','stood','were standing'],a:2,sol:'Two immediate consecutive past actions both use simple past tense.'},
+{s:'Tenses',q:'We ___ dinner when the phone rang.',o:['have had','were having','had','are having'],a:1,sol:'Past continuous ("were having") describes an action in progress when another occurred.'},
+{s:'Tenses',q:'I ___ never ___ such a beautiful sunset before.',o:['had ... seen','did ... see','am ... seeing','have ... seen'],a:3,sol:'Present perfect is used for life experiences up to now ("have ... seen").'},
+{s:'Tenses',q:'By the time you wake up, I ___ for work.',o:['leave','will leave','left','will have left'],a:3,sol:'Future perfect ("will have left") describes an action completed before a future point in time.'},
+{s:'Tenses',q:'The earth ___ around the sun.',o:['has revolved','revolves','revolved','is revolving'],a:1,sol:'Universal truths and scientific facts use simple present tense.'},
+{s:'Tenses',q:'He ___ a new car last week.',o:['buys','bought','had bought','has bought'],a:1,sol:'Specific past time markers like "last week" require simple past tense.'},
+{s:'Tenses',q:'She said that she ___ her umbrella at home.',o:['has left','had left','left','was leaving'],a:1,sol:'In reported speech, simple past shifts to past perfect ("had left").'},
+{s:'Tenses',q:'If it ___, we will cancel the match.',o:['will rain','rains','has rained','rained'],a:1,sol:'In first conditional sentences, the "if" clause uses simple present tense.'},
+{s:'Tenses',q:'I ___ my keys; I can't open the door.',o:['lose','lost','had lost','have lost'],a:3,sol:'Present perfect ("have lost") is used for a past action with a present consequence.'},
+{s:'Tenses',q:'They ___ chess for three hours when I arrived.',o:['were playing','had been playing','played','have played'],a:1,sol:'Past perfect continuous describes duration of an action up to a point in the past.'},
+{s:'Tenses',q:'It is high time you ___ studying seriously.',o:['start','have started','started','will start'],a:2,sol:'"It is high time" is followed by the past subjunctive (simple past form "started").'},
+{s:'Tenses',q:'My father ___ for a brisk walk daily.',o:['has gone','went','is going','goes'],a:3,sol:'Habitual actions use simple present tense ("goes").'},
+{s:'Tenses',q:'Next month, we ___ our 10th anniversary.',o:['will be celebrating','have celebrated','celebrate','celebrated'],a:0,sol:'Future continuous ("will be celebrating") for an action expected to be in progress at a future time.'},
+// SUBJECT-VERB AGREEMENT
+{s:'Subject-Verb',q:'Neither the manager nor the employees ___ aware of the policy change.',o:['has been','was','is','were'],a:3,sol:'With "neither...nor", the verb agrees with the subject closer to it (employees = plural → were).'},
+{s:'Subject-Verb',q:'The committee ___ divided in its opinion.',o:['were','is','are','have been'],a:1,sol:'When a collective noun acts as a single unit (indicated by "its"), it takes a singular verb.'},
+{s:'Subject-Verb',q:'A large number of voters ___ turned out today.',o:['have','has','is','was'],a:0,sol:'"A number of" takes a plural verb; "the number of" takes a singular verb.'},
+{s:'Subject-Verb',q:'Bread and butter ___ my favorite breakfast.',o:['are','have been','were','is'],a:3,sol:'Two nouns representing a single unified idea take a singular verb.'},
+{s:'Subject-Verb',q:'Each of the participants ___ received a certificate.',o:['have','were','are','has'],a:3,sol:'"Each of" is followed by a plural noun but takes a singular verb ("has").'},
+{s:'Subject-Verb',q:'The news he brought ___ alarming.',o:['was','have been','were','are'],a:0,sol:'"News" is an uncountable singular noun and always takes a singular verb.'},
+{s:'Subject-Verb',q:'Not only the students but also the teacher ___ excited.',o:['have been','are','were','was'],a:3,sol:'With "not only...but also", the verb agrees with the subject closest to it (teacher = singular → was).'},
+{s:'Subject-Verb',q:'Two hundred dollars ___ a lot of money to lose.',o:['are','were','is','have been'],a:2,sol:'Amounts of money or sums considered as a single total take a singular verb.'},
+{s:'Subject-Verb',q:'The quality of the apples ___ not good.',o:['have','are','was','were'],a:2,sol:'The true subject is "quality" (singular), not "apples" (which is part of the prepositional phrase).'},
+{s:'Subject-Verb',q:'Everyone in the room ___ cheering.',o:['have been','were','are','was'],a:3,sol:'Indefinite pronouns like "everyone", "someone", "nobody" always take a singular verb.'},
+{s:'Subject-Verb',q:'Physics ___ a fascinating subject.',o:['were','are','have been','is'],a:3,sol:'Names of academic subjects ending in -ics (Physics, Mathematics) take singular verbs.'},
+{s:'Subject-Verb',q:'The captain, along with his team, ___ practicing.',o:['were','is','are','have'],a:1,sol:'Phrases like "along with", "together with", "as well as" do not change the number of the main subject.'},
+{s:'Subject-Verb',q:'Neither of the two books ___ interesting.',o:['are','were','is','have'],a:2,sol:'"Neither of" takes a singular verb when referring to two items.'},
+{s:'Subject-Verb',q:'Many a man ___ succumbed to this temptation.',o:['has','have','were','are'],a:0,sol:'"Many a" is followed by a singular noun and requires a singular verb.'},
+{s:'Subject-Verb',q:'More than one person ___ involved in the scam.',o:['have','were','are','was'],a:3,sol:'"More than one" takes a singular verb despite the implied plurality.'},
+{s:'Subject-Verb',q:'The jury ___ given their verdict.',o:['has','have','is','was'],a:1,sol:'When the jury acts as individuals (shown by "their"), a plural verb is used.'},
+{s:'Subject-Verb',q:'Either he or I ___ to blame.',o:['is','were','are','am'],a:3,sol:'With "either...or", the verb agrees with the subject closest to it (I → am).'},
+{s:'Subject-Verb',q:'One of my friends ___ going to Japan.',o:['are','have','is','were'],a:2,sol:'"One of" + plural noun takes a singular verb.'},
+{s:'Subject-Verb',q:'The Arabian Nights ___ still a popular book.',o:['were','have been','is','are'],a:2,sol:'Titles of books or works, even if plural in form, take a singular verb.'},
+{s:'Subject-Verb',q:'Half of the cake ___ eaten.',o:['were','are','have been','was'],a:3,sol:'Fractions agree with the noun they modify; "cake" is singular and uncountable → was.'},
+{s:'Subject-Verb',q:'Half of the apples ___ rotten.',o:['were','has been','is','was'],a:0,sol:'Fractions agree with the noun they modify; "apples" is plural → were.'},
+{s:'Subject-Verb',q:'None of the water ___ safe to drink.',o:['were','have','are','is'],a:3,sol:'"None of" + uncountable noun takes a singular verb.'},
+{s:'Subject-Verb',q:'A pair of shoes ___ under the bed.',o:['have','is','are','were'],a:1,sol:'"A pair of" takes a singular verb because it refers to one pair.'},
+{s:'Subject-Verb',q:'The police ___ investigating the case.',o:['is','are','was','has been'],a:1,sol:'"Police" is a plural noun in English and always takes a plural verb.'},
+{s:'Subject-Verb',q:'Statistics ___ that the crime rate is falling.',o:['is showing','was showing','show','shows'],a:2,sol:'When "statistics" refers to data (facts/figures), it is plural and takes a plural verb.'},
+// ACTIVE-PASSIVE
+{s:'Active-Passive',q:'The mechanic fixed the car. (Choose correct passive)',o:['The car was fixed by the mechanic.','The car was being fixed by the mechanic.','The car has been fixed by the mechanic.','The car is fixed by the mechanic.'],a:0,sol:'Past simple active → "was/were + V3" in passive voice.'},
+{s:'Active-Passive',q:'They are painting the house. (Choose correct passive)',o:['The house has been painted by them.','The house was being painted by them.','The house is painted by them.','The house is being painted by them.'],a:3,sol:'Present continuous active → "is/are being + V3" in passive.'},
+{s:'Active-Passive',q:'Someone has stolen my wallet. (Choose correct passive)',o:['My wallet is stolen.','My wallet had been stolen.','My wallet has been stolen.','My wallet was stolen.'],a:2,sol:'Present perfect active → "has/have been + V3" in passive.'},
+{s:'Active-Passive',q:'Who wrote this poem? (Choose correct passive)',o:['By who this poem was written?','By whom was this poem written?','This poem was written by who?','Who was this poem written by?'],a:1,sol:'"Who" changes to "By whom" in passive, and subject-verb inversion occurs in questions.'},
+{s:'Active-Passive',q:'Close the door. (Choose correct passive)',o:['Let the door be closed.','Let close the door.','The door should close.','The door is closed.'],a:0,sol:'Imperatives use "Let + object + be + V3" in the passive voice.'},
+{s:'Active-Passive',q:'The committee will announce the results tomorrow. (Choose correct passive)',o:['The results would be announced by the committee tomorrow.','The results are announced by the committee tomorrow.','The results will be announced by the committee tomorrow.','The results will announce by the committee tomorrow.'],a:2,sol:'Future simple active → "will be + V3" in passive.'},
+{s:'Active-Passive',q:'They had won the match before it started raining. (Choose correct passive)',o:['The match would have been won by them.','The match had been won by them before it started raining.','The match has been won by them before it started raining.','The match was won by them before it started raining.'],a:1,sol:'Past perfect active → "had been + V3" in passive, keeping the time clause intact.'},
+{s:'Active-Passive',q:'People speak English all over the world. (Choose correct passive)',o:['English has been spoken all over the world.','English was spoken all over the world.','English is being spoken all over the world.','English is spoken all over the world.'],a:3,sol:'Simple present active (general truth) → "is/are + V3" in passive.'},
+{s:'Active-Passive',q:'Did you finish the assignment? (Choose correct passive)',o:['Has the assignment been finished by you?','Was the assignment finished by you?','Had the assignment been finished by you?','Is the assignment finished by you?'],a:1,sol:'Past simple interrogative: "Did" changes to "Was/Were" in the passive voice.'},
+{s:'Active-Passive',q:'The chef is preparing a special dish. (Choose correct passive)',o:['A special dish is prepared by the chef.','A special dish was prepared by the chef.','A special dish has been prepared by the chef.','A special dish is being prepared by the chef.'],a:3,sol:'Present continuous requires "being" in the passive: "is/are being + V3".'},
+{s:'Active-Passive',q:'We must respect our elders. (Choose correct passive)',o:['Our elders have to be respected by us.','Our elders must be respected by us.','Our elders should respect us.','Our elders are respected by us.'],a:1,sol:'Modal verbs in passive follow: "modal + be + V3".'},
+{s:'Active-Passive',q:'He was driving a blue car. (Choose correct passive)',o:['A blue car is being driven by him.','A blue car was being driven by him.','A blue car was driven by him.','A blue car had been driven by him.'],a:1,sol:'Past continuous active → "was/were being + V3" in passive.'},
+{s:'Active-Passive',q:'I know him. (Choose correct passive)',o:['He is being known to me.','He is known to me.','He is known by me.','He was known to me.'],a:1,sol:'The verb "know" uses the preposition "to" instead of "by" in passive voice.'},
+{s:'Active-Passive',q:'They made him the chairman. (Choose correct passive)',o:['He had been made the chairman.','The chairman was made by him.','He was made the chairman.','He is made the chairman.'],a:2,sol:'Verbs with object complements keep the complement after the passive verb.'},
+{s:'Active-Passive',q:'Please help the poor. (Choose correct passive)',o:['You are requested to help the poor.','The poor are requested to help.','Let the poor be helped.','The poor should be helped.'],a:0,sol:'"Please" in imperatives translates to "You are requested to" in passive voice.'},
+{s:'Active-Passive',q:'Has anyone seen my dog? (Choose correct passive)',o:['Has my dog been seen by anyone?','Was my dog seen by anyone?','Had my dog been seen by anyone?','Is my dog seen by anyone?'],a:0,sol:'Present perfect interrogative passive: "Has/Have + object + been + V3?"'},
+{s:'Active-Passive',q:'They are to build a new bridge here. (Choose correct passive)',o:['A new bridge was to be built here.','A new bridge is to be built here.','A new bridge is being built here.','A new bridge will be built here.'],a:1,sol:'"To build" (infinitive active) becomes "to be built" (infinitive passive).'},
+{s:'Active-Passive',q:'It is time to ring the bell. (Choose correct passive)',o:['It is time for the bell to be rung.','The bell is time to be rung.','It is time the bell rings.','It is time that the bell is rung.'],a:0,sol:'"It is time + to + V" changes to "It is time + for + object + to be + V3".'},
+{s:'Active-Passive',q:'The doctor advised me to rest. (Choose correct passive)',o:['To rest was advised by the doctor.','I had been advised to rest.','I was advised to rest by the doctor.','I am advised to rest by the doctor.'],a:2,sol:'Object "me" becomes subject "I"; simple past changes to "was advised".'},
+{s:'Active-Passive',q:'Why did he break the glass? (Choose correct passive)',o:['Why is the glass broken by him?','Why the glass was broken by him?','Why had the glass been broken by him?','Why was the glass broken by him?'],a:3,sol:'Wh-question in past simple passive keeps the question word and uses "was/were + V3".'},
+{s:'Active-Passive',q:'Circumstances will oblige me to go. (Choose correct passive)',o:['I will oblige to go.','I would be obliged to go.','I am obliged to go.','I shall be obliged to go.'],a:3,sol:'Future simple passive uses "shall/will be + V3".'},
+{s:'Active-Passive',q:"Don't insult the weak. (Choose correct passive)",o:['The weak should not insult.','The weak are not to be insulted.','Let not insult the weak.','Let the weak not be insulted.'],a:3,sol:'Negative imperative passive: "Let + object + not + be + V3".'},
+{s:'Active-Passive',q:'We have already done the exercise. (Choose correct passive)',o:['The exercise was already done by us.','The exercise is already done by us.','The exercise has already been done by us.','The exercise had already been done by us.'],a:2,sol:'Present perfect active → "has/have been + V3"; adverb "already" stays in position.'},
+{s:'Active-Passive',q:'The boy laughed at the beggar. (Choose correct passive)',o:['The beggar had been laughed at by the boy.','The beggar was laughed at by the boy.','The beggar was laughed by the boy.','The beggar is laughed at by the boy.'],a:1,sol:'Phrasal verbs keep their prepositions in the passive voice ("laughed at" stays together).'},
+{s:'Active-Passive',q:'They will have built the house by next year. (Choose correct passive)',o:['The house would have been built by them.','The house will be built by them by next year.','The house will have been built by them by next year.','The house is being built by them by next year.'],a:2,sol:'Future perfect active → "will have been + V3" in passive.'},
+// CONDITIONALS
+{s:'Conditionals',q:'If water reaches 100 degrees, it ___.',o:['will boil','boiled','would boil','boils'],a:3,sol:'Zero conditional for scientific facts: present simple in both clauses.'},
+{s:'Conditionals',q:"If I ___ you, I wouldn't do that.",o:['am','was','were','had been'],a:2,sol:'Second conditional uses "were" for all subjects in hypothetical situations.'},
+{s:'Conditionals',q:'Unless you hurry, you ___ the train.',o:['missed','miss','will miss','would miss'],a:2,sol:'"Unless" = "if not"; first conditional predicts a likely future result.'},
+{s:'Conditionals',q:'Had he worked harder, he ___ the exam.',o:['will pass','would pass','passed','would have passed'],a:3,sol:'Third conditional inversion ("Had he" instead of "If he had") requires "would have + V3".'},
+{s:'Conditionals',q:'If she ___ the truth, she would have told me.',o:['knows','knew','had known','has known'],a:2,sol:'Third conditional "if" clause requires past perfect ("had known").'},
+{s:'Conditionals',q:'If it rains tomorrow, we ___ at home.',o:['will stay','would stay','stayed','stay'],a:0,sol:'First conditional describes a real future possibility: "will + verb" in main clause.'},
+{s:'Conditionals',q:'I would buy a mansion if I ___ a lottery.',o:['had won','win','won','will win'],a:2,sol:'Second conditional: simple past ("won") in the if-clause for unlikely future events.'},
+{s:'Conditionals',q:'If I had a car, I ___ you a lift.',o:['would have given','gave','would give','will give'],a:2,sol:'Second conditional main clause uses "would + bare infinitive".'},
+{s:'Conditionals',q:'Suppose you ___ the manager, what would you do?',o:['are','was','had been','were'],a:3,sol:'"Suppose" acts like "If" in second conditionals, requiring the past subjunctive "were".'},
+{s:'Conditionals',q:'If you mix red and blue, you ___ purple.',o:['would get','will get','get','got'],a:2,sol:'Zero conditional for general truths: present simple in both clauses.'},
+{s:'Conditionals',q:'Provided that you ___, you can leave early.',o:['will finish your work','finish your work','would finish your work','finished your work'],a:1,sol:'"Provided that" acts as a conditional conjunction; present simple for future in if-clause.'},
+{s:'Conditionals',q:'If he ___ me, I would have helped him.',o:['has asked','had asked','asked','asks'],a:1,sol:'Third conditional if-clause takes past perfect ("had asked").'},
+{s:'Conditionals',q:'He would be a doctor now if he ___ harder in college.',o:['had studied','would study','studies','studied'],a:0,sol:'Mixed conditional: past unreal condition (past perfect) creating a present result.'},
+{s:'Conditionals',q:'I will call you as soon as I ___.',o:['arrive','will arrive','would arrive','arrived'],a:0,sol:'Time clauses referring to the future use simple present tense, not future.'},
+{s:'Conditionals',q:"If she ___ more careful, she wouldn't have broken the vase.",o:['was','has been','were','had been'],a:3,sol:'Third conditional if-clause uses past perfect ("had been").'},
+{s:'Conditionals',q:'I ___ around the world if I were rich.',o:['traveled','would have traveled','will travel','would travel'],a:3,sol:'Second conditional main clause takes "would + verb".'},
+{s:'Conditionals',q:'But for his help, I ___ completely.',o:['failed','would fail','would have failed','will fail'],a:2,sol:'"But for" = "if it had not been for" — this is a third conditional structure.'},
+{s:'Conditionals',q:'If the sun shines, we ___ to the beach.',o:['go','went','will go','would go'],a:2,sol:'First conditional for realistic future events: "will + verb" in main clause.'},
+{s:'Conditionals',q:"If he ___ his ticket, he won't be allowed in.",o:['forgot','will forget','forgets','had forgotten'],a:2,sol:'First conditional if-clause takes simple present tense.'},
+{s:'Conditionals',q:'Should you see him, ___ him to call me.',o:['would tell','tell','will tell','told'],a:1,sol:'"Should you see" = "If you see" — inversion in first conditional; use bare imperative.'},
+{s:'Conditionals',q:'If I were a bird, I ___ fly to you.',o:['will','would','could have','can'],a:1,sol:'Second conditional main clause uses "would".'},
+{s:'Conditionals',q:"Even if he ___, I wouldn't forgive him.",o:['had apologized','apologized','apologizes','will apologize'],a:1,sol:'Second conditional indicating a hypothetical present/future: "even if + simple past".'},
+{s:'Conditionals',q:'If they ___ earlier, they would have caught the bus.',o:['have left','left','leave','had left'],a:3,sol:'Third conditional if-clause requires past perfect ("had left").'},
+{s:'Conditionals',q:"I'll go to the party on the condition that you ___ with me.",o:['came','will come','would come','come'],a:3,sol:'"On the condition that" takes present simple for future events (like first conditional).'},
+{s:'Conditionals',q:"If she hadn't stayed up late, she ___ so tired now.",o:["wouldn't be","isn't","won't be","wouldn't have been"],a:0,sol:'Mixed conditional: past cause (third conditional) with present effect (second conditional) → "wouldn't be".'},
+// SYNONYMS
+{s:'Synonyms',q:"Select the synonym of 'ABATE':",o:['Increase','Observe','Diminish','Promote'],a:2,sol:"Abate means to become less intense or widespread; synonym is 'Diminish'."},
+{s:'Synonyms',q:"Select the synonym of 'BELLIGERENT':",o:['Hostile','Friendly','Confused','Peaceful'],a:0,sol:"Belligerent means hostile and aggressive; synonym is 'Hostile'."},
+{s:'Synonyms',q:"Select the synonym of 'CACOPHONY':",o:['Noise','Silence','Harmony','Melody'],a:0,sol:"Cacophony refers to harsh, discordant sounds; synonym is 'Noise'."},
+{s:'Synonyms',q:"Select the synonym of 'DIRGE':",o:['Symphony','Lullaby','Anthem','Elegy'],a:3,sol:"A dirge is a mournful song or poem; synonym is 'Elegy'."},
+{s:'Synonyms',q:"Select the synonym of 'ELICIT':",o:['Ignore','Provide','Extract','Suppress'],a:2,sol:"Elicit means to evoke or draw out; synonym is 'Extract'."},
+{s:'Synonyms',q:"Select the synonym of 'FASTIDIOUS':",o:['Sloppy','Meticulous','Careless','Relaxed'],a:1,sol:"Fastidious means very attentive to accuracy and detail; synonym is 'Meticulous'."},
+{s:'Synonyms',q:"Select the synonym of 'GARRULOUS':",o:['Concise','Reserved','Silent','Talkative'],a:3,sol:"Garrulous means excessively talkative; synonym is 'Talkative'."},
+{s:'Synonyms',q:"Select the synonym of 'HEGEMONY':",o:['Weakness','Dominance','Submission','Equality'],a:1,sol:"Hegemony means leadership or dominance; synonym is 'Dominance'."},
+{s:'Synonyms',q:"Select the synonym of 'ICONOCLAST':",o:['Creator','Critic','Supporter','Follower'],a:1,sol:"An iconoclast attacks cherished beliefs or institutions; synonym is 'Critic'."},
+{s:'Synonyms',q:"Select the synonym of 'JUXTAPOSE':",o:['Compare','Separate','Divide','Isolate'],a:0,sol:"Juxtapose means to place close together for contrast; synonym is 'Compare'."},
+{s:'Synonyms',q:"Select the synonym of 'KNELL':",o:['Chime','Shout','Whisper','Silence'],a:0,sol:"A knell is the sound of a bell rung solemnly; synonym is 'Chime'."},
+{s:'Synonyms',q:"Select the synonym of 'LETHARGIC':",o:['Active','Lively','Sluggish','Energetic'],a:2,sol:"Lethargic means affected by lethargy; synonym is 'Sluggish'."},
+{s:'Synonyms',q:"Select the synonym of 'MELLIFLUOUS':",o:['Sweet-sounding','Harsh','Grating','Piercing'],a:0,sol:"Mellifluous describes a sweet, smooth sound; synonym is 'Sweet-sounding'."},
+{s:'Synonyms',q:"Select the synonym of 'NEFARIOUS':",o:['Virtuous','Wicked','Kind','Honorable'],a:1,sol:"Nefarious means wicked or criminal; synonym is 'Wicked'."},
+{s:'Synonyms',q:"Select the synonym of 'OBFUSCATE':",o:['Reveal','Confuse','Clarify','Explain'],a:1,sol:"Obfuscate means to render unclear or unintelligible; synonym is 'Confuse'."},
+{s:'Synonyms',q:"Select the synonym of 'PARADIGM':",o:['Anomaly','Mistake','Model','Puzzle'],a:2,sol:"A paradigm is a typical example or pattern; synonym is 'Model'."},
+{s:'Synonyms',q:"Select the synonym of 'QUIXOTIC':",o:['Idealistic','Realistic','Practical','Pragmatic'],a:0,sol:"Quixotic means unrealistically idealistic; synonym is 'Idealistic'."},
+{s:'Synonyms',q:"Select the synonym of 'RETICENT':",o:['Extroverted','Outgoing','Talkative','Reserved'],a:3,sol:"Reticent means not revealing thoughts readily; synonym is 'Reserved'."},
+{s:'Synonyms',q:"Select the synonym of 'SYCOPHANT':",o:['Critic','Leader','Rebel','Flatterer'],a:3,sol:"A sycophant fawns on important people for gain; synonym is 'Flatterer'."},
+{s:'Synonyms',q:"Select the synonym of 'TREPIDATION':",o:['Calmness','Confidence','Anxiety','Bravery'],a:2,sol:"Trepidation is a feeling of fear or agitation; synonym is 'Anxiety'."},
+{s:'Synonyms',q:"Select the synonym of 'UBIQUITOUS':",o:['Rare','Unique','Scarce','Omnipresent'],a:3,sol:"Ubiquitous means present or found everywhere; synonym is 'Omnipresent'."},
+{s:'Synonyms',q:"Select the synonym of 'VACILLATE':",o:['Waver','Remain','Decide','Persist'],a:0,sol:"Vacillate means to alternate or waver between opinions; synonym is 'Waver'."},
+{s:'Synonyms',q:"Select the synonym of 'WINSOME':",o:['Charming','Offensive','Ugly','Repulsive'],a:0,sol:"Winsome means attractive or appealing; synonym is 'Charming'."},
+{s:'Synonyms',q:"Select the synonym of 'XENOPHOBIA':",o:['Acceptance','Tolerance','Love','Prejudice'],a:3,sol:"Xenophobia is dislike or prejudice against foreigners; synonym is 'Prejudice'."},
+{s:'Synonyms',q:"Select the synonym of 'ZEALOUS':",o:['Indifferent','Apathetic','Enthusiastic','Uncaring'],a:2,sol:"Zealous means showing great energy or enthusiasm; synonym is 'Enthusiastic'."},
+// ANTONYMS
+{s:'Antonyms',q:"Select the antonym of 'ALLEVIATE':",o:['Ease','Mitigate','Aggravate','Soothe'],a:2,sol:"Alleviate means to make less severe; antonym is 'Aggravate' (make worse)."},
+{s:'Antonyms',q:"Select the antonym of 'AUDACIOUS':",o:['Timid','Bold','Brave','Daring'],a:0,sol:"Audacious means bold and daring; antonym is 'Timid'."},
+{s:'Antonyms',q:"Select the antonym of 'CAPRICIOUS':",o:['Steady','Unpredictable','Volatile','Fickle'],a:0,sol:"Capricious means given to sudden mood changes; antonym is 'Steady'."},
+{s:'Antonyms',q:"Select the antonym of 'DESICCATE':",o:['Moisten','Dry','Dehydrate','Parch'],a:0,sol:"Desiccate means to remove moisture; antonym is 'Moisten'."},
+{s:'Antonyms',q:"Select the antonym of 'EPHEMERAL':",o:['Short-lived','Transient','Fleeting','Permanent'],a:3,sol:"Ephemeral means lasting a very short time; antonym is 'Permanent'."},
+{s:'Antonyms',q:"Select the antonym of 'FERVID':",o:['Ardent','Passionate','Apathetic','Intense'],a:2,sol:"Fervid means intensely enthusiastic; antonym is 'Apathetic'."},
+{s:'Antonyms',q:"Select the antonym of 'GREGARIOUS':",o:['Outgoing','Introverted','Sociable','Friendly'],a:1,sol:"Gregarious means fond of company; antonym is 'Introverted'."},
+{s:'Antonyms',q:"Select the antonym of 'HOMOGENEOUS':",o:['Uniform','Identical','Similar','Diverse'],a:3,sol:"Homogeneous means of the same kind; antonym is 'Diverse'."},
+{s:'Antonyms',q:"Select the antonym of 'INGENUOUS':",o:['Naive','Simple','Innocent','Deceitful'],a:3,sol:"Ingenuous means innocent and unsuspecting; antonym is 'Deceitful'."},
+{s:'Antonyms',q:"Select the antonym of 'LOQUACIOUS':",o:['Talkative','Chatty','Garrulous','Taciturn'],a:3,sol:"Loquacious means tending to talk a great deal; antonym is 'Taciturn'."},
+{s:'Antonyms',q:"Select the antonym of 'MISANTHROPE':",o:['Rebel','Cynic','Philanthropist','Pessimist'],a:2,sol:"A misanthrope hates mankind; antonym is 'Philanthropist' (one who loves and helps mankind)."},
+{s:'Antonyms',q:"Select the antonym of 'OSTENTATION':",o:['Pretentiousness','Showiness','Flashiness','Modesty'],a:3,sol:"Ostentation means pretentious display; antonym is 'Modesty'."},
+{s:'Antonyms',q:"Select the antonym of 'PRAGMATIC':",o:['Practical','Sensible','Idealistic','Realistic'],a:2,sol:"Pragmatic means dealing practically with things; antonym is 'Idealistic'."},
+{s:'Antonyms',q:"Select the antonym of 'RAREFY':",o:['Condense','Thin','Expand','Dilute'],a:0,sol:"Rarefy means to make less dense; antonym is 'Condense'."},
+{s:'Antonyms',q:"Select the antonym of 'SOPORIFIC':",o:['Boring','Calming','Sleep-inducing','Stimulating'],a:3,sol:"Soporific means tending to induce sleep; antonym is 'Stimulating'."},
+{s:'Antonyms',q:"Select the antonym of 'VENERATE':",o:['Revere','Despise','Respect','Honor'],a:1,sol:"Venerate means to regard with great respect; antonym is 'Despise'."},
+{s:'Antonyms',q:"Select the antonym of 'WAVER':",o:['Persist','Hesitate','Falter','Fluctuate'],a:0,sol:"Waver means to be undecided; antonym is 'Persist'."},
+{s:'Antonyms',q:"Select the antonym of 'ZEAL':",o:['Enthusiasm','Apathy','Fervor','Passion'],a:1,sol:"Zeal means great energy and enthusiasm; antonym is 'Apathy'."},
+{s:'Antonyms',q:"Select the antonym of 'ABSTRUSE':",o:['Obscure','Complex','Profound','Clear'],a:3,sol:"Abstruse means difficult to understand; antonym is 'Clear'."},
+{s:'Antonyms',q:"Select the antonym of 'BANAL':",o:['Original','Cliché','Trite','Hackneyed'],a:0,sol:"Banal means lacking originality; antonym is 'Original'."},
+{s:'Antonyms',q:"Select the antonym of 'CANDID':",o:['Frank','Deceptive','Open','Honest'],a:1,sol:"Candid means truthful and straightforward; antonym is 'Deceptive'."},
+{s:'Antonyms',q:"Select the antonym of 'DAUNT':",o:['Frighten','Discourage','Encourage','Intimidate'],a:2,sol:"Daunt means to make someone feel intimidated; antonym is 'Encourage'."},
+{s:'Antonyms',q:"Select the antonym of 'ENIGMA':",o:['Mystery','Riddle','Puzzle','Solution'],a:3,sol:"An enigma is something mysterious; antonym is 'Solution'."},
+{s:'Antonyms',q:"Select the antonym of 'FALLOW':",o:['Inactive','Cultivated','Unplowed','Dormant'],a:1,sol:"Fallow refers to uncultivated land; antonym is 'Cultivated'."},
+{s:'Antonyms',q:"Select the antonym of 'GUILE':",o:['Honesty','Deceit','Trickery','Cunning'],a:0,sol:"Guile means sly or cunning intelligence; antonym is 'Honesty'."},
+// ONE-WORD SUBSTITUTION
+{s:'One-Word Sub',q:'A person who renounces a religious or political belief or principle.',o:['Ascetic','Agnostic','Apostate','Atheist'],a:2,sol:"'Apostate' — a person who abandons a belief or cause."},
+{s:'One-Word Sub',q:'A study of ancient things like tombs and buried towns.',o:['History','Archaeology','Paleontology','Genealogy'],a:1,sol:"'Archaeology' — the study of human history through excavation of sites."},
+{s:'One-Word Sub',q:'A person who makes maps.',o:['Curator','Calligrapher','Choreographer','Cartographer'],a:3,sol:"'Cartographer' — a person who draws or produces maps."},
+{s:'One-Word Sub',q:'An extreme or irrational fear of confined places.',o:['Acrophobia','Hydrophobia','Agoraphobia','Claustrophobia'],a:3,sol:"'Claustrophobia' — the fear of enclosed or confined spaces."},
+{s:'One-Word Sub',q:'A person who is skilled in many languages.',o:['Translator','Linguist','Polyglot','Bilingual'],a:2,sol:"'Polyglot' — a person who knows or uses several languages."},
+{s:'One-Word Sub',q:'A speech delivered without any previous preparation.',o:['Maiden','Monologue','Elocution','Extempore'],a:3,sol:"'Extempore' — spoken or done without preparation."},
+{s:'One-Word Sub',q:'One who compiles a dictionary.',o:['Calligrapher','Bibliophile','Cartographer','Lexicographer'],a:3,sol:"'Lexicographer' — a person who compiles dictionaries."},
+{s:'One-Word Sub',q:'A place where bees are kept.',o:['Aviary','Aquarium','Sanctuary','Apiary'],a:3,sol:"'Apiary' — a collection of beehives; a place where bees are kept."},
+{s:'One-Word Sub',q:'A place where birds are kept.',o:['Apiary','Asylum','Aviary','Zoo'],a:2,sol:"'Aviary' — a large enclosure for confining birds."},
+{s:'One-Word Sub',q:'A government by the wealthy.',o:['Aristocracy','Autocracy','Democracy','Plutocracy'],a:3,sol:"'Plutocracy' — a society ruled by people of great wealth."},
+{s:'One-Word Sub',q:'A government by the nobility.',o:['Bureaucracy','Aristocracy','Plutocracy','Oligarchy'],a:1,sol:"'Aristocracy' — government by the highest social class."},
+{s:'One-Word Sub',q:'A disease that spreads over a whole country or the whole world.',o:['Epidemic','Contagious','Endemic','Pandemic'],a:3,sol:"'Pandemic' — an outbreak of a disease prevalent over a whole country or the world."},
+{s:'One-Word Sub',q:'A person who is indifferent to pleasure and pain.',o:['Ascetic','Cynic','Stoic','Epicurean'],a:2,sol:"'Stoic' — a person who endures pain without showing feelings or complaining."},
+{s:'One-Word Sub',q:'The killing of one's brother or sister.',o:['Matricide','Patricide','Fratricide','Regicide'],a:2,sol:"'Fratricide' — the killing of one's sibling."},
+{s:'One-Word Sub',q:'The killing of a king.',o:['Suicide','Genocide','Regicide','Homicide'],a:2,sol:"'Regicide' — the action of killing a king."},
+{s:'One-Word Sub',q:'An unconventional style of living.',o:['Bohemian','Orthodox','Conservative','Traditional'],a:0,sol:"'Bohemian' — a person with unconventional social habits, often an artist."},
+{s:'One-Word Sub',q:'One who abandons his religious faith.',o:['Optimist','Pessimist','Atheist','Apostate'],a:3,sol:"'Apostate' — a person who renounces a religious or political belief."},
+{s:'One-Word Sub',q:'A hater of mankind.',o:['Introvert','Misogynist','Misanthrope','Philanthropist'],a:2,sol:"'Misanthrope' — a person who dislikes humankind and avoids human society."},
+{s:'One-Word Sub',q:'A hater of women.',o:['Feminist','Misanthrope','Philanderer','Misogynist'],a:3,sol:"'Misogynist' — a person who is strongly prejudiced against women."},
+{s:'One-Word Sub',q:'One who collects postage stamps.',o:['Bibliophile','Philanthropist','Numismatist','Philatelist'],a:3,sol:"'Philatelist' — a person who collects and studies postage stamps."},
+{s:'One-Word Sub',q:'A lover of books.',o:['Bibliophile','Philatelist','Linguist','Scholar'],a:0,sol:"'Bibliophile' — a person who loves and collects books."},
+{s:'One-Word Sub',q:'A fictitious name used by an author.',o:['Pseudonym','Alibi','Anonymous','Homonym'],a:0,sol:"'Pseudonym' — a fictitious name, especially one used by an author."},
+{s:'One-Word Sub',q:'A thing that is fit to be eaten.',o:['Edible','Legible','Infallible','Potable'],a:0,sol:"'Edible' — fit to be eaten; often used to distinguish from poisonous varieties."},
+{s:'One-Word Sub',q:'A thing that is fit to be drunk.',o:['Palatable','Potable','Edible','Toxic'],a:1,sol:"'Potable' — safe to drink; refers to clean, drinkable water."},
+{s:'One-Word Sub',q:'Incapable of making mistakes or being wrong.',o:['Incorrigible','Invincible','Inevitable','Infallible'],a:3,sol:"'Infallible' — never failing; incapable of making errors."},
+// NOUN-PRONOUN
+{s:'Noun-Pronoun',q:'My spectacles ___ missing.',o:['are','was','has been','is'],a:0,sol:'"Spectacles" is a plural noun (like trousers, scissors) and always takes a plural verb.'},
+{s:'Noun-Pronoun',q:'The cattle ___ grazing in the field.',o:['are','is','has','was'],a:0,sol:'"Cattle" is a plural noun (no singular form) and takes a plural verb.'},
+{s:'Noun-Pronoun',q:'I bought three ___ of eggs.',o:['dozens','dozen','dozen's','dozens of'],a:1,sol:'When a specific number precedes "dozen", it does not take an "s" (three dozen, not three dozens).'},
+{s:'Noun-Pronoun',q:'She gave me important ___ regarding the project.',o:['informations','informative','information','piece of informations'],a:2,sol:'"Information" is an uncountable noun and has no plural form "informations".'},
+{s:'Noun-Pronoun',q:'Where are my ___?',o:['trouserses','trousers','trouser','trouser's'],a:1,sol:'Garments that consist of two parts (trousers, jeans, scissors) are always plural.'},
+{s:'Noun-Pronoun',q:'The scenery of Switzerland ___ breathtaking.',o:['are','were','have been','is'],a:3,sol:'"Scenery" is an uncountable singular noun and always takes a singular verb.'},
+{s:'Noun-Pronoun',q:'I need some ___; my desk is empty.',o:['stationery','stationary','stationeries','stationaries'],a:0,sol:'"Stationery" (writing materials) is uncountable. "Stationary" means not moving.'},
+{s:'Noun-Pronoun',q:'He has a five-___ note.',o:["rupees'","rupee's","rupees","rupee"],a:3,sol:'In a hyphenated compound adjective (five-rupee note), the noun remains singular.'},
+{s:'Noun-Pronoun',q:'It was ___ who helped you yesterday.',o:['me','my','mine','I'],a:3,sol:'After the verb "to be" (was), the subjective case pronoun "I" is formally correct.'},
+{s:'Noun-Pronoun',q:'Let you and ___ solve this puzzle.',o:['I','mine','my','me'],a:3,sol:'"Let" is followed by pronouns in the objective case (me, him, her, us, them).'},
+{s:'Noun-Pronoun',q:'Everyone should do ___ duty.',o:['his','her','one's','their'],a:0,sol:'The indefinite pronoun "everyone" traditionally takes the singular possessive "his" in formal grammar.'},
+{s:'Noun-Pronoun',q:'One should keep ___ promises.',o:['his','their','one's','my'],a:2,sol:'The pronoun "one" requires its possessive form "one's".'},
+{s:'Noun-Pronoun',q:'This book is ___.',o:['mine','me','I','my'],a:0,sol:'The possessive pronoun "mine" stands alone without a following noun.'},
+{s:'Noun-Pronoun',q:'Both the brothers love ___.',o:['each other','themselves','the other','one another'],a:0,sol:'"Each other" is used when referring to exactly two persons.'},
+{s:'Noun-Pronoun',q:'The five sisters always fight with ___.',o:['the other','one another','each other','themselves'],a:1,sol:'"One another" is used when referring to more than two persons.'},
+{s:'Noun-Pronoun',q:'___ of the boys has done his homework.',o:['Each','Every','Many','All'],a:0,sol:'"Each of" is followed by a plural noun but takes a singular verb and pronoun ("his").'},
+{s:'Noun-Pronoun',q:'We enjoyed ___ at the party.',o:['us','ourself','ourselves','our'],a:2,sol:'The verb "enjoy" takes a reflexive pronoun when there is no other object ("ourselves").'},
+{s:'Noun-Pronoun',q:'He availed ___ of the opportunity.',o:['himself','his','him','he'],a:0,sol:'The verb "avail" requires a reflexive pronoun ("himself").'},
+{s:'Noun-Pronoun',q:'I, who ___ your friend, will support you.',o:['be','is','am','are'],a:2,sol:'The relative pronoun "who" agrees with its antecedent "I", taking the verb "am".'},
+{s:'Noun-Pronoun',q:'The boy ___ I met yesterday is my cousin.',o:['who','which','whose','whom'],a:3,sol:'"Whom" is the objective case, used here as the object of the verb "met".'},
+{s:'Noun-Pronoun',q:'This is the best book ___ I have ever read.',o:['that','who','which','what'],a:0,sol:'After superlatives ("best"), the relative pronoun "that" is preferred over "which".'},
+{s:'Noun-Pronoun',q:'She is one of those girls who ___ always late.',o:['has been','was','are','is'],a:2,sol:'The antecedent of "who" is the plural "girls", so the verb must be plural "are".'},
+{s:'Noun-Pronoun',q:'I don't like ___ types of jokes.',o:['that','these','this','them'],a:1,sol:'"Types" is plural, so it requires the plural demonstrative pronoun "these".'},
+{s:'Noun-Pronoun',q:'Between you and ___, I think he is wrong.',o:['I','mine','my','me'],a:3,sol:'Prepositions like "between" are followed by the objective case pronoun ("me", not "I").'},
+{s:'Noun-Pronoun',q:'The jury gave ___ verdict unanimously.',o:['his','their','her','its'],a:3,sol:'When a collective noun acts as a single unit, it takes a singular neuter pronoun ("its").'}
+  ]
+}
+,
+{
+  id:'nda_imucet_english_mock',
+  title:'NDA / IMU-CET English Mock',
+  subtitle:'200 Questions — 8 Sections — Comprehensive Test',
+  duration:120*60,
+  marking:{correct:1,wrong:-0.25},
+  sections:{Tenses:25,'Subject-Verb Agreement':25,'Active-Passive Voice':25,'Conditional Clauses':25,Synonyms:25,Antonyms:25,'One Word Substitution':25,'Noun-Pronoun':25},
+  questions:[
+    {s:'Tenses',q:'By the time the firemen arrived, the building ___ down.',o:['had burned','has burned','was burning','burned'],a:0,sol:'Past perfect is used for an action completed before another past action.'},
+    {s:'Tenses',q:'I ___ this novel for the last two hours.',o:['was reading','have been reading','read','am reading'],a:1,sol:'\'For\' indicating duration up to the present requires present perfect continuous.'},
+    {s:'Tenses',q:'Look at those dark clouds! It ___.',o:['will rain','is raining','rains','is going to rain'],a:3,sol:'\'Is going to\' is used for predictions based on present evidence.'},
+    {s:'Tenses',q:'He ___ to London tomorrow.',o:['flew','is flying','flies','has flown'],a:1,sol:'Present continuous can be used for fixed future arrangements.'},
+    {s:'Tenses',q:'They ___ the bridge by next December.',o:['will complete','will have completed','complete','completed'],a:1,sol:'Future perfect is used for actions that will be finished before a specific future time.'},
+    {s:'Tenses',q:'I ___ him since we met at the conference.',o:['haven\'t seen','hadn\'t seen','don\'t see','didn\'t see'],a:0,sol:'\'Since\' with a point in time usually takes the present perfect tense.'},
+    {s:'Tenses',q:'While she ___ the room, she found her lost ring.',o:['was cleaning','cleaned','is cleaning','has cleaned'],a:0,sol:'Past continuous is used for a longer background action interrupted by a shorter action.'},
+    {s:'Tenses',q:'The train ___ before we reached the station.',o:['was leaving','left','had left','has left'],a:2,sol:'Past perfect describes the action that happened first in the past.'},
+    {s:'Tenses',q:'Water ___ at 100 degrees Celsius.',o:['is boiling','boils','has boiled','boiled'],a:1,sol:'Simple present is used for scientific facts and general truths.'},
+    {s:'Tenses',q:'I ___ my homework when the lights went out.',o:['do','have done','was doing','did'],a:2,sol:'Past continuous sets the scene for an interrupted past action.'},
+    {s:'Tenses',q:'She ___ in this company for five years now.',o:['is working','has been working','worked','works'],a:1,sol:'\'For\' indicates duration up to the present, requiring present perfect continuous.'},
+    {s:'Tenses',q:'He ___ to the gym every morning.',o:['gone','went','is going','goes'],a:3,sol:'Simple present for daily habits and routines.'},
+    {s:'Tenses',q:'As soon as the teacher entered, the students ___ up.',o:['had stood','stand','stood','were standing'],a:2,sol:'Two immediate past actions use simple past for both.'},
+    {s:'Tenses',q:'We ___ dinner when the phone rang.',o:['have had','were having','had','are having'],a:1,sol:'Past continuous for an action in progress in the past.'},
+    {s:'Tenses',q:'I ___ never ___ such a beautiful sunset before.',o:['had ... seen','did ... see','am ... seeing','have ... seen'],a:3,sol:'Present perfect used for life experiences up to now.'},
+    {s:'Tenses',q:'By the time you wake up, I ___ for work.',o:['leave','will leave','left','will have left'],a:3,sol:'Future perfect for an action completed before a future point.'},
+    {s:'Tenses',q:'The earth ___ around the sun.',o:['has revolved','revolves','revolved','is revolving'],a:1,sol:'Universal truth uses simple present tense.'},
+    {s:'Tenses',q:'He ___ a new car last week.',o:['buys','bought','had bought','has bought'],a:1,sol:'Specific past time markers like \'last week\' take the simple past.'},
+    {s:'Tenses',q:'She said that she ___ her umbrella at home.',o:['has left','had left','left','was leaving'],a:1,sol:'Reported speech shifts past simple to past perfect.'},
+    {s:'Tenses',q:'If it ___, we will cancel the match.',o:['will rain','rains','has rained','rained'],a:1,sol:'In first conditionals, the \'if\' clause uses the simple present.'},
+    {s:'Tenses',q:'I ___ my keys; I can\'t open the door.',o:['lose','lost','had lost','have lost'],a:3,sol:'Present perfect for a past action with a present consequence.'},
+    {s:'Tenses',q:'They ___ chess for three hours when I arrived.',o:['were playing','had been playing','played','have played'],a:1,sol:'Past perfect continuous for duration up to a point in the past.'},
+    {s:'Tenses',q:'It is high time you ___ studying seriously.',o:['start','have started','started','will start'],a:2,sol:'\'It is high time\' is followed by the past subjunctive (simple past form).'},
+    {s:'Tenses',q:'My father ___ for a brisk walk daily.',o:['has gone','went','is going','goes'],a:3,sol:'Habitual action uses simple present.'},
+    {s:'Tenses',q:'Next month, we ___ our 10th anniversary.',o:['will be celebrating','have celebrated','celebrate','celebrated'],a:0,sol:'Future continuous for an action expected to happen in the normal course of events.'},
+    {s:'Subject-Verb Agreement',q:'Neither the manager nor the employees ___ aware of the policy change.',o:['has been','was','is','were'],a:3,sol:'With \'neither...nor\', the verb agrees with the subject closer to it (employees — plural).'},
+    {s:'Subject-Verb Agreement',q:'The committee ___ divided in its opinion.',o:['were','is','are','have been'],a:1,sol:'When acting as a single unit, collective nouns take singular verbs (indicated by \'its\').'},
+    {s:'Subject-Verb Agreement',q:'A large number of voters ___ turned out today.',o:['have','has','is','was'],a:0,sol:'\'A number of\' takes a plural verb.'},
+    {s:'Subject-Verb Agreement',q:'Bread and butter ___ my favorite breakfast.',o:['are','have been','were','is'],a:3,sol:'Two nouns representing a single entity or idea take a singular verb.'},
+    {s:'Subject-Verb Agreement',q:'Each of the participants ___ received a certificate.',o:['have','were','are','has'],a:3,sol:'\'Each of\' is followed by a plural noun but takes a singular verb.'},
+    {s:'Subject-Verb Agreement',q:'The news he brought ___ alarming.',o:['was','have been','were','are'],a:0,sol:'\'News\' is an uncountable singular noun.'},
+    {s:'Subject-Verb Agreement',q:'Not only the students but also the teacher ___ excited.',o:['have been','are','were','was'],a:3,sol:'Verb agrees with the subject closest to it (the teacher — singular).'},
+    {s:'Subject-Verb Agreement',q:'Two hundred dollars ___ a lot of money to lose.',o:['are','were','is','have been'],a:2,sol:'Amounts of money considered as a single sum take a singular verb.'},
+    {s:'Subject-Verb Agreement',q:'The quality of the apples ___ not good.',o:['have','are','was','were'],a:2,sol:'The true subject is \'quality\' (singular), not \'apples\'.'},
+    {s:'Subject-Verb Agreement',q:'Everyone in the room ___ cheering.',o:['have been','were','are','was'],a:3,sol:'Indefinite pronouns like \'everyone\' take a singular verb.'},
+    {s:'Subject-Verb Agreement',q:'Physics ___ a fascinating subject.',o:['were','are','have been','is'],a:3,sol:'Nouns ending in -ics (like subjects) are singular.'},
+    {s:'Subject-Verb Agreement',q:'The captain, along with his team, ___ practicing.',o:['were','is','are','have'],a:1,sol:'Phrases like \'along with\' don\'t change the number of the main subject (captain — singular).'},
+    {s:'Subject-Verb Agreement',q:'Neither of the two books ___ interesting.',o:['are','were','is','have'],a:2,sol:'\'Neither of\' takes a singular verb.'},
+    {s:'Subject-Verb Agreement',q:'Many a man ___ succumbed to this temptation.',o:['has','have','were','are'],a:0,sol:'\'Many a\' is followed by a singular noun and a singular verb.'},
+    {s:'Subject-Verb Agreement',q:'More than one person ___ involved in the scam.',o:['have','were','are','was'],a:3,sol:'\'More than one\' takes a singular verb.'},
+    {s:'Subject-Verb Agreement',q:'The jury ___ given their verdict.',o:['has','have','is','was'],a:1,sol:'The use of \'their\' indicates the jury is acting as individuals, so plural verb.'},
+    {s:'Subject-Verb Agreement',q:'Either he or I ___ to blame.',o:['is','were','are','am'],a:3,sol:'With \'either...or\', the verb agrees with the subject closest to it (I — am).'},
+    {s:'Subject-Verb Agreement',q:'One of my friends ___ going to Japan.',o:['are','have','is','were'],a:2,sol:'\'One of\' + plural noun takes a singular verb.'},
+    {s:'Subject-Verb Agreement',q:'The Arabian Nights ___ still a popular book.',o:['were','have been','is','are'],a:2,sol:'Titles of books, even if plural in form, take a singular verb.'},
+    {s:'Subject-Verb Agreement',q:'Half of the cake ___ eaten.',o:['were','are','have been','was'],a:3,sol:'Fractions agree with the noun they modify (cake is singular uncountable).'},
+    {s:'Subject-Verb Agreement',q:'Half of the apples ___ rotten.',o:['were','has been','is','was'],a:0,sol:'Fractions agree with the noun they modify (apples is plural).'},
+    {s:'Subject-Verb Agreement',q:'None of the water ___ safe to drink.',o:['were','have','are','is'],a:3,sol:'\'None of\' + uncountable noun takes a singular verb.'},
+    {s:'Subject-Verb Agreement',q:'A pair of shoes ___ under the bed.',o:['have','is','are','were'],a:1,sol:'\'A pair of\' takes a singular verb.'},
+    {s:'Subject-Verb Agreement',q:'The police ___ investigating the case.',o:['is','are','was','has been'],a:1,sol:'\'Police\' is a plural noun and takes a plural verb.'},
+    {s:'Subject-Verb Agreement',q:'Statistics ___ that the crime rate is falling.',o:['is showing','was showing','show','shows'],a:2,sol:'When \'statistics\' refers to data, it is plural.'},
+    {s:'Active-Passive Voice',q:'The mechanic fixed the car.',o:['The car was fixed by the mechanic.','The car was being fixed by the mechanic.','The car has been fixed by the mechanic.','The car is fixed by the mechanic.'],a:0,sol:'Past simple active becomes \'was/were + V3\' in passive.'},
+    {s:'Active-Passive Voice',q:'They are painting the house.',o:['The house has been painted by them.','The house was being painted by them.','The house is painted by them.','The house is being painted by them.'],a:3,sol:'Present continuous active becomes \'is/are being + V3\'.'},
+    {s:'Active-Passive Voice',q:'Someone has stolen my wallet.',o:['My wallet is stolen.','My wallet had been stolen.','My wallet has been stolen.','My wallet was stolen.'],a:2,sol:'Present perfect active becomes \'has/have been + V3\'.'},
+    {s:'Active-Passive Voice',q:'Who wrote this poem?',o:['By who this poem was written?','By whom was this poem written?','This poem was written by who?','Who was this poem written by?'],a:1,sol:'\'Who\' changes to \'By whom\' and subject-verb inversion occurs.'},
+    {s:'Active-Passive Voice',q:'Close the door.',o:['Let the door be closed.','Let close the door.','The door should close.','The door is closed.'],a:0,sol:'Imperatives use \'Let + object + be + V3\'.'},
+    {s:'Active-Passive Voice',q:'The committee will announce the results tomorrow.',o:['The results would be announced by the committee tomorrow.','The results are announced by the committee tomorrow.','The results will be announced by the committee tomorrow.','The results will announce by the committee tomorrow.'],a:2,sol:'Future simple active becomes \'will be + V3\'.'},
+    {s:'Active-Passive Voice',q:'They had won the match before it started raining.',o:['The match would have been won by them.','The match had been won by them before it started raining.','The match has been won by them before it started raining.','The match was won by them before it started raining.'],a:1,sol:'Past perfect active becomes \'had been + V3\'.'},
+    {s:'Active-Passive Voice',q:'People speak English all over the world.',o:['English has been spoken all over the world.','English was spoken all over the world.','English is being spoken all over the world.','English is spoken all over the world.'],a:3,sol:'General truth in simple present becomes \'is/are + V3\'.'},
+    {s:'Active-Passive Voice',q:'Did you finish the assignment?',o:['Has the assignment been finished by you?','Was the assignment finished by you?','Had the assignment been finished by you?','Is the assignment finished by you?'],a:1,sol:'Past simple interrogative: \'Did\' becomes \'Was/Were\' in passive.'},
+    {s:'Active-Passive Voice',q:'The chef is preparing a special dish.',o:['A special dish is prepared by the chef.','A special dish was prepared by the chef.','A special dish has been prepared by the chef.','A special dish is being prepared by the chef.'],a:3,sol:'Present continuous requires \'being\' in the passive.'},
+    {s:'Active-Passive Voice',q:'We must respect our elders.',o:['Our elders have to be respected by us.','Our elders must be respected by us.','Our elders should respect us.','Our elders are respected by us.'],a:1,sol:'Modals in passive follow the pattern \'Modal + be + V3\'.'},
+    {s:'Active-Passive Voice',q:'He was driving a blue car.',o:['A blue car is being driven by him.','A blue car was being driven by him.','A blue car was driven by him.','A blue car had been driven by him.'],a:1,sol:'Past continuous passive uses \'was/were being + V3\'.'},
+    {s:'Active-Passive Voice',q:'I know him.',o:['He is being known to me.','He is known to me.','He is known by me.','He was known to me.'],a:1,sol:'The verb \'know\' takes the preposition \'to\' instead of \'by\' in passive.'},
+    {s:'Active-Passive Voice',q:'They made him the chairman.',o:['He had been made the chairman.','The chairman was made by him.','He was made the chairman.','He is made the chairman.'],a:2,sol:'Verbs with object complements keep the complement after the passive verb.'},
+    {s:'Active-Passive Voice',q:'Please help the poor.',o:['You are requested to help the poor.','The poor are requested to help.','Let the poor be helped.','The poor should be helped.'],a:0,sol:'\'Please\' in imperative sentences translates to \'You are requested to\'.'},
+    {s:'Active-Passive Voice',q:'Has anyone seen my dog?',o:['Has my dog been seen by anyone?','Was my dog seen by anyone?','Had my dog been seen by anyone?','Is my dog seen by anyone?'],a:0,sol:'Present perfect interrogative passive: Has/Have + object + been + V3.'},
+    {s:'Active-Passive Voice',q:'They are to build a new bridge here.',o:['A new bridge was to be built here.','A new bridge is to be built here.','A new bridge is being built here.','A new bridge will be built here.'],a:1,sol:'Infinitive active \'to build\' becomes passive \'to be built\'.'},
+    {s:'Active-Passive Voice',q:'It is time to ring the bell.',o:['It is time for the bell to be rung.','The bell is time to be rung.','It is time the bell rings.','It is time that the bell is rung.'],a:0,sol:'Specific structure for \'It is time\' changes to \'for + object + to be + V3\'.'},
+    {s:'Active-Passive Voice',q:'The doctor advised me to rest.',o:['To rest was advised by the doctor.','I had been advised to rest.','I was advised to rest by the doctor.','I am advised to rest by the doctor.'],a:2,sol:'Object \'me\' becomes subject \'I\', simple past changes to \'was advised\'.'},
+    {s:'Active-Passive Voice',q:'Why did he break the glass?',o:['Why is the glass broken by him?','Why the glass was broken by him?','Why had the glass been broken by him?','Why was the glass broken by him?'],a:3,sol:'Wh-question in past simple passive keeps the question word and uses \'was/were\'.'},
+    {s:'Active-Passive Voice',q:'Circumstances will oblige me to go.',o:['I will oblige to go.','I would be obliged to go.','I am obliged to go.','I shall be obliged to go.'],a:3,sol:'Future simple passive using shall/will be + V3.'},
+    {s:'Active-Passive Voice',q:'Don\'t insult the weak.',o:['The weak should not insult.','The weak are not to be insulted.','Let not insult the weak.','Let the weak not be insulted.'],a:3,sol:'Negative imperative uses \'Let + object + not + be + V3\'.'},
+    {s:'Active-Passive Voice',q:'We have already done the exercise.',o:['The exercise was already done by us.','The exercise is already done by us.','The exercise has already been done by us.','The exercise had already been done by us.'],a:2,sol:'Present perfect active becomes present perfect passive with \'been\'.'},
+    {s:'Active-Passive Voice',q:'The boy laughed at the beggar.',o:['The beggar had been laughed at by the boy.','The beggar was laughed at by the boy.','The beggar was laughed by the boy.','The beggar is laughed at by the boy.'],a:1,sol:'Phrasal verbs keep their prepositions in the passive voice.'},
+    {s:'Active-Passive Voice',q:'They will have built the house by next year.',o:['The house would have been built by them.','The house will be built by them by next year.','The house will have been built by them by next year.','The house is being built by them by next year.'],a:2,sol:'Future perfect active becomes \'will have been + V3\'.'},
+    {s:'Conditional Clauses',q:'If water reaches 100 degrees, it ___.',o:['will boil','boiled','would boil','boils'],a:3,sol:'Zero conditional for scientific facts uses present simple in both clauses.'},
+    {s:'Conditional Clauses',q:'If I ___ you, I wouldn\'t do that.',o:['am','was','were','had been'],a:2,sol:'Second conditional uses \'were\' for all subjects for hypothetical situations.'},
+    {s:'Conditional Clauses',q:'Unless you hurry, you ___ the train.',o:['missed','miss','will miss','would miss'],a:2,sol:'First conditional with \'unless\' (if not) predicting a likely future result.'},
+    {s:'Conditional Clauses',q:'Had he worked harder, he ___ the exam.',o:['will pass','would pass','passed','would have passed'],a:3,sol:'Third conditional inversion (\'Had he\' instead of \'If he had\') requires \'would have + V3\'.'},
+    {s:'Conditional Clauses',q:'If she ___ the truth, she would have told me.',o:['knows','knew','had known','has known'],a:2,sol:'Third conditional \'if\' clause requires past perfect (\'had + V3\').'},
+    {s:'Conditional Clauses',q:'If it rains tomorrow, we ___ at home.',o:['will stay','would stay','stayed','stay'],a:0,sol:'First conditional describes a real future possibility.'},
+    {s:'Conditional Clauses',q:'I would buy a mansion if I ___ a lottery.',o:['had won','win','won','will win'],a:2,sol:'Second conditional for unlikely future events uses simple past in the \'if\' clause.'},
+    {s:'Conditional Clauses',q:'If I had a car, I ___ you a lift.',o:['would have given','gave','would give','will give'],a:2,sol:'Second conditional main clause uses \'would + bare infinitive\'.'},
+    {s:'Conditional Clauses',q:'Suppose you ___ the manager, what would you do?',o:['are','was','had been','were'],a:3,sol:'\'Suppose\' acts like \'If\' in second conditionals, requiring past subjunctive.'},
+    {s:'Conditional Clauses',q:'If you mix red and blue, you ___ purple.',o:['would get','will get','get','got'],a:2,sol:'Zero conditional for general truths.'},
+    {s:'Conditional Clauses',q:'Provided that you ___, you can leave early.',o:['will finish your work','finish your work','would finish your work','finished your work'],a:1,sol:'\'Provided that\' acts as a conditional conjunction taking simple present for future.'},
+    {s:'Conditional Clauses',q:'If he ___ me, I would have helped him.',o:['has asked','had asked','asked','asks'],a:1,sol:'Third conditional if-clause takes past perfect.'},
+    {s:'Conditional Clauses',q:'He would be a doctor now if he ___ harder in college.',o:['had studied','would study','studies','studied'],a:0,sol:'Mixed conditional: past unreal condition (past perfect) affecting present result (would + verb).'},
+    {s:'Conditional Clauses',q:'I will call you as soon as I ___.',o:['arrive','will arrive','would arrive','arrived'],a:0,sol:'Time clauses referring to the future use the present simple.'},
+    {s:'Conditional Clauses',q:'If she ___ more careful, she wouldn\'t have broken the vase.',o:['was','has been','were','had been'],a:3,sol:'Third conditional if-clause uses past perfect.'},
+    {s:'Conditional Clauses',q:'I ___ around the world if I were rich.',o:['traveled','would have traveled','will travel','would travel'],a:3,sol:'Second conditional main clause takes \'would + verb\'.'},
+    {s:'Conditional Clauses',q:'But for his help, I ___ completely.',o:['failed','would fail','would have failed','will fail'],a:2,sol:'\'But for\' means \'if it hadn\'t been for\', acting as a third conditional.'},
+    {s:'Conditional Clauses',q:'If the sun shines, we ___ to the beach.',o:['go','went','will go','would go'],a:2,sol:'First conditional for realistic future events.'},
+    {s:'Conditional Clauses',q:'If he ___ his ticket, he won\'t be allowed in.',o:['forgot','will forget','forgets','had forgotten'],a:2,sol:'First conditional if-clause takes present simple.'},
+    {s:'Conditional Clauses',q:'Should you see him, ___ him to call me.',o:['would tell','tell','will tell','told'],a:1,sol:'Inversion in first conditional: \'Should you see\' = \'If you see\'; main clause uses imperative.'},
+    {s:'Conditional Clauses',q:'If I were a bird, I ___ fly to you.',o:['will','would','could have','can'],a:1,sol:'Second conditional main clause uses \'would\'.'},
+    {s:'Conditional Clauses',q:'Even if he ___, I wouldn\'t forgive him.',o:['had apologized','apologized','apologizes','will apologize'],a:1,sol:'Second conditional indicating a hypothetical past action.'},
+    {s:'Conditional Clauses',q:'If they ___ earlier, they would have caught the bus.',o:['have left','left','leave','had left'],a:3,sol:'Third conditional if-clause requires past perfect.'},
+    {s:'Conditional Clauses',q:'I\'ll go to the party on the condition that you ___ with me.',o:['came','will come','would come','come'],a:3,sol:'\'On the condition that\' takes present tense for future events.'},
+    {s:'Conditional Clauses',q:'If she hadn\'t stayed up late, she ___ so tired now.',o:['wouldn\'t be','isn\'t','won\'t be','wouldn\'t have been'],a:0,sol:'Mixed conditional: past cause (third) with present effect (second).'},
+    {s:'Synonyms',q:'Select the synonym of \'ABATE\':',o:['Increase','Observe','Diminish','Promote'],a:2,sol:'Abate means to become less intense or widespread; synonym is Diminish.'},
+    {s:'Synonyms',q:'Select the synonym of \'BELLIGERENT\':',o:['Hostile','Friendly','Confused','Peaceful'],a:0,sol:'Belligerent means hostile and aggressive.'},
+    {s:'Synonyms',q:'Select the synonym of \'CACOPHONY\':',o:['Noise','Silence','Harmony','Melody'],a:0,sol:'Cacophony refers to a harsh, discordant mixture of sounds.'},
+    {s:'Synonyms',q:'Select the synonym of \'DIRGE\':',o:['Symphony','Lullaby','Anthem','Elegy'],a:3,sol:'A dirge is a mournful song or poem; synonym is Elegy.'},
+    {s:'Synonyms',q:'Select the synonym of \'ELICIT\':',o:['Ignore','Provide','Extract','Suppress'],a:2,sol:'Elicit means to evoke or draw out; synonym is Extract.'},
+    {s:'Synonyms',q:'Select the synonym of \'FASTIDIOUS\':',o:['Sloppy','Meticulous','Careless','Relaxed'],a:1,sol:'Fastidious means very attentive to accuracy and detail; synonym is Meticulous.'},
+    {s:'Synonyms',q:'Select the synonym of \'GARRULOUS\':',o:['Concise','Reserved','Silent','Talkative'],a:3,sol:'Garrulous means excessively talkative; synonym is Talkative.'},
+    {s:'Synonyms',q:'Select the synonym of \'HEGEMONY\':',o:['Weakness','Dominance','Submission','Equality'],a:1,sol:'Hegemony is leadership or dominance; synonym is Dominance.'},
+    {s:'Synonyms',q:'Select the synonym of \'ICONOCLAST\':',o:['Creator','Critic','Supporter','Follower'],a:1,sol:'An iconoclast attacks or criticizes cherished beliefs; synonym is Critic.'},
+    {s:'Synonyms',q:'Select the synonym of \'JUXTAPOSE\':',o:['Compare','Separate','Divide','Isolate'],a:0,sol:'Juxtapose means to place close together for contrasting effect; synonym is Compare.'},
+    {s:'Synonyms',q:'Select the synonym of \'KNELL\':',o:['Chime','Shout','Whisper','Silence'],a:0,sol:'A knell is the sound of a bell rung solemnly; synonym is Chime.'},
+    {s:'Synonyms',q:'Select the synonym of \'LETHARGIC\':',o:['Active','Lively','Sluggish','Energetic'],a:2,sol:'Lethargic means affected by lethargy; synonym is Sluggish.'},
+    {s:'Synonyms',q:'Select the synonym of \'MELLIFLUOUS\':',o:['Sweet-sounding','Harsh','Grating','Piercing'],a:0,sol:'Mellifluous describes a sweet and smooth sound; synonym is Sweet-sounding.'},
+    {s:'Synonyms',q:'Select the synonym of \'NEFARIOUS\':',o:['Virtuous','Wicked','Kind','Honorable'],a:1,sol:'Nefarious means wicked or criminal; synonym is Wicked.'},
+    {s:'Synonyms',q:'Select the synonym of \'OBFUSCATE\':',o:['Reveal','Confuse','Clarify','Explain'],a:1,sol:'Obfuscate means to render obscure or unintelligible; synonym is Confuse.'},
+    {s:'Synonyms',q:'Select the synonym of \'PARADIGM\':',o:['Anomaly','Mistake','Model','Puzzle'],a:2,sol:'A paradigm is a typical pattern or example; synonym is Model.'},
+    {s:'Synonyms',q:'Select the synonym of \'QUIXOTIC\':',o:['Idealistic','Realistic','Practical','Pragmatic'],a:0,sol:'Quixotic means exceedingly idealistic and impractical; synonym is Idealistic.'},
+    {s:'Synonyms',q:'Select the synonym of \'RETICENT\':',o:['Extroverted','Outgoing','Talkative','Reserved'],a:3,sol:'Reticent means not revealing thoughts or feelings readily; synonym is Reserved.'},
+    {s:'Synonyms',q:'Select the synonym of \'SYCOPHANT\':',o:['Critic','Leader','Rebel','Flatterer'],a:3,sol:'A sycophant acts obsequiously to gain advantage; synonym is Flatterer.'},
+    {s:'Synonyms',q:'Select the synonym of \'TREPIDATION\':',o:['Calmness','Confidence','Anxiety','Bravery'],a:2,sol:'Trepidation is a feeling of fear or agitation; synonym is Anxiety.'},
+    {s:'Synonyms',q:'Select the synonym of \'UBIQUITOUS\':',o:['Rare','Unique','Scarce','Omnipresent'],a:3,sol:'Ubiquitous means present or found everywhere; synonym is Omnipresent.'},
+    {s:'Synonyms',q:'Select the synonym of \'VACILLATE\':',o:['Waver','Remain','Decide','Persist'],a:0,sol:'Vacillate means to alternate between opinions; synonym is Waver.'},
+    {s:'Synonyms',q:'Select the synonym of \'WINSOME\':',o:['Charming','Offensive','Ugly','Repulsive'],a:0,sol:'Winsome means attractive or appealing; synonym is Charming.'},
+    {s:'Synonyms',q:'Select the synonym of \'XENOPHOBIA\':',o:['Acceptance','Tolerance','Love','Prejudice'],a:3,sol:'Xenophobia is dislike or prejudice against foreigners; synonym is Prejudice.'},
+    {s:'Synonyms',q:'Select the synonym of \'ZEALOUS\':',o:['Indifferent','Apathetic','Enthusiastic','Uncaring'],a:2,sol:'Zealous means showing great energy or enthusiasm; synonym is Enthusiastic.'},
+    {s:'Antonyms',q:'Select the antonym of \'ALLEVIATE\':',o:['Ease','Mitigate','Aggravate','Soothe'],a:2,sol:'To alleviate means to make less severe; antonym is Aggravate.'},
+    {s:'Antonyms',q:'Select the antonym of \'AUDACIOUS\':',o:['Timid','Bold','Brave','Daring'],a:0,sol:'Audacious means showing bold risks; antonym is Timid.'},
+    {s:'Antonyms',q:'Select the antonym of \'CAPRICIOUS\':',o:['Steady','Unpredictable','Volatile','Fickle'],a:0,sol:'Capricious means given to sudden mood changes; antonym is Steady.'},
+    {s:'Antonyms',q:'Select the antonym of \'DESICCATE\':',o:['Moisten','Dry','Dehydrate','Parch'],a:0,sol:'To desiccate means to remove moisture; antonym is Moisten.'},
+    {s:'Antonyms',q:'Select the antonym of \'EPHEMERAL\':',o:['Short-lived','Transient','Fleeting','Permanent'],a:3,sol:'Ephemeral means lasting a very short time; antonym is Permanent.'},
+    {s:'Antonyms',q:'Select the antonym of \'FERVID\':',o:['Ardent','Passionate','Apathetic','Intense'],a:2,sol:'Fervid means intensely enthusiastic; antonym is Apathetic.'},
+    {s:'Antonyms',q:'Select the antonym of \'GREGARIOUS\':',o:['Outgoing','Introverted','Sociable','Friendly'],a:1,sol:'Gregarious means fond of company; antonym is Introverted.'},
+    {s:'Antonyms',q:'Select the antonym of \'HOMOGENEOUS\':',o:['Uniform','Identical','Similar','Diverse'],a:3,sol:'Homogeneous means of the same kind; antonym is Diverse.'},
+    {s:'Antonyms',q:'Select the antonym of \'INGENUOUS\':',o:['Naive','Simple','Innocent','Deceitful'],a:3,sol:'Ingenuous means innocent and unsuspecting; antonym is Deceitful.'},
+    {s:'Antonyms',q:'Select the antonym of \'LOQUACIOUS\':',o:['Talkative','Chatty','Garrulous','Taciturn'],a:3,sol:'Loquacious means tending to talk a great deal; antonym is Taciturn.'},
+    {s:'Antonyms',q:'Select the antonym of \'MISANTHROPE\':',o:['Rebel','Cynic','Philanthropist','Pessimist'],a:2,sol:'A misanthrope hates mankind; antonym is Philanthropist.'},
+    {s:'Antonyms',q:'Select the antonym of \'OSTENTATION\':',o:['Pretentiousness','Showiness','Flashiness','Modesty'],a:3,sol:'Ostentation is vulgar display; antonym is Modesty.'},
+    {s:'Antonyms',q:'Select the antonym of \'PRAGMATIC\':',o:['Practical','Sensible','Idealistic','Realistic'],a:2,sol:'Pragmatic means dealing practically with things; antonym is Idealistic.'},
+    {s:'Antonyms',q:'Select the antonym of \'RAREFY\':',o:['Condense','Thin','Expand','Dilute'],a:0,sol:'To rarefy means to make less dense; antonym is Condense.'},
+    {s:'Antonyms',q:'Select the antonym of \'SOPORIFIC\':',o:['Boring','Calming','Sleep-inducing','Stimulating'],a:3,sol:'Soporific means tending to induce sleep; antonym is Stimulating.'},
+    {s:'Antonyms',q:'Select the antonym of \'VENERATE\':',o:['Revere','Despise','Respect','Honor'],a:1,sol:'To venerate is to regard with great respect; antonym is Despise.'},
+    {s:'Antonyms',q:'Select the antonym of \'WAVER\':',o:['Persist','Hesitate','Falter','Fluctuate'],a:0,sol:'To waver means to be undecided; antonym is Persist.'},
+    {s:'Antonyms',q:'Select the antonym of \'ZEAL\':',o:['Enthusiasm','Apathy','Fervor','Passion'],a:1,sol:'Zeal means great energy or enthusiasm; antonym is Apathy.'},
+    {s:'Antonyms',q:'Select the antonym of \'ABSTRUSE\':',o:['Obscure','Complex','Profound','Clear'],a:3,sol:'Abstruse means difficult to understand; antonym is Clear.'},
+    {s:'Antonyms',q:'Select the antonym of \'BANAL\':',o:['Original','Cliché','Trite','Hackneyed'],a:0,sol:'Banal means lacking originality; antonym is Original.'},
+    {s:'Antonyms',q:'Select the antonym of \'CANDID\':',o:['Frank','Deceptive','Open','Honest'],a:1,sol:'Candid means truthful and straightforward; antonym is Deceptive.'},
+    {s:'Antonyms',q:'Select the antonym of \'DAUNT\':',o:['Frighten','Discourage','Encourage','Intimidate'],a:2,sol:'To daunt means to intimidate; antonym is Encourage.'},
+    {s:'Antonyms',q:'Select the antonym of \'ENIGMA\':',o:['Mystery','Riddle','Puzzle','Solution'],a:3,sol:'An enigma is something mysterious; antonym is Solution.'},
+    {s:'Antonyms',q:'Select the antonym of \'FALLOW\':',o:['Inactive','Cultivated','Unplowed','Dormant'],a:1,sol:'Fallow refers to unsown land; antonym is Cultivated.'},
+    {s:'Antonyms',q:'Select the antonym of \'GUILE\':',o:['Honesty','Deceit','Trickery','Cunning'],a:0,sol:'Guile means sly cunning; antonym is Honesty.'},
+    {s:'One Word Substitution',q:'A person who renounces a religious or political belief or principle.',o:['Ascetic','Agnostic','Apostate','Atheist'],a:2,sol:'An apostate abandons a belief or cause.'},
+    {s:'One Word Substitution',q:'A study of ancient things like tombs, buried towns.',o:['History','Archaeology','Paleontology','Genealogy'],a:1,sol:'Archaeology is the study of human history through excavation of sites.'},
+    {s:'One Word Substitution',q:'A person who makes maps.',o:['Curator','Calligrapher','Choreographer','Cartographer'],a:3,sol:'A cartographer draws or produces maps.'},
+    {s:'One Word Substitution',q:'An extreme or irrational fear of confined places.',o:['Acrophobia','Hydrophobia','Agoraphobia','Claustrophobia'],a:3,sol:'Claustrophobia is the fear of enclosed spaces.'},
+    {s:'One Word Substitution',q:'A person who is skilled in many languages.',o:['Translator','Linguist','Polyglot','Bilingual'],a:2,sol:'A polyglot knows or uses several languages.'},
+    {s:'One Word Substitution',q:'A speech delivered without any previous preparation.',o:['Maiden','Monologue','Elocution','Extempore'],a:3,sol:'Extempore means spoken or done without preparation.'},
+    {s:'One Word Substitution',q:'One who compiles a dictionary.',o:['Calligrapher','Bibliophile','Cartographer','Lexicographer'],a:3,sol:'A lexicographer is a person who compiles dictionaries.'},
+    {s:'One Word Substitution',q:'A place where bees are kept.',o:['Aviary','Aquarium','Sanctuary','Apiary'],a:3,sol:'An apiary is a collection of beehives.'},
+    {s:'One Word Substitution',q:'A place where birds are kept.',o:['Apiary','Asylum','Aviary','Zoo'],a:2,sol:'An aviary is a large enclosure for confining birds.'},
+    {s:'One Word Substitution',q:'A government by the wealthy.',o:['Aristocracy','Autocracy','Democracy','Plutocracy'],a:3,sol:'Plutocracy is a society ruled by people of great wealth.'},
+    {s:'One Word Substitution',q:'A government by the nobility.',o:['Bureaucracy','Aristocracy','Plutocracy','Oligarchy'],a:1,sol:'Aristocracy is government by the highest social class.'},
+    {s:'One Word Substitution',q:'A disease that spreads over a whole country or the whole world.',o:['Epidemic','Contagious','Endemic','Pandemic'],a:3,sol:'A pandemic is an outbreak of disease prevalent over a whole country or the world.'},
+    {s:'One Word Substitution',q:'A person who is indifferent to pleasure and pain.',o:['Ascetic','Cynic','Stoic','Epicurean'],a:2,sol:'A stoic endures pain or hardship without showing feelings or complaining.'},
+    {s:'One Word Substitution',q:'The killing of one\'s brother or sister.',o:['Matricide','Patricide','Fratricide','Regicide'],a:2,sol:'Fratricide is the killing of one\'s sibling.'},
+    {s:'One Word Substitution',q:'The killing of a king.',o:['Suicide','Genocide','Regicide','Homicide'],a:2,sol:'Regicide is the action of killing a king.'},
+    {s:'One Word Substitution',q:'An unconventional style of living.',o:['Bohemian','Orthodox','Conservative','Traditional'],a:0,sol:'A bohemian is a person with unconventional social habits.'},
+    {s:'One Word Substitution',q:'One who abandons his religious faith.',o:['Optimist','Pessimist','Atheist','Apostate'],a:3,sol:'An apostate is a person who renounces a religious belief.'},
+    {s:'One Word Substitution',q:'A hater of mankind.',o:['Introvert','Misogynist','Misanthrope','Philanthropist'],a:2,sol:'A misanthrope dislikes humankind and avoids human society.'},
+    {s:'One Word Substitution',q:'A hater of women.',o:['Feminist','Misanthrope','Philanderer','Misogynist'],a:3,sol:'A misogynist is a person strongly prejudiced against women.'},
+    {s:'One Word Substitution',q:'One who collects postage stamps.',o:['Bibliophile','Philanthropist','Numismatist','Philatelist'],a:3,sol:'A philatelist studies and collects postage stamps.'},
+    {s:'One Word Substitution',q:'A lover of books.',o:['Bibliophile','Philatelist','Linguist','Scholar'],a:0,sol:'A bibliophile is a person who collects or has great love of books.'},
+    {s:'One Word Substitution',q:'A fictitious name used by an author.',o:['Pseudonym','Alibi','Anonymous','Homonym'],a:0,sol:'A pseudonym is a fictitious name, especially one used by an author.'},
+    {s:'One Word Substitution',q:'A thing that is fit to be eaten.',o:['Edible','Legible','Infallible','Potable'],a:0,sol:'Edible means fit to be eaten.'},
+    {s:'One Word Substitution',q:'A thing that is fit to be drunk.',o:['Palatable','Potable','Edible','Toxic'],a:1,sol:'Potable means safe to drink.'},
+    {s:'One Word Substitution',q:'Incapable of making mistakes or being wrong.',o:['Incorrigible','Invincible','Inevitable','Infallible'],a:3,sol:'Infallible means never failing; always effective.'},
+    {s:'Noun-Pronoun',q:'My spectacles ___ missing.',o:['are','was','has been','is'],a:0,sol:'\'Spectacles\' is a plural noun and takes a plural verb.'},
+    {s:'Noun-Pronoun',q:'The cattle ___ grazing in the field.',o:['are','is','has','was'],a:0,sol:'\'Cattle\' is a plural noun though it looks singular, and takes a plural verb.'},
+    {s:'Noun-Pronoun',q:'I bought three ___ of eggs.',o:['dozens','dozen','dozen\'s','dozens of'],a:1,sol:'When a specific number precedes \'dozen\', it does not take an \'s\'.'},
+    {s:'Noun-Pronoun',q:'She gave me important ___ regarding the project.',o:['informations','informative','information','piece of informations'],a:2,sol:'\'Information\' is an uncountable noun and does not have a plural form.'},
+    {s:'Noun-Pronoun',q:'Where are my ___?',o:['trouserses','trousers','trouser','trouser\'s'],a:1,sol:'Garments consisting of two parts (like trousers) are plural.'},
+    {s:'Noun-Pronoun',q:'The scenery of Switzerland ___ breathtaking.',o:['are','were','have been','is'],a:3,sol:'\'Scenery\' is an uncountable singular noun.'},
+    {s:'Noun-Pronoun',q:'I need some ___; my desk is empty.',o:['stationery','stationary','stationeries','stationaries'],a:0,sol:'\'Stationery\' (writing materials) is an uncountable noun.'},
+    {s:'Noun-Pronoun',q:'He has a five-___ note.',o:['rupees\'','rupee\'s','rupees','rupee'],a:3,sol:'In a hyphenated compound adjective (five-rupee), the noun remains singular.'},
+    {s:'Noun-Pronoun',q:'It was ___ who helped you yesterday.',o:['me','my','mine','I'],a:3,sol:'After the verb \'to be\' (was), the subjective case pronoun (I) is used formally.'},
+    {s:'Noun-Pronoun',q:'Let you and ___ solve this puzzle.',o:['I','mine','my','me'],a:3,sol:'\'Let\' is followed by pronouns in the objective case.'},
+    {s:'Noun-Pronoun',q:'Everyone should do ___ duty.',o:['his','her','one\'s','their'],a:0,sol:'Indefinite pronoun \'everyone\' traditionally takes a singular possessive pronoun \'his\' in strict grammar.'},
+    {s:'Noun-Pronoun',q:'One should keep ___ promises.',o:['his','their','one\'s','my'],a:2,sol:'The pronoun \'one\' requires the possessive form \'one\'s\'.'},
+    {s:'Noun-Pronoun',q:'This book is ___.',o:['mine','me','I','my'],a:0,sol:'Possessive pronoun \'mine\' stands alone without a following noun.'},
+    {s:'Noun-Pronoun',q:'Both the brothers love ___.',o:['each other','themselves','the other','one another'],a:0,sol:'\'Each other\' is used for two persons.'},
+    {s:'Noun-Pronoun',q:'The five sisters always fight with ___.',o:['the other','one another','each other','themselves'],a:1,sol:'\'One another\' is used for more than two persons.'},
+    {s:'Noun-Pronoun',q:'___ of the boys has done his homework.',o:['Each','Every','Many','All'],a:0,sol:'\'Each of\' is followed by a plural noun but takes a singular verb.'},
+    {s:'Noun-Pronoun',q:'We enjoyed ___ at the party.',o:['us','ourself','ourselves','our'],a:2,sol:'The verb \'enjoy\' takes a reflexive pronoun when there is no other object.'},
+    {s:'Noun-Pronoun',q:'He availed ___ of the opportunity.',o:['himself','his','him','he'],a:0,sol:'The verb \'avail\' requires a reflexive pronoun.'},
+    {s:'Noun-Pronoun',q:'I, who ___ your friend, will support you.',o:['be','is','am','are'],a:2,sol:'The relative pronoun \'who\' agrees with its antecedent \'I\', taking the verb \'am\'.'},
+    {s:'Noun-Pronoun',q:'The boy ___ I met yesterday is my cousin.',o:['who','which','whose','whom'],a:3,sol:'\'Whom\' is the objective case, used here as the object of the verb \'met\'.'},
+    {s:'Noun-Pronoun',q:'This is the best book ___ I have ever read.',o:['that','who','which','what'],a:0,sol:'After superlatives (\'best\'), the relative pronoun \'that\' is preferred over \'which\'.'},
+    {s:'Noun-Pronoun',q:'She is one of those girls who ___ always late.',o:['has been','was','are','is'],a:2,sol:'The antecedent of \'who\' is the plural \'girls\', so the verb must be plural \'are\'.'},
+    {s:'Noun-Pronoun',q:'I don\'t like ___ types of jokes.',o:['that','these','this','them'],a:1,sol:'\'Types\' is plural, so it requires the plural demonstrative pronoun \'these\'.'},
+    {s:'Noun-Pronoun',q:'Between you and ___, I think he is wrong.',o:['I','mine','my','me'],a:3,sol:'Prepositions like \'between\' are followed by the objective case pronoun.'},
+    {s:'Noun-Pronoun',q:'The jury gave ___ verdict unanimously.',o:['his','their','her','its'],a:3,sol:'When a collective noun acts as a single unit, it takes a singular neuter pronoun \'its\'.'}
+  ]
 }
 ];
 
@@ -1769,6 +2242,43 @@ function createCustomPaper(){
   buildDashboard();
 }
 
+
+// ╔══════════════════════════════════════╗
+// ║  RENAME PAPERS                       ║
+// ╚══════════════════════════════════════╝
+function getPaperNames(){try{return JSON.parse(localStorage.getItem('cbt_paper_names')||'{}');}catch(e){return{};}}
+function setPaperName(id,name){const n=getPaperNames();n[id]=name;localStorage.setItem('cbt_paper_names',JSON.stringify(n));}
+function getPaperDisplayName(p){return getPaperNames()[p.id]||p.title;}
+
+function startRename(id,el){
+  el.style.display='none';
+  const wrap=el.parentElement;
+  const cur=getPaperNames()[id]||wrap.querySelector('h3').dataset.title||'';
+  const inp=document.createElement('input');
+  inp.className='rename-input';inp.value=cur;
+  wrap.querySelector('h3').style.display='none';
+  wrap.appendChild(inp);inp.focus();inp.select();
+  function done(){
+    const v=inp.value.trim();
+    if(v)setPaperName(id,v);
+    buildDashboard();
+  }
+  inp.addEventListener('keydown',e=>{if(e.key==='Enter')done();if(e.key==='Escape')buildDashboard();});
+  inp.addEventListener('blur',done);
+}
+
+// ╔══════════════════════════════════════╗
+// ║  RESUME DETECTION                    ║
+// ╚══════════════════════════════════════╝
+function hasActiveSession(paperId){
+  try{
+    const raw=localStorage.getItem('cbt_'+paperId);
+    if(!raw)return false;
+    const s=JSON.parse(raw);
+    return s&&!s.submitted&&s.timeLeft>0;
+  }catch(e){return false;}
+}
+
 // ════════ FIREBASE ════════
 const firebaseConfig = {
   apiKey: "AIzaSyDDYYyECxxcvXJm3hNYJFnlRJZDDaArYTs",
@@ -1867,9 +2377,13 @@ function buildDashboard(){
     const maxS=sparks.length?Math.max(...sparks.map(h=>h.maxScore),1):1;
     const isCustom=!!getCustomPapers().find(cp=>cp.id===p.id);
     const card=document.createElement('div');card.className='card';
+    const displayName=getPaperDisplayName(p);const hasSession=hasActiveSession(p.id);
     card.innerHTML=`
       <div class="card-header" style="position:relative">
-        <h3>◈ ${p.title} ${isCustom?'<span style="font-size:10px;color:var(--purple);background:rgba(179,136,255,.15);padding:2px 7px;border-radius:8px;font-family:JetBrains Mono">CUSTOM</span>':''}</h3>
+        <div class="rename-wrap">
+          <h3 data-title="${p.title}" style="margin:0;flex:1">◈ ${displayName} ${isCustom?'<span style="font-size:10px;color:var(--purple);background:rgba(179,136,255,.15);padding:2px 7px;border-radius:8px;font-family:JetBrains Mono">CUSTOM</span>':''}${hasSession?'<span class="resume-badge">⟳ IN PROGRESS</span>':''}</h3>
+          <button class="rename-btn" title="Rename" onclick="event.stopPropagation();startRename('${p.id}',this)">✏️</button>
+        </div></h3>
         <p>${p.subtitle}</p>
         ${isCustom?`<button onclick="event.stopPropagation();deleteCustomPaper('${p.id}')" style="position:absolute;top:0;right:0;background:rgba(255,51,102,.12);border:1px solid rgba(255,51,102,.25);color:var(--danger);padding:3px 9px;border-radius:6px;font-size:10px;cursor:pointer">✕ Delete</button>`:''}
       </div>
@@ -1914,10 +2428,10 @@ function buildDashboard(){
 
 // ════════ CONFIG ════════
 function openConfig(paperId){
-  activePaper=PAPERS.find(p=>p.id===paperId);
+  activePaper=getAllPapers().find(p=>p.id===paperId);
   Q=activePaper.questions;DURATION=activePaper.duration;MARKING=activePaper.marking;STORE_KEY='cbt_'+paperId;
   const sections=[...new Set(Q.map(q=>q.s))];
-  document.getElementById('configTitle').textContent='Configure: '+activePaper.title;
+  document.getElementById('configTitle').textContent='Configure: '+getPaperDisplayName(activePaper);
   CONFIG={mode:'full',fullMins:Math.floor(DURATION/60),sectionMins:{}};
   sections.forEach(s=>{CONFIG.sectionMins[s]=Math.round((Q.filter(q=>q.s===s).length/Q.length)*Math.floor(DURATION/60));});
   setTimerMode('full');showScreen('config');
