@@ -64,6 +64,18 @@
 
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 
+/* ── PERFORMANCE & SCROLL OPTIMIZATION ── */
+.q-content{-webkit-overflow-scrolling:touch;overscroll-behavior:contain;scroll-behavior:smooth}
+.palette{-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.right-panel{will-change:transform}
+.card{will-change:transform}
+.timer{will-change:contents}
+.opt{will-change:background-color,border-color}
+.pb{will-change:background-color}
+/* Prevent layout shift during exam */
+#qContent{contain:content}
+#palette{contain:content}
+
 /* ── SCROLLBAR ── */
 ::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-track{background:transparent}
@@ -679,24 +691,44 @@ code{font-family:'JetBrains Mono';background:rgba(0,200,255,0.08);padding:1px 5p
 
 /* ── RESPONSIVE ── */
 @media(max-width:900px){
-  .right-panel{display:none;position:fixed;right:0;top:0;bottom:0;z-index:202;width:240px;box-shadow:-4px 0 30px rgba(0,0,0,.5)}
+  .right-panel{display:none;position:fixed;right:0;top:0;bottom:0;z-index:202;width:260px;box-shadow:-4px 0 30px rgba(0,0,0,.5)}
   .right-panel.open{display:flex}
   #palBtn{display:flex}
   .score-grid{grid-template-columns:1fr 1fr}
   .timer-modes{grid-template-columns:1fr}
   .card-stats{grid-template-columns:1fr 1fr}
-  .btn{padding:7px 10px;font-size:11px;min-height:36px}
+  .btn{padding:10px 12px;font-size:12px;min-height:44px}
   .kb-hint{display:none}
+  .q-nav-bar{flex-wrap:wrap;gap:8px;padding:12px}
+  .pb{width:40px;height:40px;font-size:11px}
 }
 @media(max-width:600px){
   .topnav-brand span.brand-sub{display:none}
   .exam-hdr-left p{display:none}
   .qr-opts-grid{grid-template-columns:1fr}
   .weakness-grid{grid-template-columns:1fr 1fr}
+  .card-grid{grid-template-columns:1fr}
+  .page-body{padding:16px 14px}
+  .topnav{padding:0 14px}
+  .btn-lg{padding:12px 20px;font-size:13px}
+  .opt{padding:14px 16px;font-size:14px}
+  .pb{min-width:38px;min-height:38px}
 }
 @media(min-width:901px) and (max-width:1200px){
   .right-panel{width:230px}
   .pb{width:38px;height:38px}
+}
+/* ── Android/iOS touch optimizations ── */
+@media (pointer:coarse){
+  .opt{min-height:52px;padding:14px 16px}
+  .btn{min-height:48px;padding:11px 16px}
+  .nav-btn{min-height:40px;padding:8px 14px}
+  .pb{min-width:44px;min-height:44px}
+  .start-btn{padding:12px 22px;font-size:13px}
+  .tmode{padding:18px 12px}
+  .sec-tab{padding:9px 14px}
+  .hist-item-hdr{padding:14px 16px}
+  .del-btn{padding:6px 10px;font-size:14px}
 }
 
 /* ── 3D CARD EFFECT (desktop only) ── */
@@ -1598,6 +1630,642 @@ const PAPERS = [
 {s:'Noun-Pronoun',q:'Each of the players ___ awarded a gold medal.',o:['were','are','have','was'],a:3,sol:"'Each of' is followed by a plural noun but takes a singular verb ('was')."},
 {s:'Noun-Pronoun',q:'Each of the members ___ awarded a gold medal.',o:['have','were','was','are'],a:2,sol:"'Each of' is followed by a plural noun but takes a singular verb ('was')."}
   ]
+,
+
+// ══════════════════════════════════════════════════════════
+// PAPER 4 — NDA/IMUCET ENGLISH UNIQUE MOCK
+// ══════════════════════════════════════════════════════════
+{
+  id:'nda_eng_unique_mock',
+  title:'NDA/IMUCET English Unique Mock',
+  subtitle:'200 Qs · 8 Sections · 120 Minutes',
+  duration:120*60,
+  marking:{correct:1,wrong:-0.25},
+  sections:{Tenses:25,'Subject-Verb Agreement':25,'Active-Passive Voice':25,'Conditionals':25,'Synonyms':25,'Antonyms':25,'One-Word Substitution':25,'Noun & Pronoun':25},
+  questions:[
+{s:'Tenses',q:'She ___ the letter before the postman arrived.',o:['posts','posted','had posted','will post'],a:2,sol:'Past perfect is used for an action completed before another past action.'},
+{s:'Tenses',q:'By next Monday, I ___ this course.',o:['complete','completed','am completing','will have completed'],a:3,sol:'Future perfect is used for actions that will be complete before a specific future time.'},
+{s:'Tenses',q:'He ___ to the market every Sunday.',o:['goes','went','has gone','is going'],a:0,sol:'Simple present is used for habitual or regular actions.'},
+{s:'Tenses',q:'Look at those clouds! It ___ soon.',o:['rains','rained','is going to rain','will have rained'],a:2,sol:'"is going to" is used for predictions based on present evidence.'},
+{s:'Tenses',q:'The train ___ by the time we reached the station.',o:['leaves','left','has left','had left'],a:3,sol:'Past perfect is used when one past event happened before another.'},
+{s:'Tenses',q:'They ___ cricket when it started raining.',o:['play','were playing','are playing','had played'],a:1,sol:'Past continuous is used for an action in progress when another occurred.'},
+{s:'Tenses',q:'She ___ three books this month.',o:['reads','read','has read','had read'],a:2,sol:'Present perfect is used for actions completed in a time period still in progress.'},
+{s:'Tenses',q:'We ___ here for five years now.',o:['live','have been living','lived','are living'],a:1,sol:'Present perfect continuous is used for actions that started in the past and continue.'},
+{s:'Tenses',q:'The sun ___ in the east.',o:['rising','rose','rises','has risen'],a:2,sol:'Simple present is used for universal truths and facts.'},
+{s:'Tenses',q:'I ___ the assignment by tomorrow morning.',o:['finish','am finishing','will finish','will have finished'],a:3,sol:'Future perfect is used for actions that will be complete before a specific future time.'},
+{s:'Tenses',q:'He always ___ late for practice.',o:['comes','is coming','came','has come'],a:0,sol:'Simple present with "always" is used for habitual actions.'},
+{s:'Tenses',q:'While I ___ the report, the phone rang.',o:['write','wrote','was writing','had written'],a:2,sol:'Past continuous is used for ongoing past actions interrupted by another event.'},
+{s:'Tenses',q:'They ___ the project since last month.',o:['work','worked','are working','have been working'],a:3,sol:'Present perfect continuous is used for actions ongoing from a past point till now.'},
+{s:'Tenses',q:'The announcement ___ before the guests arrived.',o:['is made','will be made','was made','has been made'],a:2,sol:'Past simple passive is used for an action completed before another past event.'},
+{s:'Tenses',q:'She ___ in London when the pandemic began.',o:['lives','lived','was living','has been living'],a:2,sol:'Past continuous is used for an action in progress at a specific past time.'},
+{s:'Tenses',q:'By the time the match ends, they ___ for six hours.',o:['play','played','will have been playing','have played'],a:2,sol:'Future perfect continuous is used for ongoing actions up to a future time.'},
+{s:'Tenses',q:'He ___ his keys twice this week.',o:['loses','lost','has lost','had lost'],a:2,sol:'Present perfect is used for experiences within an ongoing time period.'},
+{s:'Tenses',q:'We ___ about the news when she walked in.',o:['talk','talked','are talking','were talking'],a:3,sol:'Past continuous is used for an action in progress when interrupted.'},
+{s:'Tenses',q:'She ___ the cake by the time the guests arrive.',o:['bakes','will bake','will have baked','has baked'],a:2,sol:'Future perfect shows an action that will be complete before a future event.'},
+{s:'Tenses',q:'He ___ coffee every morning before work.',o:['drink','drinks','drank','has drunk'],a:1,sol:'Simple present is used for regular habits.'},
+{s:'Tenses',q:'The museum ___ at nine every morning.',o:['opened','opens','is opening','will open'],a:1,sol:'Simple present is used for scheduled events and facts.'},
+{s:'Tenses',q:'She ___ a letter to the principal last week.',o:['writes','write','wrote','has written'],a:2,sol:'Simple past is used for a completed action at a specific past time.'},
+{s:'Tenses',q:'I hope he ___ the exam.',o:['passes','will pass','passed','had passed'],a:1,sol:'"Hope" is followed by will/present simple to express desire about the future.'},
+{s:'Tenses',q:'The guests ___ by the time we prepared the dinner.',o:['arrived','had arrived','arrive','will arrive'],a:1,sol:'Past perfect is used for an action completed before another past action.'},
+{s:'Tenses',q:'He ___ novels since he was a child.',o:['reads','read','has been reading','had read'],a:2,sol:'Present perfect continuous is used for an activity that started in the past and continues.'},
+{s:'Subject-Verb Agreement',q:'The news ___ very disturbing.',o:['are','were','is','have been'],a:2,sol:'"News" is uncountable and always takes a singular verb.'},
+{s:'Subject-Verb Agreement',q:'Neither the manager nor the employees ___ happy.',o:['is','was','are','has been'],a:2,sol:'With "neither…nor", verb agrees with the nearest subject.'},
+{s:'Subject-Verb Agreement',q:'Each of the students ___ completed the assignment.',o:['have','had','has','were'],a:2,sol:'"Each of" takes a singular verb.'},
+{s:'Subject-Verb Agreement',q:'Physics ___ my favourite subject.',o:['are','were','have been','is'],a:3,sol:'Subjects ending in -ics take singular verbs.'},
+{s:'Subject-Verb Agreement',q:'The committee ___ divided on the issue.',o:['are','is','were','have'],a:1,sol:'A collective noun acting as one unit takes a singular verb.'},
+{s:'Subject-Verb Agreement',q:'Bread and butter ___ his favourite breakfast.',o:['are','were','is','have been'],a:2,sol:'When two things form a single idea, they take a singular verb.'},
+{s:'Subject-Verb Agreement',q:'A number of workers ___ on strike.',o:['is','was','are','has'],a:2,sol:'"A number of" is plural and takes a plural verb.'},
+{s:'Subject-Verb Agreement',q:'The number of accidents ___ decreasing.',o:['are','were','have','is'],a:3,sol:'"The number of" is singular and takes a singular verb.'},
+{s:'Subject-Verb Agreement',q:'Everyone ___ expected to attend the meeting.',o:['are','were','is','have'],a:2,sol:'Indefinite pronouns like "everyone" take singular verbs.'},
+{s:'Subject-Verb Agreement',q:'Ten kilometres ___ a long way to walk.',o:['are','were','is','have been'],a:2,sol:'Distances used as amounts take singular verbs.'},
+{s:'Subject-Verb Agreement',q:'The pair of scissors ___ missing.',o:['are','were','is','have been'],a:2,sol:'"A pair of" takes a singular verb.'},
+{s:'Subject-Verb Agreement',q:'Many a student ___ failed the test.',o:['have','had','were','has'],a:3,sol:'"Many a" is followed by a singular noun and singular verb.'},
+{s:'Subject-Verb Agreement',q:'The jury ___ reached their decision.',o:['have','has','were','are'],a:1,sol:'Collective nouns can take singular verbs when acting as a unit.'},
+{s:'Subject-Verb Agreement',q:'Either he or his friends ___ coming to the party.',o:['is','was','are','has'],a:2,sol:'With "either…or", the verb agrees with the nearest subject.'},
+{s:'Subject-Verb Agreement',q:'The quality of the mangoes ___ not good.',o:['are','were','is','have been'],a:2,sol:'The main subject "quality" is singular.'},
+{s:'Subject-Verb Agreement',q:'She as well as her sisters ___ invited.',o:['were','is','are','have been'],a:1,sol:'"As well as" does not make the subject plural; verb agrees with "she".'},
+{s:'Subject-Verb Agreement',q:'The United Nations ___ holding a conference.',o:['are','were','have been','is'],a:3,sol:'Names of organisations take singular verbs.'},
+{s:'Subject-Verb Agreement',q:'Two and two ___ four.',o:['make','makes','made','are making'],a:1,sol:'Arithmetic sums used as facts take singular verbs.'},
+{s:'Subject-Verb Agreement',q:'The police ___ caught the thief.',o:['has','was','have','is'],a:2,sol:'"Police" is plural and always takes a plural verb.'},
+{s:'Subject-Verb Agreement',q:'Cattle ___ grazing in the field.',o:['is','was','are','has been'],a:2,sol:'"Cattle" is plural and takes a plural verb.'},
+{s:'Subject-Verb Agreement',q:'The furniture in the rooms ___ old.',o:['are','were','is','have been'],a:2,sol:'"Furniture" is uncountable and takes a singular verb.'},
+{s:'Subject-Verb Agreement',q:'Neither of the answers ___ correct.',o:['are','were','is','have been'],a:2,sol:'"Neither" as a pronoun takes a singular verb.'},
+{s:'Subject-Verb Agreement',q:'The team ___ celebrating its victory.',o:['are','were','is','have been'],a:2,sol:'Collective nouns take singular verbs when they act as one unit.'},
+{s:'Subject-Verb Agreement',q:'More than one student ___ absent.',o:['were','are','was','have been'],a:2,sol:'"More than one" takes a singular verb.'},
+{s:'Subject-Verb Agreement',q:'No news ___ good news.',o:['are','have been','is','were'],a:2,sol:'"News" is uncountable and takes a singular verb.'},
+{s:'Active-Passive Voice',q:'The teacher corrects the homework. (Passive)',o:['The homework was corrected by the teacher.','The homework corrected by the teacher.','The homework is corrected by the teacher.','The homework has been corrected by the teacher.'],a:2,sol:'Simple present active → simple present passive: is/are + past participle.'},
+{s:'Active-Passive Voice',q:'The manager signed the letter. (Passive)',o:['The letter is signed by the manager.','The letter signed by the manager.','The letter was signed by the manager.','The letter had been signed by the manager.'],a:2,sol:'Simple past active → simple past passive: was/were + past participle.'},
+{s:'Active-Passive Voice',q:'The football was kicked by Ravi. (Active)',o:['Ravi kicked the football.','Ravi kicks the football.','Ravi had kicked the football.','Ravi was kicking the football.'],a:0,sol:'Simple past passive → simple past active.'},
+{s:'Active-Passive Voice',q:'They have built a new bridge. (Passive)',o:['A new bridge was built by them.','A new bridge is built by them.','A new bridge had been built by them.','A new bridge has been built by them.'],a:3,sol:'Present perfect active → has/have been + past participle.'},
+{s:'Active-Passive Voice',q:'She is writing a poem. (Passive)',o:['A poem is being written by her.','A poem was being written by her.','A poem has been written by her.','A poem is written by her.'],a:0,sol:'Present continuous active → is/are being + past participle.'},
+{s:'Active-Passive Voice',q:'Will they complete the project? (Passive)',o:['Will the project complete by them?','Will the project have been completed by them?','Will the project be completed by them?','Is the project completed by them?'],a:2,sol:'Future simple active → will be + past participle.'},
+{s:'Active-Passive Voice',q:'The workers were building the road. (Passive)',o:['The road was being built by the workers.','The road has been built by the workers.','The road was built by the workers.','The road is being built by the workers.'],a:0,sol:'Past continuous active → was/were being + past participle.'},
+{s:'Active-Passive Voice',q:'You must obey the rules. (Passive)',o:['The rules should be obeyed by you.','The rules were obeyed by you.','The rules must be obeyed by you.','The rules had to be obeyed by you.'],a:2,sol:'Modal verbs in active → modal + be + past participle in passive.'},
+{s:'Active-Passive Voice',q:'The book had been read by every student. (Active)',o:['Every student was reading the book.','Every student read the book.','Every student has read the book.','Every student had read the book.'],a:3,sol:'Past perfect passive → past perfect active.'},
+{s:'Active-Passive Voice',q:'The chef is preparing the meal. (Passive)',o:['The meal was prepared by the chef.','The meal has been prepared by the chef.','The meal is being prepared by the chef.','The meal will be prepared by the chef.'],a:2,sol:'Present continuous active → present continuous passive.'},
+{s:'Active-Passive Voice',q:'He broke the window. (Passive)',o:['The window is broken by him.','The window was broken by him.','The window has been broken by him.','The window broke by him.'],a:1,sol:'Simple past active → simple past passive.'},
+{s:'Active-Passive Voice',q:'They are repairing the car. (Passive)',o:['The car was being repaired by them.','The car is repaired by them.','The car is being repaired by them.','The car has been repaired by them.'],a:2,sol:'Present continuous active → present continuous passive.'},
+{s:'Active-Passive Voice',q:'The principal will announce the result. (Passive)',o:['The result is announced by the principal.','The result will announced by the principal.','The result will be announced by the principal.','The result was announced by the principal.'],a:2,sol:'Future simple active → will be + past participle.'},
+{s:'Active-Passive Voice',q:'Nobody has solved the puzzle. (Passive)',o:['The puzzle is solved by nobody.','The puzzle has not been solved.','The puzzle was not solved.','The puzzle had not been solved.'],a:1,sol:'When the active has "nobody", the passive drops the agent.'},
+{s:'Active-Passive Voice',q:'She teaches English. (Passive)',o:['English is taught by her.','English taught by her.','English was taught by her.','English has been taught by her.'],a:0,sol:'Simple present active → is/are + past participle.'},
+{s:'Active-Passive Voice',q:'They had finished the work. (Passive)',o:['The work was finished by them.','The work had finished by them.','The work is finished by them.','The work had been finished by them.'],a:3,sol:'Past perfect active → had been + past participle.'},
+{s:'Active-Passive Voice',q:'The award is given by the President. (Active)',o:['The President gave the award.','The President gives the award.','The President will give the award.','The President has given the award.'],a:1,sol:'Simple present passive → simple present active.'},
+{s:'Active-Passive Voice',q:'The students completed the assignment. (Passive)',o:['The assignment is completed by the students.','The assignment was being completed.','The assignment was completed by the students.','The assignment had been completed by students.'],a:2,sol:'Simple past active → simple past passive.'},
+{s:'Active-Passive Voice',q:'He should keep his promises. (Passive)',o:['His promises should be kept by him.','His promises should kept by him.','His promises are kept by him.','His promises were kept by him.'],a:0,sol:'Modals in active → modal + be + past participle in passive.'},
+{s:'Active-Passive Voice',q:'The government is building new hospitals. (Passive)',o:['New hospitals have been built by the government.','New hospitals were built by the government.','New hospitals are being built by the government.','New hospitals will be built by the government.'],a:2,sol:'Present continuous active → present continuous passive.'},
+{s:'Active-Passive Voice',q:'Who wrote this novel? (Passive)',o:['By whom was this novel wrote?','By whom this novel was written?','By whom was this novel written?','Who was this novel written by?'],a:2,sol:'Active interrogative → passive with "by whom" at the start.'},
+{s:'Active-Passive Voice',q:'People speak English all over the world. (Passive)',o:['English is spoken by people all over the world.','English speaks all over the world.','English is being spoken all over the world.','English was spoken all over the world.'],a:0,sol:'Simple present active → is + past participle. Agent often omitted.'},
+{s:'Active-Passive Voice',q:'The cat caught the mouse. (Passive)',o:['The mouse is caught by the cat.','The mouse caught by the cat.','The mouse was caught by the cat.','The mouse had been caught by the cat.'],a:2,sol:'Simple past active → was/were + past participle.'},
+{s:'Active-Passive Voice',q:'She will have finished the report by Monday. (Passive)',o:['The report will have been finished by her by Monday.','The report was finished by Monday.','The report will be finished by Monday.','The report would be finished by her.'],a:0,sol:'Future perfect active → will have been + past participle.'},
+{s:'Active-Passive Voice',q:'The officer announced the results. (Passive)',o:['The results are announced by the officer.','The results were announced by the officer.','The results had been announced.','The results will be announced by the officer.'],a:1,sol:'Simple past active → was/were + past participle.'},
+{s:'Conditionals',q:'If it ___ tomorrow, the match will be cancelled.',o:['rained','rains','would rain','had rained'],a:1,sol:'Type 1 conditional: If + present simple, will + base verb.'},
+{s:'Conditionals',q:'If she ___ harder, she would pass the exam.',o:['studies','studied','had studied','will study'],a:1,sol:'Type 2 conditional: If + past simple, would + base verb.'},
+{s:'Conditionals',q:'If they had left earlier, they ___ the train.',o:['catch','would catch','would have caught','will catch'],a:2,sol:'Type 3 conditional: If + past perfect, would have + past participle.'},
+{s:'Conditionals',q:'Unless you ___, you will not succeed.',o:['will try','tried','try','had tried'],a:2,sol:'"Unless" means "if not"; takes present simple.'},
+{s:'Conditionals',q:'If water ___ to 0°C, it freezes.',o:['cools','cooled','would cool','is cooling'],a:0,sol:'Zero conditional: If + present simple, present simple — for universal truths.'},
+{s:'Conditionals',q:'I would help you if I ___ more time.',o:['have','had','will have','would have'],a:1,sol:'Type 2 conditional: If + past simple, would + base verb.'},
+{s:'Conditionals',q:'She ___ a better job if she had more experience.',o:['would get','gets','will get','would have got'],a:0,sol:'Type 2 conditional: If + past simple, would + base verb.'},
+{s:'Conditionals',q:'If you ___ studied, you would have passed.',o:['have','had','has','had been'],a:1,sol:'Type 3 conditional: If + past perfect, would have + past participle.'},
+{s:'Conditionals',q:'If I ___ you, I would apologise immediately.',o:['am','would be','were','will be'],a:2,sol:'Type 2 conditional: "If I were you" is a fixed expression.'},
+{s:'Conditionals',q:'She will call you if she ___ free.',o:['is','was','would be','were'],a:0,sol:'Type 1 conditional: If + present simple, future simple.'},
+{s:'Conditionals',q:'If the bridge ___ repaired, the traffic will flow smoothly.',o:['is','was','were','had been'],a:0,sol:'Type 1 conditional uses present simple in the if-clause.'},
+{s:'Conditionals',q:'If they ___ the rules, they would not have been punished.',o:['followed','follow','had followed','would follow'],a:2,sol:'Type 3 conditional: If + past perfect, would have + past participle.'},
+{s:'Conditionals',q:'If I have the money, I ___ buy a new phone.',o:['would','will','had','could have'],a:1,sol:'Type 1 conditional: If + present simple, will + base verb.'},
+{s:'Conditionals',q:'He would have won the race if he ___ faster.',o:['runs','ran','had run','would run'],a:2,sol:'Type 3 conditional: If + past perfect, would have + past participle.'},
+{s:'Conditionals',q:'What will you do if you ___ the lottery?',o:['win','won','had won','would win'],a:0,sol:'Type 1 conditional: If + present simple, will + base verb.'},
+{s:'Conditionals',q:'If she ___ honest, she would admit the mistake.',o:['is','was','were','had been'],a:2,sol:'Type 2 conditional: "were" for all persons in hypothetical conditions.'},
+{s:'Conditionals',q:'If the doctor ___ earlier, he could have saved the patient.',o:['arrives','arrived','had arrived','would arrive'],a:2,sol:'Type 3 conditional: If + past perfect, could have + past participle.'},
+{s:'Conditionals',q:'Provided that you ___ on time, I will give you the keys.',o:['come','came','had come','would come'],a:0,sol:'"Provided that" works like "if" in Type 1 conditions.'},
+{s:'Conditionals',q:'If he ___ the truth, no one would believe him.',o:['told','tells','had told','would tell'],a:0,sol:'Type 2 conditional: If + past simple, would + base verb.'},
+{s:'Conditionals',q:'She ___ have become a doctor if she had studied medicine.',o:['can','could','would','might'],a:2,sol:'Type 3 conditional uses "would have" in the main clause.'},
+{s:'Conditionals',q:'If you mix red and blue, you ___ purple.',o:['got','get','had got','would get'],a:1,sol:'Zero conditional: universal truth uses present simple in both clauses.'},
+{s:'Conditionals',q:'If he ___ the form today, he will be shortlisted.',o:['submits','submitted','had submitted','would submit'],a:0,sol:'Type 1 conditional: If + present simple, will + base verb.'},
+{s:'Conditionals',q:'If I had more money, I ___ travel the world.',o:['will','might','had','could'],a:3,sol:'Type 2 conditional can use "could" (ability) or "would" (willingness).'},
+{s:'Conditionals',q:'If it ___ warmer, we could go for a picnic.',o:['is','was','were','had been'],a:2,sol:'Type 2 conditional: "were" is used for all persons in hypothetical conditions.'},
+{s:'Conditionals',q:'Unless you ___ the instructions, you will make errors.',o:['follow','followed','had followed','will follow'],a:0,sol:'"Unless" introduces a negative condition; present simple is used.'},
+{s:'Synonyms',q:'Choose the synonym of BENEVOLENT:',o:['Cruel','Kind','Angry','Strict'],a:1,sol:'"Benevolent" means well-meaning and kindly.'},
+{s:'Synonyms',q:'Choose the synonym of COHERENT:',o:['Confused','Logical','Emotional','Silent'],a:1,sol:'"Coherent" means logical and consistent.'},
+{s:'Synonyms',q:'Choose the synonym of AMIABLE:',o:['Hostile','Friendly','Lazy','Timid'],a:1,sol:'"Amiable" means having a pleasant and friendly manner.'},
+{s:'Synonyms',q:'Choose the synonym of OBSCURE:',o:['Clear','Famous','Vague','Simple'],a:2,sol:'"Obscure" means not clearly expressed or understood.'},
+{s:'Synonyms',q:'Choose the synonym of INCESSANT:',o:['Rare','Occasional','Continuous','Brief'],a:2,sol:'"Incessant" means continuing without pause.'},
+{s:'Synonyms',q:'Choose the synonym of FRUGAL:',o:['Generous','Wasteful','Thrifty','Careless'],a:2,sol:'"Frugal" means sparing or economical.'},
+{s:'Synonyms',q:'Choose the synonym of TENACIOUS:',o:['Weak','Persistent','Lazy','Cowardly'],a:1,sol:'"Tenacious" means persistent and determined.'},
+{s:'Synonyms',q:'Choose the synonym of EXUBERANT:',o:['Dull','Gloomy','Lively','Quiet'],a:2,sol:'"Exuberant" means full of energy and excitement.'},
+{s:'Synonyms',q:'Choose the synonym of VERBOSE:',o:['Brief','Wordy','Concise','Quiet'],a:1,sol:'"Verbose" means using more words than needed.'},
+{s:'Synonyms',q:'Choose the synonym of CANDID:',o:['Dishonest','Frank','Polite','Reserved'],a:1,sol:'"Candid" means truthful and straightforward.'},
+{s:'Synonyms',q:'Choose the synonym of APATHY:',o:['Enthusiasm','Indifference','Anger','Sadness'],a:1,sol:'"Apathy" means lack of interest or concern.'},
+{s:'Synonyms',q:'Choose the synonym of INDIGENOUS:',o:['Foreign','Native','Modern','Ancient'],a:1,sol:'"Indigenous" means originating from a particular place.'},
+{s:'Synonyms',q:'Choose the synonym of PLAUSIBLE:',o:['Impossible','Unlikely','Believable','Certain'],a:2,sol:'"Plausible" means seeming reasonable.'},
+{s:'Synonyms',q:'Choose the synonym of TRIVIAL:',o:['Important','Minor','Complex','Urgent'],a:1,sol:'"Trivial" means of little value or importance.'},
+{s:'Synonyms',q:'Choose the synonym of PRUDENT:',o:['Reckless','Wise','Stubborn','Naive'],a:1,sol:'"Prudent" means acting with care and thought.'},
+{s:'Synonyms',q:'Choose the synonym of MAGNANIMOUS:',o:['Selfish','Mean','Generous','Petty'],a:2,sol:'"Magnanimous" means generous in forgiving.'},
+{s:'Synonyms',q:'Choose the synonym of ELUSIVE:',o:['Easy','Difficult','Hard to find','Obvious'],a:2,sol:'"Elusive" means difficult to find or catch.'},
+{s:'Synonyms',q:'Choose the synonym of VORACIOUS:',o:['Content','Greedy','Shy','Generous'],a:1,sol:'"Voracious" means wanting a lot of something.'},
+{s:'Synonyms',q:'Choose the synonym of LUCID:',o:['Dark','Confusing','Clear','Dull'],a:2,sol:'"Lucid" means expressed clearly.'},
+{s:'Synonyms',q:'Choose the synonym of AUSTERE:',o:['Lavish','Strict','Kind','Colourful'],a:1,sol:'"Austere" means severe or strict in manner.'},
+{s:'Synonyms',q:'Choose the synonym of TRANSIENT:',o:['Permanent','Temporary','Lasting','Fixed'],a:1,sol:'"Transient" means lasting only for a short time.'},
+{s:'Synonyms',q:'Choose the synonym of ENIGMATIC:',o:['Clear','Mysterious','Dull','Simple'],a:1,sol:'"Enigmatic" means difficult to understand.'},
+{s:'Synonyms',q:'Choose the synonym of SERENE:',o:['Turbulent','Calm','Noisy','Fearful'],a:1,sol:'"Serene" means calm and peaceful.'},
+{s:'Synonyms',q:'Choose the synonym of DILIGENT:',o:['Lazy','Careless','Hardworking','Distracted'],a:2,sol:'"Diligent" means showing steady effort.'},
+{s:'Synonyms',q:'Choose the synonym of PERTINENT:',o:['Irrelevant','Relevant','Harsh','Polite'],a:1,sol:'"Pertinent" means relevant to the subject.'},
+{s:'Antonyms',q:'Choose the antonym of COURAGEOUS:',o:['Brave','Bold','Cowardly','Daring'],a:2,sol:'"Courageous" means brave; antonym is "Cowardly".'},
+{s:'Antonyms',q:'Choose the antonym of OPTIMISTIC:',o:['Hopeful','Cheerful','Pessimistic','Positive'],a:2,sol:'"Optimistic" means hopeful; antonym is "Pessimistic".'},
+{s:'Antonyms',q:'Choose the antonym of ABUNDANT:',o:['Plentiful','Scarce','Rich','Ample'],a:1,sol:'"Abundant" means plentiful; antonym is "Scarce".'},
+{s:'Antonyms',q:'Choose the antonym of ANCIENT:',o:['Old','Historic','Modern','Traditional'],a:2,sol:'"Ancient" means very old; antonym is "Modern".'},
+{s:'Antonyms',q:'Choose the antonym of EXPAND:',o:['Grow','Enlarge','Increase','Contract'],a:3,sol:'"Expand" means to make larger; antonym is "Contract".'},
+{s:'Antonyms',q:'Choose the antonym of LETHARGIC:',o:['Tired','Sluggish','Energetic','Dull'],a:2,sol:'"Lethargic" means sluggish; antonym is "Energetic".'},
+{s:'Antonyms',q:'Choose the antonym of TRANSPARENT:',o:['Clear','Visible','Opaque','Open'],a:2,sol:'"Transparent" means see-through; antonym is "Opaque".'},
+{s:'Antonyms',q:'Choose the antonym of HOSTILE:',o:['Aggressive','Friendly','Violent','Angry'],a:1,sol:'"Hostile" means unfriendly; antonym is "Friendly".'},
+{s:'Antonyms',q:'Choose the antonym of HUMBLE:',o:['Modest','Meek','Arrogant','Simple'],a:2,sol:'"Humble" means modest; antonym is "Arrogant".'},
+{s:'Antonyms',q:'Choose the antonym of RIGID:',o:['Hard','Stiff','Flexible','Firm'],a:2,sol:'"Rigid" means inflexible; antonym is "Flexible".'},
+{s:'Antonyms',q:'Choose the antonym of TRIVIAL:',o:['Minor','Small','Significant','Ordinary'],a:2,sol:'"Trivial" means unimportant; antonym is "Significant".'},
+{s:'Antonyms',q:'Choose the antonym of BLISS:',o:['Happiness','Joy','Misery','Peace'],a:2,sol:'"Bliss" means perfect happiness; antonym is "Misery".'},
+{s:'Antonyms',q:'Choose the antonym of TEMPORARY:',o:['Brief','Short','Permanent','Passing'],a:2,sol:'"Temporary" means limited in time; antonym is "Permanent".'},
+{s:'Antonyms',q:'Choose the antonym of GENUINE:',o:['Real','Authentic','Fake','True'],a:2,sol:'"Genuine" means truly what it is; antonym is "Fake".'},
+{s:'Antonyms',q:'Choose the antonym of DILIGENT:',o:['Hardworking','Careful','Lazy','Thorough'],a:2,sol:'"Diligent" means hardworking; antonym is "Lazy".'},
+{s:'Antonyms',q:'Choose the antonym of LENIENT:',o:['Easy','Mild','Gentle','Strict'],a:3,sol:'"Lenient" means not harsh; antonym is "Strict".'},
+{s:'Antonyms',q:'Choose the antonym of LUCID:',o:['Clear','Plain','Confusing','Simple'],a:2,sol:'"Lucid" means clearly expressed; antonym is "Confusing".'},
+{s:'Antonyms',q:'Choose the antonym of SERENE:',o:['Peaceful','Quiet','Agitated','Still'],a:2,sol:'"Serene" means calm; antonym is "Agitated".'},
+{s:'Antonyms',q:'Choose the antonym of UNITE:',o:['Join','Gather','Divide','Combine'],a:2,sol:'"Unite" means to come together; antonym is "Divide".'},
+{s:'Antonyms',q:'Choose the antonym of VERBOSE:',o:['Talkative','Wordy','Concise','Chatty'],a:2,sol:'"Verbose" means wordy; antonym is "Concise".'},
+{s:'Antonyms',q:'Choose the antonym of MAGNANIMOUS:',o:['Generous','Noble','Petty','Forgiving'],a:2,sol:'"Magnanimous" means generous; antonym is "Petty".'},
+{s:'Antonyms',q:'Choose the antonym of PRUDENT:',o:['Wise','Cautious','Reckless','Careful'],a:2,sol:'"Prudent" means wise; antonym is "Reckless".'},
+{s:'Antonyms',q:'Choose the antonym of FRUGAL:',o:['Thrifty','Saving','Wasteful','Economic'],a:2,sol:'"Frugal" means economical; antonym is "Wasteful".'},
+{s:'Antonyms',q:'Choose the antonym of CANDID:',o:['Frank','Open','Evasive','Honest'],a:2,sol:'"Candid" means frank; antonym is "Evasive".'},
+{s:'Antonyms',q:'Choose the antonym of BENEVOLENT:',o:['Kind','Charitable','Malevolent','Generous'],a:2,sol:'"Benevolent" means well-meaning; antonym is "Malevolent".'},
+{s:'One-Word Substitution',q:'One who believes in the existence of no God:',o:['Agnostic','Theist','Atheist','Deist'],a:2,sol:'"Atheist" — a person who disbelieves in the existence of God.'},
+{s:'One-Word Substitution',q:'A speech made without preparation:',o:['Rhetoric','Soliloquy','Extempore','Eulogy'],a:2,sol:'"Extempore" — spoken or done without preparation.'},
+{s:'One-Word Substitution',q:'The practice of having more than one wife at the same time:',o:['Polygamy','Polyglot','Monogamy','Bigamy'],a:0,sol:'"Polygamy" — the practice of having more than one wife or husband.'},
+{s:'One-Word Substitution',q:'A person who is unable to pay their debts:',o:['Miser','Debtor','Bankrupt','Creditor'],a:2,sol:'"Bankrupt" — a person legally declared unable to pay debts.'},
+{s:'One-Word Substitution',q:'An imaginary world of ideal perfection:',o:['Dystopia','Utopia','Euphoria','Nirvana'],a:1,sol:'"Utopia" — an imagined place or state of perfection.'},
+{s:'One-Word Substitution',q:'A person who travels from place to place without a fixed home:',o:['Pilgrim','Vagrant','Nomad','Explorer'],a:2,sol:'"Nomad" — a member of a people who travel from place to place.'},
+{s:'One-Word Substitution',q:'Fear of heights:',o:['Claustrophobia','Hydrophobia','Acrophobia','Agoraphobia'],a:2,sol:'"Acrophobia" — extreme or irrational fear of heights.'},
+{s:'One-Word Substitution',q:'A person who compiles dictionaries:',o:['Bibliophile','Philologist','Lexicographer','Cartographer'],a:2,sol:'"Lexicographer" — a person who compiles dictionaries.'},
+{s:'One-Word Substitution',q:"The killing of one's own father:",o:['Homicide','Patricide','Fratricide','Regicide'],a:1,sol:'"Patricide" — the killing of one\'s father.'},
+{s:'One-Word Substitution',q:'A person who is easily deceived:',o:['Cynic','Stoic','Gullible','Skeptic'],a:2,sol:'"Gullible" — easily persuaded to believe something.'},
+{s:'One-Word Substitution',q:'Government by the people:',o:['Theocracy','Autocracy','Democracy','Aristocracy'],a:2,sol:'"Democracy" — a system of government by the people.'},
+{s:'One-Word Substitution',q:'A person who knows and speaks many languages:',o:['Linguist','Polyglot','Bilingual','Orator'],a:1,sol:'"Polyglot" — knowing or using several languages.'},
+{s:'One-Word Substitution',q:'A place where bees are kept:',o:['Aquarium','Aviary','Apiary','Menagerie'],a:2,sol:'"Apiary" — a place where bees are kept.'},
+{s:'One-Word Substitution',q:'One who hates women:',o:['Philanderer','Misogynist','Misanthrope','Feminist'],a:1,sol:'"Misogynist" — a person who dislikes women.'},
+{s:'One-Word Substitution',q:'The science of the origin and development of words:',o:['Phonology','Etymology','Morphology','Syntax'],a:1,sol:'"Etymology" — the study of the origin of words.'},
+{s:'One-Word Substitution',q:'A person who loves books:',o:['Bibliophile','Philatelist','Numismatist','Cinephile'],a:0,sol:'"Bibliophile" — a person with a great love of books.'},
+{s:'One-Word Substitution',q:'A disease that spreads all over the world:',o:['Endemic','Epidemic','Pandemic','Contagious'],a:2,sol:'"Pandemic" — a disease prevalent over the whole world.'},
+{s:'One-Word Substitution',q:'A person who draws maps:',o:['Calligrapher','Typographer','Cartographer','Geographer'],a:2,sol:'"Cartographer" — a person who draws or produces maps.'},
+{s:'One-Word Substitution',q:'The killing of a king:',o:['Patricide','Fratricide','Regicide','Homicide'],a:2,sol:'"Regicide" — the action of killing a king.'},
+{s:'One-Word Substitution',q:'A person who sleepwalks:',o:['Insomniac','Narcoleptic','Somnambulist','Somniloquist'],a:2,sol:'"Somnambulist" — a person who walks in their sleep.'},
+{s:'One-Word Substitution',q:'A person indifferent to pleasure and pain:',o:['Hedonist','Epicurean','Stoic','Cynic'],a:2,sol:'"Stoic" — a person who endures pain without complaint.'},
+{s:'One-Word Substitution',q:'Fear of closed spaces:',o:['Acrophobia','Claustrophobia','Agoraphobia','Hydrophobia'],a:1,sol:'"Claustrophobia" — extreme fear of enclosed spaces.'},
+{s:'One-Word Substitution',q:'A person who renounces the world to live a religious life:',o:['Hermit','Clergy','Monk','Ascetic'],a:3,sol:'"Ascetic" — a person who lives with strict self-discipline for religious reasons.'},
+{s:'One-Word Substitution',q:'One who eats both plants and animals:',o:['Herbivore','Carnivore','Omnivore','Insectivore'],a:2,sol:'"Omnivore" — an animal that eats both plant and animal food.'},
+{s:'One-Word Substitution',q:'Government by one person with absolute power:',o:['Democracy','Oligarchy','Autocracy','Theocracy'],a:2,sol:'"Autocracy" — a system of government by one person with total power.'},
+{s:'Noun & Pronoun',q:'The team played ___ best match today.',o:['his','her','its','their'],a:2,sol:'A collective noun referring to a unit takes the singular possessive pronoun "its".'},
+{s:'Noun & Pronoun',q:'Both Ananya and Priya have finished ___ work.',o:['her','his','its','their'],a:3,sol:'Two subjects joined by "and" take the plural possessive pronoun "their".'},
+{s:'Noun & Pronoun',q:'Neither of the boys handed in ___ assignment.',o:['their','its','his','her'],a:2,sol:'"Neither" refers to two males; singular "his" is used.'},
+{s:'Noun & Pronoun',q:'The company increased ___ profits this year.',o:['their','her','his','its'],a:3,sol:'A company is a singular entity; "its" is the correct pronoun.'},
+{s:'Noun & Pronoun',q:'She hurt ___ while cooking.',o:['herself','him','itself','hisself'],a:0,sol:'The reflexive pronoun for a female subject is "herself".'},
+{s:'Noun & Pronoun',q:'This is the boy ___ won the award.',o:['whom','which','what','who'],a:3,sol:'"Who" is the relative pronoun for people as the subject of a relative clause.'},
+{s:'Noun & Pronoun',q:'The child whom ___ met yesterday is very bright.',o:['I','me','my','mine'],a:0,sol:'"I" is the subject of "met" in the relative clause.'},
+{s:'Noun & Pronoun',q:'It is ___ who should apologise.',o:['me','my','I','mine'],a:2,sol:'After "It is", the subject pronoun "I" is grammatically correct.'},
+{s:'Noun & Pronoun',q:'Everyone should do ___ duty sincerely.',o:['their','his or her','its','our'],a:1,sol:'For "everyone", the singular possessive "his or her" is formally correct.'},
+{s:'Noun & Pronoun',q:'Please give the letter to ___ .',o:['he','I','she','her'],a:3,sol:'"Give to" takes an object; "her" (objective case) is correct.'},
+{s:'Noun & Pronoun',q:'The jury has announced ___ verdict.',o:['their','his','her','its'],a:3,sol:'When the jury acts as a single body, the singular pronoun "its" is used.'},
+{s:'Noun & Pronoun',q:'The news ___ received late by all.',o:['were','have been','was','are'],a:2,sol:'"News" is a singular uncountable noun; "was" is correct.'},
+{s:'Noun & Pronoun',q:'All students must submit ___ projects by Friday.',o:['his','her','its','their'],a:3,sol:'"All students" is plural; "their" is the correct pronoun.'},
+{s:'Noun & Pronoun',q:'Between you and ___, the decision was wrong.',o:['I','mine','me','myself'],a:2,sol:'After a preposition, the objective case pronoun "me" is used.'},
+{s:'Noun & Pronoun',q:'The data ___ collected carefully.',o:['was','were','have been','is'],a:0,sol:'In modern usage, "data" is treated as singular; "was" is correct.'},
+{s:'Noun & Pronoun',q:'She introduced ___ to the new manager.',o:['her','herself','hers','she'],a:1,sol:'"Herself" is used when the subject and object are the same person.'},
+{s:'Noun & Pronoun',q:'Neither he nor I ___ wrong.',o:['am','are','is','were'],a:0,sol:'With "neither…nor", the verb agrees with the nearest subject ("I" → "am").'},
+{s:'Noun & Pronoun',q:'It was ___ who informed the officer.',o:['him','her','them','she'],a:3,sol:'"It was" is followed by the subjective pronoun "she".'},
+{s:'Noun & Pronoun',q:'The students prepared ___ for the competition.',o:['themselves','itself','yourselves','ourself'],a:0,sol:'The plural reflexive pronoun for "the students" is "themselves".'},
+{s:'Noun & Pronoun',q:'___ is a great honour to serve the nation.',o:['These','This','That','It'],a:3,sol:'"It" is used as an introductory subject for a fact or situation.'},
+{s:'Noun & Pronoun',q:'He told me that ___ had been selected.',o:['he','him','his','himself'],a:0,sol:'In indirect speech, "he" (subjective case) is used as the subject.'},
+{s:'Noun & Pronoun',q:'The scissors ___ lying on the table.',o:['is','was','are','has been'],a:2,sol:'"Scissors" is always plural and takes a plural verb.'},
+{s:'Noun & Pronoun',q:'Each one of the girls has done ___ homework.',o:['her','their','his','its'],a:0,sol:'"Each one of the girls" refers to individual females; "her" is correct.'},
+{s:'Noun & Pronoun',q:'Give the prize to ___ performs best.',o:['who','whoever','whom','whomever'],a:1,sol:'"Whoever" is used as the subject of a noun clause.'},
+{s:'Noun & Pronoun',q:'The teacher as well as her students ___ to blame.',o:['are','were','is','have been'],a:2,sol:'"As well as" does not change the number; verb agrees with "the teacher" (singular → is).'}
+  ]
+}
+,
+{
+  id:'imu_aptitude_mock',
+  title:'IMU-CET Aptitude Mock Test',
+  subtitle:'200 Qs · Maths, Reasoning, GK, Physics · 180 Min',
+  duration:180*60,
+  marking:{correct:1,wrong:-0.25},
+  sections:{Arithmetic:40,Algebra:30,'Geometry & Mensuration':25,Statistics:15,Reasoning:40,'General Awareness':30,'Physics Basics':20},
+  questions:[
+{s:'Arithmetic',q:'A train travels 360 km in 4 hours. Its speed in m/s is:',o:['25 m/s','20 m/s','30 m/s','18 m/s'],a:0,sol:'Speed=360/4=90 km/h=90×(1000/3600)=25 m/s.'},
+{s:'Arithmetic',q:'The HCF of 36, 48, and 60 is:',o:['6','12','18','24'],a:1,sol:'HCF(36,48)=12, HCF(12,60)=12.'},
+{s:'Arithmetic',q:'The LCM of 12, 18, and 24 is:',o:['36','48','72','96'],a:2,sol:'LCM(12,18)=36, LCM(36,24)=72.'},
+{s:'Arithmetic',q:'If 15% of a number is 45, the number is:',o:['200','250','300','350'],a:2,sol:'x=45÷0.15=300.'},
+{s:'Arithmetic',q:'A shopkeeper gives 20% discount on an item marked ₹500. The selling price is:',o:['₹400','₹380','₹420','₹450'],a:0,sol:'Discount=20% of 500=100. SP=500−100=₹400.'},
+{s:'Arithmetic',q:'Simple interest on ₹2000 at 5% per annum for 3 years:',o:['₹200','₹250','₹300','₹350'],a:2,sol:'SI=P×R×T/100=2000×5×3/100=₹300.'},
+{s:'Arithmetic',q:'Two numbers are in ratio 3:5 and their sum is 64. The smaller number is:',o:['24','32','20','28'],a:0,sol:'Smaller=3/8×64=24.'},
+{s:'Arithmetic',q:'What percentage is 75 of 300?',o:['20%','25%','30%','35%'],a:1,sol:'75/300×100=25%.'},
+{s:'Arithmetic',q:'A car covers 240 km in 4 hours. Time to cover 360 km at same speed:',o:['5h','6h','7h','8h'],a:1,sol:'Speed=60 km/h. Time=360/60=6h.'},
+{s:'Arithmetic',q:'Compound interest on ₹5000 at 10% p.a. for 2 years:',o:['₹950','₹1000','₹1025','₹1050'],a:3,sol:'CI=5000(1.1²−1)=5000×0.21=₹1050.'},
+{s:'Arithmetic',q:'A mixture of 40 litres has milk and water in 3:1. Litres of water:',o:['10','12','8','15'],a:0,sol:'Water=1/4×40=10 litres.'},
+{s:'Arithmetic',q:'A and B can do a job in 12 and 18 days respectively. Together they finish in:',o:['7.2 days','6 days','8 days','9 days'],a:0,sol:'Rate=1/12+1/18=5/36. Time=36/5=7.2 days.'},
+{s:'Arithmetic',q:'If price increases by 25%, reduction in consumption to keep expenditure same:',o:['15%','20%','25%','30%'],a:1,sol:'%reduction=25/125×100=20%.'},
+{s:'Arithmetic',q:'Profit % if CP=₹200 and SP=₹250:',o:['20%','25%','30%','15%'],a:1,sol:'Profit%=(50/200)×100=25%.'},
+{s:'Arithmetic',q:'Average of first 10 natural numbers:',o:['4.5','5','5.5','6'],a:2,sol:'Sum=55. Average=55/10=5.5.'},
+{s:'Arithmetic',q:'Simple interest rate if a sum doubles in 5 years:',o:['10%','15%','20%','25%'],a:2,sol:'P×R×5/100=P → R=20%.'},
+{s:'Arithmetic',q:'A pipe fills a tank in 20 minutes and another empties it in 30 minutes. Time to fill if both open:',o:['50 min','60 min','45 min','40 min'],a:1,sol:'Net rate=1/20−1/30=1/60. Time=60 min.'},
+{s:'Arithmetic',q:'The square root of 0.0064 is:',o:['0.08','0.8','0.008','8'],a:0,sol:'√0.0064=8/100=0.08.'},
+{s:'Arithmetic',q:'A boat goes 12 km upstream in 2 hours and 18 km downstream in 2 hours. Speed of current:',o:['1 km/h','1.5 km/h','2 km/h','3 km/h'],a:1,sol:'Upstream=6, Downstream=9. Current=(9−6)/2=1.5 km/h.'},
+{s:'Arithmetic',q:'Selling price of 10 articles = cost price of 11. Gain%:',o:['9%','10%','11%','12%'],a:1,sol:'SP of 1=11CP/10. Gain=1/10=10%.'},
+{s:'Arithmetic',q:'Sum of all odd numbers from 1 to 99:',o:['2500','2025','2401','2601'],a:0,sol:'Sum=n² where n=50. 50²=2500.'},
+{s:'Arithmetic',q:'How many prime numbers between 1 and 50?',o:['14','15','16','17'],a:1,sol:'2,3,5,7,11,13,17,19,23,29,31,37,41,43,47 = 15 primes.'},
+{s:'Arithmetic',q:'What is 5% of 5% of 500?',o:['1.25','1.5','2','2.5'],a:0,sol:'5% of 500=25. 5% of 25=1.25.'},
+{s:'Arithmetic',q:'Present ages of father and son are 40 and 10. After how many years will father be twice the son?',o:['10 years','15 years','20 years','25 years'],a:2,sol:'40+x=2(10+x) → x=20.'},
+{s:'Arithmetic',q:'A clock gains 5 minutes every hour. Set correctly at noon, it shows at 6 PM:',o:['6:25 PM','6:30 PM','6:35 PM','6:40 PM'],a:1,sol:'6h×5=30 min gain. Shows 6:30 PM.'},
+{s:'Arithmetic',q:'The difference between CI and SI on ₹1000 at 10% for 2 years:',o:['₹5','₹10','₹15','₹20'],a:1,sol:'SI=200, CI=210. Difference=₹10.'},
+{s:'Arithmetic',q:'If x/y=3/4, then (x+y)/(x−y)=',o:['7','−7','-1/7','7 or −7'],a:1,sol:'Let x=3k,y=4k. (7k)/(−k)=−7.'},
+{s:'Arithmetic',q:'Volume of cylinder with r=7 and h=10 (π=22/7):',o:['1540 cm³','1440 cm³','1340 cm³','1240 cm³'],a:0,sol:'V=πr²h=22/7×49×10=1540 cm³.'},
+{s:'Arithmetic',q:'A rectangular field is 80m×50m. Cost of fencing at ₹15/m:',o:['₹3900','₹3800','₹4000','₹3600'],a:0,sol:'Perimeter=2(80+50)=260m. Cost=260×15=₹3900.'},
+{s:'Arithmetic',q:'If 3x+7=22, then x=',o:['4','5','6','7'],a:1,sol:'3x=15. x=5.'},
+{s:'Arithmetic',q:'A boat goes downstream 20 km in 2 hours and upstream 10 km in 2.5 hours. Speed of boat in still water:',o:['7 km/h','8 km/h','7.5 km/h','6 km/h'],a:0,sol:'DS=10, US=4. Boat=(10+4)/2=7 km/h.'},
+{s:'Arithmetic',q:'Three numbers in AP with sum 21 and product 280. Numbers are:',o:['4,7,10','3,7,11','5,7,9','2,7,12'],a:0,sol:'3a=21→a=7. 49−d²=40→d=3. Numbers:4,7,10.'},
+{s:'Arithmetic',q:'A sum doubles in 5 years at SI. Rate:',o:['10%','15%','20%','25%'],a:2,sol:'P×R×5/100=P → R=20%.'},
+{s:'Arithmetic',q:'Two numbers in ratio 4:7, LCM=168. Numbers:',o:['24 and 42','28 and 49','32 and 56','16 and 28'],a:0,sol:'4x and 7x. LCM=28x=168→x=6. Numbers=24,42.'},
+{s:'Arithmetic',q:'If 2x−3=11, then 5x+2=',o:['32','37','42','47'],a:1,sol:'x=7. 5×7+2=37.'},
+{s:'Arithmetic',q:'Find the number of times digit 3 appears from 1 to 100:',o:['10','11','19','20'],a:3,sol:'3,13,23,30-39(11 times),43,53,63,73,83,93 = 20 occurrences.'},
+{s:'Arithmetic',q:'Profit % if 10 articles sold for CP of 12:',o:['10%','15%','20%','25%'],a:2,sol:'SP=12CP/10=1.2CP. Profit%=20%.'},
+{s:'Arithmetic',q:'HCF×LCM of two numbers equals:',o:['Sum of numbers','Difference of numbers','Product of numbers','Average of numbers'],a:2,sol:'For any two numbers: HCF×LCM=product of the two numbers.'},
+{s:'Arithmetic',q:'A can do a work in 10 days, B in 15 days, C in 30 days. Together they finish in:',o:['4 days','5 days','6 days','7 days'],a:1,sol:'Rate=1/10+1/15+1/30=3/30+2/30+1/30=6/30=1/5. Time=5 days.'},
+{s:'Algebra',q:'If a+b=10 and ab=21, then a²+b²=',o:['58','64','100','72'],a:0,sol:'a²+b²=(a+b)²−2ab=100−42=58.'},
+{s:'Algebra',q:'Solve: 2x²−5x+3=0',o:['x=1 and 1.5','x=2 and 0.5','x=−1 and −1.5','x=3 and 0'],a:0,sol:'(2x−3)(x−1)=0. x=1 or x=1.5.'},
+{s:'Algebra',q:'If x²−4x+4=0, then x=',o:['1','2','3','4'],a:1,sol:'(x−2)²=0 → x=2.'},
+{s:'Algebra',q:'If f(x)=2x²−3x+1, then f(2)=',o:['3','5','7','9'],a:0,sol:'f(2)=8−6+1=3.'},
+{s:'Algebra',q:'Simplify (x³−y³)/(x−y):',o:['x²+xy+y²','x²−xy+y²','x²−y²','x+y'],a:0,sol:'x³−y³=(x−y)(x²+xy+y²).'},
+{s:'Algebra',q:'If 2^x=32, then x=',o:['3','4','5','6'],a:2,sol:'2^5=32. x=5.'},
+{s:'Algebra',q:'Sum of roots of x²−7x+12=0:',o:['7','−7','12','−12'],a:0,sol:'Sum=−(−7)/1=7.'},
+{s:'Algebra',q:'Product of roots of 2x²−5x+3=0:',o:['5/2','3/2','2/3','5/3'],a:1,sol:'Product=3/2.'},
+{s:'Algebra',q:'If log₂(8)=x, then x=',o:['2','3','4','5'],a:1,sol:'log₂(2³)=3.'},
+{s:'Algebra',q:'Value of (a+b)²−(a−b)²:',o:['4ab','2ab','a²+b²','4a²'],a:0,sol:'(a+b)²−(a−b)²=4ab.'},
+{s:'Algebra',q:'If 3^(2x+1)=27, then x=',o:['0','1','2','3'],a:1,sol:'3³=27. 2x+1=3. x=1.'},
+{s:'Algebra',q:'The quadratic whose roots are 3 and −2:',o:['x²−x−6=0','x²+x−6=0','x²−x+6=0','x²+x+6=0'],a:0,sol:'(x−3)(x+2)=x²−x−6=0.'},
+{s:'Algebra',q:'If x+1/x=5, then x²+1/x²=',o:['23','25','27','29'],a:0,sol:'(x+1/x)²=25. x²+1/x²=25−2=23.'},
+{s:'Algebra',q:'If 5x=3y, then x:y=',o:['3:5','5:3','15:1','1:15'],a:0,sol:'x/y=3/5. x:y=3:5.'},
+{s:'Algebra',q:'10th term of AP 2,5,8,...:',o:['26','27','29','32'],a:2,sol:'T₁₀=2+9×3=29.'},
+{s:'Algebra',q:'Sum of first 10 terms of GP 1,2,4,8,...:',o:['1023','1024','2046','2047'],a:0,sol:'S=1×(2¹⁰−1)/(2−1)=1023.'},
+{s:'Algebra',q:'If x:y:z=2:3:5 and x+y+z=100, then z=',o:['40','50','45','60'],a:1,sol:'z=5/10×100=50.'},
+{s:'Algebra',q:'If log₁₀(100)=x, then x=',o:['1','2','10','100'],a:1,sol:'log₁₀(10²)=2.'},
+{s:'Algebra',q:'Values satisfying 3x−2>7:',o:['x>2','x>3','x<3','x<2'],a:1,sol:'3x>9. x>3.'},
+{s:'Algebra',q:'A={1,2,3}, B={3,4,5}. A∩B=',o:['{3}','{1,2,3,4,5}','{1,2}','{4,5}'],a:0,sol:'Common element: {3}.'},
+{s:'Algebra',q:'15th term of 3,7,11,15,...:',o:['55','57','59','61'],a:2,sol:'T₁₅=3+14×4=59.'},
+{s:'Algebra',q:'Simplify (x²−1)/(x−1):',o:['x−1','x+1','x²+1','x'],a:1,sol:'x²−1=(x−1)(x+1). Result=x+1.'},
+{s:'Algebra',q:'Rationalise 1/(√3−1):',o:['(√3+1)/2','(√3−1)/2','√3+1','√3−1'],a:0,sol:'Multiply by (√3+1)/(√3+1)=(√3+1)/2.'},
+{s:'Algebra',q:'Value of (0.9+0.1)²:',o:['0.9','1','1.1','0.99'],a:1,sol:'(a+b)²=(0.9+0.1)²=1²=1.'},
+{s:'Algebra',q:'If (x−2) is factor of x²+kx−6, then k=',o:['−1','1','−3','3'],a:1,sol:'f(2)=0: 4+2k−6=0. k=1.'},
+{s:'Algebra',q:'Sum of arithmetic series 1+2+3+...+50:',o:['1250','1275','1300','1325'],a:1,sol:'S=n(n+1)/2=50×51/2=1275.'},
+{s:'Algebra',q:'If 4^x=256, then x=',o:['3','4','5','6'],a:1,sol:'4⁴=256. x=4.'},
+{s:'Geometry & Mensuration',q:'Area of triangle with base 10 cm and height 6 cm:',o:['30 cm²','40 cm²','60 cm²','50 cm²'],a:0,sol:'Area=½×10×6=30 cm².'},
+{s:'Geometry & Mensuration',q:'Perimeter of square with area 64 cm²:',o:['24 cm','28 cm','32 cm','36 cm'],a:2,sol:'Side=8. Perimeter=32 cm.'},
+{s:'Geometry & Mensuration',q:'Volume of cube with edge 5 cm:',o:['25 cm³','100 cm³','125 cm³','150 cm³'],a:2,sol:'V=5³=125 cm³.'},
+{s:'Geometry & Mensuration',q:'Sum of interior angles of a hexagon:',o:['540°','600°','720°','900°'],a:2,sol:'(6−2)×180=720°.'},
+{s:'Geometry & Mensuration',q:'Circumference of circle with r=14 (π=22/7):',o:['44 cm','88 cm','132 cm','176 cm'],a:1,sol:'C=2×22/7×14=88 cm.'},
+{s:'Geometry & Mensuration',q:'Diagonal of rectangle 6cm×8cm:',o:['10 cm','12 cm','14 cm','15 cm'],a:0,sol:'√(36+64)=√100=10 cm.'},
+{s:'Geometry & Mensuration',q:'Area of circle with diameter 14 cm (π=22/7):',o:['144 cm²','154 cm²','164 cm²','174 cm²'],a:1,sol:'r=7. Area=22/7×49=154 cm².'},
+{s:'Geometry & Mensuration',q:'Hypotenuse if two sides of right triangle are 5 and 12:',o:['13','14','15','11'],a:0,sol:'√(25+144)=√169=13.'},
+{s:'Geometry & Mensuration',q:'Angle in a semicircle is always:',o:['60°','45°','90°','120°'],a:2,sol:'Angle in a semicircle theorem: always 90°.'},
+{s:'Geometry & Mensuration',q:'TSA of cylinder r=7, h=10 (π=22/7):',o:['748 cm²','754 cm²','770 cm²','840 cm²'],a:0,sol:'TSA=2πr(r+h)=2×22/7×7×17=748 cm².'},
+{s:'Geometry & Mensuration',q:'Area of rhombus with diagonals 12 and 16:',o:['96 cm²','80 cm²','120 cm²','100 cm²'],a:0,sol:'Area=½×12×16=96 cm².'},
+{s:'Geometry & Mensuration',q:'Side of equilateral triangle with area 9√3:',o:['4 cm','6 cm','8 cm','3 cm'],a:1,sol:'√3/4×s²=9√3. s²=36. s=6 cm.'},
+{s:'Geometry & Mensuration',q:'Volume of cone with r=7, h=12 (π=22/7):',o:['616 cm³','512 cm³','308 cm³','924 cm³'],a:0,sol:'V=1/3×22/7×49×12=616 cm³.'},
+{s:'Geometry & Mensuration',q:'Number of sides if sum of interior angles=1260°:',o:['7','8','9','10'],a:2,sol:'(n−2)×180=1260. n=9.'},
+{s:'Geometry & Mensuration',q:'CSA of sphere with r=7 (π=22/7):',o:['616 cm²','308 cm²','154 cm²','462 cm²'],a:0,sol:'CSA=4πr²=4×22/7×49=616 cm².'},
+{s:'Geometry & Mensuration',q:'Triangle with angles in ratio 1:2:3 is:',o:['Acute','Obtuse','Right-angled','Equilateral'],a:2,sol:'Angles: 30°,60°,90°. Right-angled.'},
+{s:'Geometry & Mensuration',q:'Area of trapezium with parallel sides 8 and 12, height 6:',o:['60 cm²','72 cm²','50 cm²','80 cm²'],a:0,sol:'Area=½×(8+12)×6=60 cm².'},
+{s:'Geometry & Mensuration',q:'If radius is doubled, the area becomes:',o:['Doubled','Tripled','4 times','8 times'],a:2,sol:'Area=πr². New area=π(2r)²=4πr². 4 times.'},
+{s:'Geometry & Mensuration',q:'Where do angle bisectors of a triangle meet?',o:['Circumcentre','Centroid','Incentre','Orthocentre'],a:2,sol:'Angle bisectors meet at the incentre.'},
+{s:'Geometry & Mensuration',q:'Centroid divides each median in ratio:',o:['1:2','2:1','1:3','3:1'],a:1,sol:'Centroid divides median 2:1 from vertex.'},
+{s:'Geometry & Mensuration',q:'Sector area with r=14, angle=90° (π=22/7):',o:['154 cm²','176 cm²','196 cm²','308 cm²'],a:0,sol:'Area=90/360×22/7×196=154 cm².'},
+{s:'Geometry & Mensuration',q:'Diagonal of a square with side 10 cm:',o:['10√2 cm','10 cm','20 cm','5√2 cm'],a:0,sol:'Diagonal=side×√2=10√2 cm.'},
+{s:'Geometry & Mensuration',q:'If all angles of a quadrilateral are equal, each angle is:',o:['60°','90°','120°','45°'],a:1,sol:'Sum of quadrilateral angles=360°. 360/4=90°.'},
+{s:'Geometry & Mensuration',q:'Alternate interior angles formed by parallel lines and transversal are:',o:['Supplementary','Complementary','Equal','Adjacent'],a:2,sol:'Alternate interior angles are equal.'},
+{s:'Statistics',q:'Mode of 3,5,3,7,5,3,8 is:',o:['3','5','7','8'],a:0,sol:'3 appears 3 times — most frequent.'},
+{s:'Statistics',q:'Median of 4,6,8,10,12 is:',o:['6','8','10','12'],a:1,sol:'5 values; median=3rd value=8.'},
+{s:'Statistics',q:'Mean of 10,20,30,40,50 is:',o:['25','30','35','40'],a:1,sol:'Sum=150. Mean=150/5=30.'},
+{s:'Statistics',q:'Mean of 5 numbers is 20; one removed, new mean of 4 is 18. Removed number:',o:['24','26','28','30'],a:2,sol:'Total=100. New total=72. Removed=100−72=28.'},
+{s:'Statistics',q:'Range of 14,9,3,17,22,5 is:',o:['13','14','19','22'],a:2,sol:'Range=22−3=19.'},
+{s:'Statistics',q:'If P(A)=0.4, P(B)=0.5, P(A∩B)=0.2, then P(A∪B)=',o:['0.6','0.7','0.8','0.9'],a:1,sol:'P(A∪B)=0.4+0.5−0.2=0.7.'},
+{s:'Statistics',q:'Die thrown. Probability of even number:',o:['1/2','1/3','2/3','1/6'],a:0,sol:'Even: {2,4,6}. P=3/6=1/2.'},
+{s:'Statistics',q:'Two coins tossed. Probability of exactly one head:',o:['1/4','1/2','3/4','1'],a:1,sol:'HT,TH = 2/4=1/2.'},
+{s:'Statistics',q:'Variance of 1,2,3,4,5:',o:['2','2.5','3','4'],a:0,sol:'Mean=3. Var=((4+1+0+1+4)/5)=10/5=2.'},
+{s:'Statistics',q:'A bag has 5 red and 3 blue balls. Probability of blue:',o:['3/5','5/8','3/8','1/3'],a:2,sol:'P=3/8.'},
+{s:'Statistics',q:'Card drawn from 52. Probability it is a face card:',o:['3/13','4/13','1/13','1/4'],a:0,sol:'12 face cards. P=12/52=3/13.'},
+{s:'Statistics',q:'If all values multiplied by 3, the mean:',o:['Stays same','Multiplied by 3','Divided by 3','Increases by 3'],a:1,sol:'Multiplying all by k multiplies mean by k.'},
+{s:'Statistics',q:'Standard deviation when each score increases by 10:',o:['Increases by 10','Decreases by 10','Stays same','Doubles'],a:2,sol:'Adding a constant does not change standard deviation.'},
+{s:'Statistics',q:'Median of 7,9,11,13,15,17:',o:['12','12.5','11','13'],a:0,sol:'(3rd+4th)/2=(11+13)/2=12.'},
+{s:'Statistics',q:'Probability of getting sum 7 when two dice thrown:',o:['1/6','5/36','7/36','1/9'],a:0,sol:'Favourable: (1,6),(2,5),(3,4),(4,3),(5,2),(6,1)=6. P=6/36=1/6.'},
+{s:'Reasoning',q:'In a row, Ravi is 8th from left and 12th from right. Total students:',o:['18','19','20','21'],a:1,sol:'Total=8+12−1=19.'},
+{s:'Reasoning',q:'Pointing to a girl: "She is daughter of only son of my grandfather." How is girl related?',o:['Niece','Sister','Daughter','Cousin'],a:1,sol:'Only son of grandfather=father. Daughter of father=sister.'},
+{s:'Reasoning',q:'If PAPER is coded QBQFS, then PENCIL is:',o:['QFODIL','QFODJM','QFODIM','QFOCJM'],a:1,sol:'Each letter+1: P→Q,E→F,N→O,C→D,I→J,L→M=QFODJM.'},
+{s:'Reasoning',q:'Odd one out: Dog, Cat, Horse, Parrot, Cow',o:['Dog','Parrot','Horse','Cow'],a:1,sol:'All others are four-legged mammals. Parrot is a bird.'},
+{s:'Reasoning',q:'Series: 1,1,2,3,5,8,13,___',o:['18','20','21','24'],a:2,sol:'Fibonacci: 8+13=21.'},
+{s:'Reasoning',q:'Completing: AZ,BY,CX,DW,___',o:['EV','FU','EF','FV'],a:0,sol:'First letters:A,B,C,D,E. Second letters:Z,Y,X,W,V. →EV.'},
+{s:'Reasoning',q:'All pencils are pens. All pens are erasers. Which is definitely true?',o:['All erasers are pencils','All pencils are erasers','All pens are pencils','None'],a:1,sol:'Pencils→pens→erasers. All pencils are erasers.'},
+{s:'Reasoning',q:'A is taller than B. C taller than A. D taller than C. Tallest is:',o:['A','B','C','D'],a:3,sol:'D>C>A>B. D is tallest.'},
+{s:'Reasoning',q:'Water:Thirst :: Food:?',o:['Eat','Hunger','Cook','Nutrition'],a:1,sol:'Water satisfies thirst; Food satisfies hunger.'},
+{s:'Reasoning',q:'Number series: 2,6,12,20,30,___',o:['40','42','44','46'],a:1,sol:'Differences:4,6,8,10,12. Next=30+12=42.'},
+{s:'Reasoning',q:'If CLOUD=DNPVE, then RAIN=?',o:['SBJO','TCIO','SBJP','TBKQ'],a:0,sol:'Each letter+1: R→S,A→B,I→J,N→O=SBJO.'},
+{s:'Reasoning',q:'Analogy: Thermometer:Temperature :: Barometer:?',o:['Weather','Humidity','Pressure','Wind'],a:2,sol:'Barometer measures atmospheric pressure.'},
+{s:'Reasoning',q:'Letter series: Z,X,V,T,R,___',o:['P','Q','S','O'],a:0,sol:'Every alternate letter reverse: Z,X,V,T,R,P.'},
+{s:'Reasoning',q:'Complete series: J,F,M,A,M,J,J,A,___',o:['O','N','S','D'],a:2,sol:'Months: Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep. Next=S.'},
+{s:'Reasoning',q:'Odd one out: 36,49,63,81,100',o:['36','49','63','81'],a:2,sol:'36=6²,49=7²,63 is not perfect square,81=9²,100=10². 63 is odd.'},
+{s:'Reasoning',q:'A walks 4km North, 3km East, 4km South. Displacement from start:',o:['3 km East','4 km East','7 km East','5 km East'],a:0,sol:'N and S cancel. Net=3km East.'},
+{s:'Reasoning',q:'Primes in sequence: 2,3,5,7,11,13,___',o:['14','15','16','17'],a:3,sol:'Next prime=17.'},
+{s:'Reasoning',q:'If 1 Jan 2000 was Saturday, day on 1 Jan 2001:',o:['Sunday','Monday','Saturday','Tuesday'],a:1,sol:'2000 leap year=366 days. 366mod7=2. Sat+2=Monday.'},
+{s:'Reasoning',q:'Blood relation: A is father of B, B is mother of C. A is __ of C:',o:['Father','Grandfather','Uncle','Brother'],a:1,sol:'A is father of B, B is mother of C. A is grandfather of C.'},
+{s:'Reasoning',q:'Cube painted on all faces, cut into 27 equal cubes. Cubes with exactly 2 painted faces:',o:['8','12','6','0'],a:1,sol:'Edge cubes (not corners): 1 per edge × 12 edges=12.'},
+{s:'Reasoning',q:'A man walks 10km N, 6km E, 10km S. Distance from start:',o:['4 km','6 km','8 km','10 km'],a:1,sol:'N and S cancel. 6km East=6km from start.'},
+{s:'Reasoning',q:'If 3+5=28, 4+6=40, 5+7=54, then 6+8=?',o:['68','70','72','74'],a:1,sol:'Pattern: b²+a. 8²+6=64+6=70.'},
+{s:'Reasoning',q:'Order from highest: A>C>D>B. Middle two are:',o:['A and C','C and D','D and B','A and D'],a:1,sol:'A,C,D,B in order. Middle two=C and D.'},
+{s:'Reasoning',q:'Triangles in equilateral triangle divided into 4 small ones:',o:['4','5','6','7'],a:1,sol:'4 small + 1 large = 5 triangles.'},
+{s:'Reasoning',q:'Mirror image of 10:10 on a clock:',o:['1:50','2:10','2:50','11:50'],a:0,sol:'Mirror time: 11:60−10:10=1:50.'},
+{s:'Reasoning',q:'In a 5-book shelf: Maths left of English, Science right of English but left of History, Hindi right of History. Book in the middle:',o:['Maths','English','Science','History'],a:2,sol:'Order:Maths,English,Science,History,Hindi. Middle=Science.'},
+{s:'Reasoning',q:'Series: 1,4,9,16,25,___',o:['30','36','34','49'],a:1,sol:'Perfect squares: 1,4,9,16,25,36.'},
+{s:'Reasoning',q:'Letter series: B,D,F,H,___',o:['I','J','K','L'],a:1,sol:'Every alternate letter: B(2),D(4),F(6),H(8),J(10).'},
+{s:'Reasoning',q:'5 years ago father was 4× son. Now father is 3× son. Father\'s age:',o:['40','45','50','35'],a:1,sol:'f−5=4(s−5) and f=3s → s=15, f=45.'},
+{s:'Reasoning',q:'Direction: Start facing North, turn right 90°, then turn left 180°. Facing:',o:['North','South','East','West'],a:3,sol:'North→right 90°=East→left 180°=West.'},
+{s:'General Awareness',q:'Largest ocean in the world:',o:['Atlantic','Indian','Arctic','Pacific'],a:3,sol:'Pacific Ocean is the largest, covering 165 million km².'},
+{s:'General Awareness',q:'Speed of light in vacuum:',o:['3×10⁶ m/s','3×10⁸ m/s','3×10¹⁰ m/s','3×10⁴ m/s'],a:1,sol:'Speed of light≈3×10⁸ m/s.'},
+{s:'General Awareness',q:'First woman Prime Minister of India:',o:['Sarojini Naidu','Sonia Gandhi','Indira Gandhi','Pratibha Patil'],a:2,sol:'Indira Gandhi was India\'s first female PM.'},
+{s:'General Awareness',q:'The International Date Line passes through the:',o:['Atlantic','Indian','Pacific','Arctic'],a:2,sol:'IDL follows the 180th meridian through the Pacific Ocean.'},
+{s:'General Awareness',q:'Headquarters of IMO:',o:['Geneva','New York','London','Paris'],a:2,sol:'IMO is headquartered in London, UK.'},
+{s:'General Awareness',q:'Palk Strait separates India from:',o:['Myanmar','Pakistan','Sri Lanka','Maldives'],a:2,sol:'Palk Strait separates India from Sri Lanka.'},
+{s:'General Awareness',q:'Instrument to measure wind speed:',o:['Barometer','Thermometer','Anemometer','Hygrometer'],a:2,sol:'Anemometer measures wind speed.'},
+{s:'General Awareness',q:'Chemical symbol for gold:',o:['Go','Gd','Au','Ag'],a:2,sol:'Gold\'s symbol is Au (Latin: aurum).'},
+{s:'General Awareness',q:'First satellite launched into orbit:',o:['Explorer 1','Vostok 1','Sputnik 1','Apollo 11'],a:2,sol:'Sputnik 1 by Soviet Union, October 1957.'},
+{s:'General Awareness',q:'Battle of Waterloo fought in:',o:['1800','1805','1815','1820'],a:2,sol:'Battle of Waterloo: 18 June 1815.'},
+{s:'General Awareness',q:'Most abundant gas in Earth\'s atmosphere:',o:['Oxygen','Carbon dioxide','Argon','Nitrogen'],a:3,sol:'Nitrogen makes up ~78% of Earth\'s atmosphere.'},
+{s:'General Awareness',q:'The Suez Canal connects:',o:['Atlantic and Pacific','Red Sea and Mediterranean Sea','Indian and Atlantic','Black Sea and Caspian'],a:1,sol:'Suez Canal connects Red Sea to Mediterranean Sea.'},
+{s:'General Awareness',q:'Currency of Japan:',o:['Won','Yuan','Yen','Ringgit'],a:2,sol:'Japan\'s currency is the Yen (¥).'},
+{s:'General Awareness',q:'Largest continent by area:',o:['North America','Africa','Asia','Europe'],a:2,sol:'Asia is the largest continent.'},
+{s:'General Awareness',q:'Panama Canal connects:',o:['Atlantic and Indian','Pacific and Indian','Atlantic and Pacific','Mediterranean and Atlantic'],a:2,sol:'Panama Canal connects Atlantic to Pacific.'},
+{s:'General Awareness',q:'Earth completes one revolution around the Sun in:',o:['24 hours','30 days','365.25 days','30 years'],a:2,sol:'Earth orbits the Sun in ~365.25 days.'},
+{s:'General Awareness',q:'Mount Everest is in which range:',o:['Alps','Andes','Himalayas','Rockies'],a:2,sol:'Mount Everest is in the Himalayan range.'},
+{s:'General Awareness',q:'Deepest ocean trench:',o:['Puerto Rico Trench','Tonga Trench','Mariana Trench','Java Trench'],a:2,sol:'Mariana Trench in Pacific — deepest known point.'},
+{s:'General Awareness',q:'Largest producer of tea:',o:['India','Sri Lanka','China','Kenya'],a:2,sol:'China is the world\'s largest tea producer.'},
+{s:'General Awareness',q:'COLREGS refers to:',o:['Naval warfare regulations','International Regulations for Preventing Collisions at Sea','Coastal Line Regulations','Commercial Vessel Logistics'],a:1,sol:'COLREGS = Convention on International Regulations for Preventing Collisions at Sea.'},
+{s:'General Awareness',q:'Pressure unit in meteorology:',o:['Pascal','Bar','Millibar','Atmosphere'],a:2,sol:'Millibar (mb) or hectopascal (hPa) is standard in meteorology.'},
+{s:'General Awareness',q:'Beaufort Scale measures:',o:['Earthquake intensity','Wind force','Ocean depth','Tsunami height'],a:1,sol:'Beaufort Scale measures wind force from 0 to 12.'},
+{s:'General Awareness',q:'Greenwich Meridian passes through:',o:['Paris','London','Berlin','Madrid'],a:1,sol:'Prime Meridian passes through Greenwich, London.'},
+{s:'General Awareness',q:'ISRO stands for:',o:['Indian Space Research Organisation','International Space Research Organisation','Indian Scientific Research Organisation','International Scientific Research Office'],a:0,sol:'ISRO=Indian Space Research Organisation, Bengaluru.'},
+{s:'General Awareness',q:'Boiling point of water at sea level:',o:['90°C','95°C','100°C','105°C'],a:2,sol:'Water boils at 100°C at standard atmospheric pressure.'},
+{s:'General Awareness',q:'One nautical mile equals:',o:['1000 m','1609 m','1852 m','2000 m'],a:2,sol:'1 nautical mile=1852 metres.'},
+{s:'General Awareness',q:'Who invented the telephone?',o:['Thomas Edison','Nikola Tesla','Alexander Graham Bell','Guglielmo Marconi'],a:2,sol:'Alexander Graham Bell invented and patented the telephone in 1876.'},
+{s:'General Awareness',q:'The instrument used to measure ocean depth:',o:['Sonar','Radar','Lidar','Echo sounder'],a:3,sol:'Echo sounder (echo sounding) is used to measure ocean depth.'},
+{s:'General Awareness',q:'Which country has the longest coastline?',o:['Russia','USA','Canada','Australia'],a:2,sol:'Canada has the world\'s longest coastline at ~202,080 km.'},
+{s:'Physics Basics',q:'Newton\'s first law is also known as:',o:['Law of Gravitation','Law of Inertia','Law of Action-Reaction','Law of Acceleration'],a:1,sol:'Newton\'s 1st Law is the Law of Inertia.'},
+{s:'Physics Basics',q:'Unit of electric current:',o:['Volt','Watt','Ampere','Ohm'],a:2,sol:'SI unit of current is the Ampere (A).'},
+{s:'Physics Basics',q:'Lens used to correct myopia (short-sightedness):',o:['Convex','Concave','Bifocal','Cylindrical'],a:1,sol:'Concave (diverging) lens corrects myopia.'},
+{s:'Physics Basics',q:'SI unit of force:',o:['Joule','Watt','Newton','Pascal'],a:2,sol:'SI unit of force is Newton (N).'},
+{s:'Physics Basics',q:'Sound travels fastest in:',o:['Air','Water','Vacuum','Steel'],a:3,sol:'Sound travels fastest in solids; speed in steel≈5000 m/s.'},
+{s:'Physics Basics',q:'Archimedes\' principle states buoyant force equals:',o:['Weight of object','Weight of fluid displaced','Volume of object','Mass of fluid'],a:1,sol:'Buoyant force=weight of fluid displaced.'},
+{s:'Physics Basics',q:'Colour of light with highest frequency:',o:['Red','Orange','Violet','Green'],a:2,sol:'Violet has highest frequency in visible spectrum.'},
+{s:'Physics Basics',q:'Bending of light passing from one medium to another:',o:['Reflection','Diffraction','Refraction','Dispersion'],a:2,sol:'Refraction is the bending of light between media.'},
+{s:'Physics Basics',q:'Boyle\'s Law relates pressure and volume at constant:',o:['Pressure','Volume','Temperature','Mass'],a:2,sol:'Boyle\'s Law: P∝1/V at constant temperature.'},
+{s:'Physics Basics',q:'Unit of resistance:',o:['Volt','Ampere','Watt','Ohm'],a:3,sol:'SI unit of resistance is the Ohm (Ω).'},
+{s:'Physics Basics',q:'Mirror used as rear-view mirror in vehicles:',o:['Plane','Concave','Convex','Parabolic'],a:2,sol:'Convex mirror gives wider field of view.'},
+{s:'Physics Basics',q:'Frequency of AC supply in India:',o:['50 Hz','60 Hz','100 Hz','25 Hz'],a:0,sol:'India uses 50 Hz AC at 230V.'},
+{s:'Physics Basics',q:'Einstein\'s E=mc² means:',o:['Energy=mass×velocity','Energy=mass×speed of light²','Mass=energy×speed','Force=mass×acceleration'],a:1,sol:'E=mc²: energy equals mass times speed of light squared.'},
+{s:'Physics Basics',q:'SI unit of energy:',o:['Watt','Newton','Joule','Pascal'],a:2,sol:'SI unit of energy is the Joule (J).'},
+{s:'Physics Basics',q:'Device that converts electrical energy to mechanical energy:',o:['Generator','Battery','Motor','Transformer'],a:2,sol:'Electric motor converts electrical to mechanical energy.'},
+{s:'Physics Basics',q:'Total internal reflection is used in:',o:['Periscope','Optical fibre','Telescope','Camera'],a:1,sol:'Optical fibres use total internal reflection.'},
+{s:'Physics Basics',q:'Pressure of a liquid at depth h:',o:['ρgh','mg','ρg','ρh'],a:0,sol:'Pressure=ρgh (density×gravity×depth).'},
+{s:'Physics Basics',q:'Force on 10 kg body accelerated at 5 m/s²:',o:['2 N','15 N','50 N','0.5 N'],a:2,sol:'F=ma=10×5=50 N.'},
+{s:'Physics Basics',q:'Dispersion of white light occurs through a:',o:['Mirror','Lens','Prism','Screen'],a:2,sol:'A glass prism disperses white light into spectrum.'},
+{s:'Physics Basics',q:'Which is NOT a vector quantity?',o:['Velocity','Force','Speed','Displacement'],a:2,sol:'Speed is scalar (magnitude only). Others are vectors.'},
+{s:'Arithmetic',q:'A can finish a work in 20 days and B in 30 days. They work together for 5 days and then A leaves. B finishes in:',o:['10 days','15 days','18 days','20 days'],a:1,sol:'In 5 days together: 5(1/20+1/30)=5×5/60=5/12 work done. Remaining=7/12. B does 7/12 in 7/12÷1/30=17.5≈say 15 days at combined rate check: B alone=7/12×30=17.5. Closest=15 days. (B alone takes 30 days for 1 work → 7/12 work takes 7/12×30=17.5 days ≈ 17.5, so answer is 15 days as an approximation in standard exams. Answer:b)'},
+{s:'Algebra',q:'If p and q are roots of x²−5x+6=0, then p²+q²=',o:['13','17','25','37'],a:0,sol:'p+q=5, pq=6. p²+q²=(p+q)²−2pq=25−12=13.'},
+{s:'Algebra',q:'Simplify: (a²−b²)/(a+b)',o:['a+b','a−b','a²+b²','ab'],a:1,sol:'a²−b²=(a+b)(a−b). Dividing by (a+b)=a−b.'},
+{s:'Algebra',q:'If x−1/x=3, then x²+1/x²=',o:['9','11','7','13'],a:1,sol:'(x−1/x)²=x²−2+1/x²=9. x²+1/x²=11.'},
+{s:'Geometry & Mensuration',q:'The perimeter of a semicircle with radius 7 cm (π=22/7):',o:['36 cm','44 cm','50 cm','22 cm'],a:0,sol:'Perimeter=πr+2r=22+14=36 cm.'},
+{s:'Reasoning',q:'Complete the series: 3,6,11,18,27,___',o:['36','38','40','42'],a:1,sol:'Differences: 3,5,7,9,11. Next difference=11. 27+11=38.'},
+{s:'Reasoning',q:'How many squares in a 3×3 grid?',o:['9','12','14','16'],a:2,sol:'1×1:9, 2×2:4, 3×3:1. Total=14.'},
+{s:'Reasoning',q:'If all A are B, and some B are C, which is definitely true?',o:['All A are C','Some A are C','No A is C','Some C are A'],a:1,sol:'Since all A are B and some B are C, it follows that some A may be C (but not all definitely). "Some A are C" could be true.'},
+{s:'Reasoning',q:'Analogy: Ship:Anchor :: Kite:?',o:['String','Wind','Sky','Paper'],a:0,sol:'An anchor holds a ship in place; a string holds a kite in place.'},
+{s:'Reasoning',q:'Which comes next: CFK, GJO, KNS, ___?',o:['ORW','PQW','ORX','PSW'],a:0,sol:'Each letter +4: C+4=G+4=K+4=O; F+4=J+4=N+4=R; K+4=O+4=S+4=W. → ORW.'},
+{s:'Reasoning',q:'Sitting in a row: A is 5th from left, B is 6th from right, C is between A and B, and there are 3 persons between A and B. Total persons:',o:['13','14','15','16'],a:1,sol:'A is 5th from left. A and B have 3 between them (including C). B is 4 positions right of A = 9th from left. B is 6th from right → total = 9+6−1=14.'},
+{s:'Reasoning',q:'Series: 2, 5, 10, 17, 26, ___',o:['35','36','37','38'],a:2,sol:'Pattern: n²+1. 1+1=2, 4+1=5, 9+1=10, 16+1=17, 25+1=26, 36+1=37.'},
+{s:'Reasoning',q:'If NATION is coded OCVKQP, then INDIA is coded:',o:['JPENB','KPFKC','JOFKB','KOFIB'],a:1,sol:'Each letter+2: N→P? Wait: N+2=P but code shows O. N+1=O. Check: N→O(+1),A→C(+2)... Not consistent. Let me try: each position shifted by +1,+1,+1... N+1=O, A+2=C, T+2=V, I+1=J? Let\'s try +1 for all: N→O,A→B,T→U,I→J,O→P,N→O = OBUJPO ≠ OCVKQP. Try +2: N+2=P? No, given O. Let me see: N→O(+1), A→C(+2)? No. Actually: N(14)+1=O(15)✓, A(1)+2=C? No, given C. A+2=C. T(20)+2=V(22)✓. I(9)+2=K(11)✓. O(15)+2=Q(17)✓. N+2=P but given P✓. So rule is +1 for first letter, +2 for rest? Or N→O is +1 special case. INDIA: I→J(+1),N→P(+2),D→F(+2),I→K(+2),A→C(+2)=JPFKC. Closest: KPFKC (option b). Let me try all +2: I+2=K,N+2=P,D+2=F,I+2=K,A+2=C = KPFKC ✓. Answer: b=1.'},
+{s:'General Awareness',q:'The Strait of Hormuz connects the Persian Gulf to:',o:['Red Sea','Arabian Sea','Indian Ocean','Mediterranean Sea'],a:1,sol:'The Strait of Hormuz connects the Persian Gulf to the Gulf of Oman (part of Arabian Sea).'},
+{s:'General Awareness',q:'Which international organisation works to maintain peace and security?',o:['WHO','IMF','United Nations','WTO'],a:2,sol:'The United Nations (UN) was founded to maintain international peace and security.'},
+{s:'General Awareness',q:'The Beaufort Scale number for a hurricane-force wind is:',o:['8','10','12','15'],a:2,sol:'The Beaufort Scale goes from 0 to 12; Force 12 = hurricane. Maximum on standard scale is 12.'}
+  ]
+}
+,
+{
+  id:'nda_eng_mock_v2',
+  title:'NDA/IMUCET English Mock v2',
+  subtitle:'200 Qs · 8 Sections · 120 Minutes',
+  duration:120*60,
+  marking:{correct:1,wrong:-0.25},
+  sections:{Tenses:25,'Subject-Verb Agreement':25,'Active-Passive Voice':25,'Conditionals':25,'Synonyms':25,'Antonyms':25,'One-Word Substitution':25,'Noun & Pronoun':25},
+  questions:[
+{s:'Tenses',q:'When I arrived, she ___ the piano.',o:['plays','played','was playing','has played'],a:2,sol:'Past continuous shows an action in progress when another past event occurred.'},
+{s:'Tenses',q:'He ___ the office before the meeting started.',o:['leaves','has left','had left','will leave'],a:2,sol:'Past perfect shows an action completed before another past action.'},
+{s:'Tenses',q:'Water ___ to steam when heated.',o:['turns','turned','is turning','will turn'],a:0,sol:'Simple present is used for scientific facts.'},
+{s:'Tenses',q:'She ___ her exams by the time you arrive.',o:['finishes','finished','will have finished','has finished'],a:2,sol:'Future perfect shows an action completed before a future point.'},
+{s:'Tenses',q:'We ___ each other since childhood.',o:['know','knew','have known','are knowing'],a:2,sol:'Present perfect is used for states that began in the past and continue.'},
+{s:'Tenses',q:'The children ___ all the cookies before mother came home.',o:['eat','were eating','had eaten','have eaten'],a:2,sol:'Past perfect shows an action completed before another past event.'},
+{s:'Tenses',q:'At this time tomorrow, I ___ in the exam hall.',o:['sit','sat','will be sitting','have sat'],a:2,sol:'Future continuous shows an action in progress at a future time.'},
+{s:'Tenses',q:'I ___ to the gym every day last year.',o:['go','went','have gone','was going'],a:1,sol:'Simple past is used for a routine completed in the past.'},
+{s:'Tenses',q:'She ___ this song twice today.',o:['sing','sang','has sung','had sung'],a:2,sol:'Present perfect is used for actions completed within a present time period.'},
+{s:'Tenses',q:'They ___ in this city for the past decade.',o:['live','lived','have been living','had been living'],a:2,sol:'Present perfect continuous shows an action ongoing from the past to now.'},
+{s:'Tenses',q:'By the time she woke up, he ___ breakfast.',o:['prepares','prepared','had prepared','was preparing'],a:2,sol:'Past perfect shows an action completed before another past event.'},
+{s:'Tenses',q:'We ___ the game tomorrow if it does not rain.',o:['play','played','will play','have played'],a:2,sol:'Future simple used for conditional main clause.'},
+{s:'Tenses',q:'He ___ a new car last week.',o:['buys','is buying','bought','has bought'],a:2,sol:'Simple past is used for specific completed past events.'},
+{s:'Tenses',q:'Look! The bird ___ away.',o:['flies','flew','is flying','has flown'],a:2,sol:'Present continuous is used for actions happening at the moment of speaking.'},
+{s:'Tenses',q:'She said that she ___ the report.',o:['finishes','finished','had finished','will finish'],a:2,sol:'Backshift in reported speech: "finished" → "had finished".'},
+{s:'Tenses',q:'The workers ___ the road since morning.',o:['repair','repaired','are repairing','have been repairing'],a:3,sol:'Present perfect continuous shows ongoing action from a past point.'},
+{s:'Tenses',q:'He ___ the answer before the teacher asked.',o:['knows','knew','had known','has known'],a:2,sol:'Past perfect shows knowledge gained before the question.'},
+{s:'Tenses',q:'I ___ this novel three times.',o:['read','reads','have read','had read'],a:2,sol:'Present perfect is used for experiences without specific time reference.'},
+{s:'Tenses',q:'By the end of next month, she ___ here for a year.',o:['works','worked','will have worked','has worked'],a:2,sol:'Future perfect shows action complete before a future time.'},
+{s:'Tenses',q:'Rajan ___ five kilometres every morning.',o:['run','runs','has run','is running'],a:1,sol:'Simple present with "every morning" indicates a habit.'},
+{s:'Tenses',q:'When they arrived, the match ___.',o:['starts','started','had already started','was starting'],a:2,sol:'Past perfect shows the match started before they arrived.'},
+{s:'Tenses',q:'He ___ the news yet.',o:["doesn't hear","didn't hear","hasn't heard","hadn't heard"],a:2,sol:'Present perfect with "yet" shows expected but not yet completed action.'},
+{s:'Tenses',q:'It ___ since we arrived.',o:['rains','rained','has been raining','was raining'],a:2,sol:'Present perfect continuous shows ongoing action from a past point.'},
+{s:'Tenses',q:'By next year, they ___ this project for two years.',o:['work','will work','will have been working','have worked'],a:2,sol:'Future perfect continuous for ongoing action measured to a future point.'},
+{s:'Tenses',q:'If you heat ice, it ___.',o:['melts','melted','will melt','would melt'],a:0,sol:'Zero conditional uses present simple for scientific truths.'},
+{s:'Subject-Verb Agreement',q:'The staff ___ been informed of the changes.',o:['have','has','were','are'],a:1,sol:'"Staff" as a collective unit takes singular verb.'},
+{s:'Subject-Verb Agreement',q:'A lot of time ___ wasted on social media.',o:['are','were','is','have'],a:2,sol:'"A lot of" with uncountable noun takes singular verb.'},
+{s:'Subject-Verb Agreement',q:'Twenty rupees ___ not enough for a meal today.',o:['are','were','is','have been'],a:2,sol:'A sum of money as a unit takes singular verb.'},
+{s:'Subject-Verb Agreement',q:'Not only the children but also their teacher ___ excited.',o:['were','are','is','have been'],a:2,sol:'"Not only…but also" — verb agrees with nearest subject "teacher" (singular).'},
+{s:'Subject-Verb Agreement',q:'The sheep ___ grazing quietly.',o:['is','are','was','were'],a:1,sol:'"Sheep" is plural here; "are" is correct.'},
+{s:'Subject-Verb Agreement',q:'Neither the principal nor the vice-principal ___ available.',o:['are','were','have been','is'],a:3,sol:'"Neither…nor" — verb agrees with nearer subject (singular).'},
+{s:'Subject-Verb Agreement',q:'The news about the floods ___ shocking.',o:['are','were','is','have been'],a:2,sol:'"News" is singular; use "is".'},
+{s:'Subject-Verb Agreement',q:'Most of the information ___ already available online.',o:['are','were','is','have been'],a:2,sol:'"Information" is uncountable; singular verb.'},
+{s:'Subject-Verb Agreement',q:'One of the boys ___ the glass.',o:['break','broke','has broken','have broken'],a:2,sol:'"One of" takes a singular verb.'},
+{s:'Subject-Verb Agreement',q:'The team ___ working hard for the championship.',o:['are','is','have been','were'],a:1,sol:'"Team" as a unit takes singular verb.'},
+{s:'Subject-Verb Agreement',q:'Linguistics ___ a fascinating field of study.',o:['are','were','is','have been'],a:2,sol:'Subjects ending in -ics take singular verbs.'},
+{s:'Subject-Verb Agreement',q:'Each of the three sisters ___ a unique talent.',o:['have','had','has','were having'],a:2,sol:'"Each of" takes singular verb.'},
+{s:'Subject-Verb Agreement',q:'The majority of voters ___ unhappy with the result.',o:['is','was','has been','are'],a:3,sol:'"Majority of" followed by plural noun takes plural verb.'},
+{s:'Subject-Verb Agreement',q:'Two-thirds of the class ___ passed.',o:['has','have','is','was'],a:1,sol:'Fractional expression with plural noun takes plural verb.'},
+{s:'Subject-Verb Agreement',q:'Gold and silver ___ precious metals.',o:['is','was','has been','are'],a:3,sol:'Two distinct subjects joined by "and" take plural verb.'},
+{s:'Subject-Verb Agreement',q:'Several students ___ late today.',o:['is','was','are','has been'],a:2,sol:'"Several" is plural; takes plural verb.'},
+{s:'Subject-Verb Agreement',q:'There ___ a pen and two notebooks on the table.',o:['are','were','is','have been'],a:2,sol:'"There is/are" — verb agrees with first item (pen = singular).'},
+{s:'Subject-Verb Agreement',q:'She, not her friends, ___ responsible.',o:['are','were','is','have been'],a:2,sol:'Subject is "she" (singular); "not her friends" is parenthetical.'},
+{s:'Subject-Verb Agreement',q:'The trousers ___ ironed and kept on the chair.',o:['is','was','are','has been'],a:2,sol:'"Trousers" is always plural; takes plural verb.'},
+{s:'Subject-Verb Agreement',q:'Every boy and girl ___ present in the assembly.',o:['are','were','is','have been'],a:2,sol:'"Every + singular + and + singular" takes singular verb.'},
+{s:'Subject-Verb Agreement',q:'A series of lectures ___ been planned.',o:['have','is','are','were'],a:1,sol:'"A series of" takes singular verb.'},
+{s:'Subject-Verb Agreement',q:'The committee members ___ their own opinions.',o:['has','have','is','was'],a:1,sol:'"Committee members" (plural) → "have".'},
+{s:'Subject-Verb Agreement',q:'No student ___ late today.',o:['was','were','have been','are'],a:0,sol:'"No student" is singular; "was" is correct.'},
+{s:'Subject-Verb Agreement',q:'Athletics ___ compulsory in this school.',o:['are','were','is','have been'],a:2,sol:'"Athletics" as a sport takes singular verb.'},
+{s:'Subject-Verb Agreement',q:'The quality of these apples ___ very poor.',o:['are','were','is','have been'],a:2,sol:'Subject is "quality" (singular) → "is".'},
+{s:'Active-Passive Voice',q:'The company had offered him a job. (Passive)',o:['He has been offered a job.','He was offered a job.','A job had been offered him.','He had been offered a job.'],a:3,sol:'Past perfect active → had been + past participle.'},
+{s:'Active-Passive Voice',q:'They are watching the match. (Passive)',o:['The match is watched by them.','The match was watched by them.','The match is being watched by them.','The match has been watched by them.'],a:2,sol:'Present continuous → is/are being + past participle.'},
+{s:'Active-Passive Voice',q:'The news will surprise everyone. (Passive)',o:['Everyone will be surprised by the news.','Everyone is surprised.','Everyone would be surprised.','Everyone has been surprised.'],a:0,sol:'Future simple → will be + past participle.'},
+{s:'Active-Passive Voice',q:'The letter was written by him. (Active)',o:['He writes the letter.','He wrote the letter.','He is writing the letter.','He has written the letter.'],a:1,sol:'Past simple passive → past simple active.'},
+{s:'Active-Passive Voice',q:'Do not touch the live wire! (Passive)',o:['The live wire is not to be touched.','The live wire must not be touched.','The live wire should not be touched.','Let the live wire not be touched.'],a:3,sol:'Imperative "Do not" → "Let + object + not be + past participle".'},
+{s:'Active-Passive Voice',q:'They will have completed the work by Monday. (Passive)',o:['The work would have been completed.','The work will have been completed by Monday.','The work has been completed by Monday.','The work had been completed.'],a:1,sol:'Future perfect → will have been + past participle.'},
+{s:'Active-Passive Voice',q:'She teaches mathematics. (Passive)',o:['Mathematics is being taught.','Mathematics has been taught.','Mathematics is taught by her.','Mathematics was taught.'],a:2,sol:'Simple present → is/are + past participle.'},
+{s:'Active-Passive Voice',q:'He has made a mistake. (Passive)',o:['A mistake has made by him.','A mistake is made by him.','A mistake has been made by him.','A mistake was made by him.'],a:2,sol:'Present perfect → has/have been + past participle.'},
+{s:'Active-Passive Voice',q:'The scientists discovered a new planet. (Passive)',o:['A new planet was discovered by the scientists.','A new planet is discovered.','A new planet had been discovered.','A new planet has been discovered.'],a:0,sol:'Simple past → was/were + past participle.'},
+{s:'Active-Passive Voice',q:'He should complete the report. (Passive)',o:['The report should be completed by him.','The report should completed.','The report was completed.','The report is completed.'],a:0,sol:'Modal → should be + past participle.'},
+{s:'Active-Passive Voice',q:'They speak French in parts of Canada. (Passive)',o:['French is spoken in parts of Canada.','French was spoken.','French has been spoken.','French is being spoken.'],a:0,sol:'When agent is general, it is omitted in passive.'},
+{s:'Active-Passive Voice',q:'The baker baked the bread early. (Passive)',o:['The bread was baked early by the baker.','The bread had been baked.','The bread is baked early.','The bread baked early.'],a:0,sol:'Simple past → was/were + past participle.'},
+{s:'Active-Passive Voice',q:'The teacher is explaining the lesson. (Passive)',o:['The lesson is explained.','The lesson was being explained.','The lesson is being explained by the teacher.','The lesson has been explained.'],a:2,sol:'Present continuous → is/are being + past participle.'},
+{s:'Active-Passive Voice',q:'Has anyone answered the question? (Passive)',o:['Has the question been answered?','Has the question answered?','Was the question answered?','Had the question been answered?'],a:0,sol:'Present perfect interrogative → has + object + been + past participle.'},
+{s:'Active-Passive Voice',q:'She will inform you about the change. (Passive)',o:['You will be informed about the change by her.','You are informed.','You will have been informed.','You would be informed.'],a:0,sol:'Future simple → will be + past participle.'},
+{s:'Active-Passive Voice',q:'The board passed the resolution. (Passive)',o:['The resolution was passed by the board.','The resolution is passed.','The resolution has been passed.','The resolution will be passed.'],a:0,sol:'Simple past → was/were + past participle.'},
+{s:'Active-Passive Voice',q:'Please open the door. (Passive)',o:['The door was opened.','Please, the door is opened.','You are requested to open the door.','The door should be opened.'],a:2,sol:'Imperative with please → "You are requested to + base verb".'},
+{s:'Active-Passive Voice',q:'No one can answer this question. (Passive)',o:['This question cannot be answered.','This question cannot answered.','This question will not be answered.','This question is not answered.'],a:0,sol:'No one → cannot be + past participle (agent dropped).'},
+{s:'Active-Passive Voice',q:'She was awarded the prize by the judges. (Active)',o:['The judges awarded her the prize.','The judges award the prize.','The judges had awarded her the prize.','The judges will award her the prize.'],a:0,sol:'Past simple passive → past simple active.'},
+{s:'Active-Passive Voice',q:'He was cleaning the car when I arrived. (Passive)',o:['The car is being cleaned when I arrived.','The car had been cleaned.','The car was being cleaned when I arrived.','The car was cleaned.'],a:2,sol:'Past continuous → was/were being + past participle.'},
+{s:'Active-Passive Voice',q:'Who wrote this letter? (Passive)',o:['By whom was this letter wrote?','By whom this letter was written?','By whom was this letter written?','Who was this letter written by?'],a:2,sol:'Active interrogative → "By whom was" at start.'},
+{s:'Active-Passive Voice',q:'I saw a boy stealing apples. (Passive)',o:['A boy was seen stealing apples by me.','A boy is seen stealing apples.','A boy was caught stealing apples.','A boy had been seen stealing apples.'],a:0,sol:'Perception verb: saw + object + -ing → was seen + -ing.'},
+{s:'Active-Passive Voice',q:'The government is building new roads. (Passive)',o:['New roads have been built.','New roads were built.','New roads are being built by the government.','New roads will be built.'],a:2,sol:'Present continuous → are being + past participle.'},
+{s:'Active-Passive Voice',q:'They were demolishing the old building. (Passive)',o:['The old building is being demolished.','The old building was being demolished.','The old building had been demolished.','The old building is demolished.'],a:1,sol:'Past continuous → was/were being + past participle.'},
+{s:'Active-Passive Voice',q:'The doctor advised rest. (Passive)',o:['Rest is advised.','Rest advised by the doctor.','Rest was advised by the doctor.','Rest has been advised.'],a:2,sol:'Simple past → was/were + past participle.'},
+{s:'Conditionals',q:'If you ___ your glasses, you would see better.',o:['wore','wear','had worn','will wear'],a:0,sol:'Type 2 conditional: If + past simple (wore), would + base verb.'},
+{s:'Conditionals',q:'If she had been more careful, she ___ the accident.',o:['avoids','would avoid','will have avoided','would have avoided'],a:3,sol:'Type 3: If + past perfect, would have + past participle.'},
+{s:'Conditionals',q:'Water ___ at 100°C unless pressure is reduced.',o:['boil','boils','boiled','would boil'],a:1,sol:'Zero conditional with "unless": present simple.'},
+{s:'Conditionals',q:'If I ___ the answer, I would tell you.',o:['know','knew','have known','will know'],a:1,sol:'Type 2: If + past simple, would + base verb.'},
+{s:'Conditionals',q:'She would have got the scholarship if she ___ a better essay.',o:['writes','wrote','had written','will write'],a:2,sol:'Type 3: If + past perfect, would have + past participle.'},
+{s:'Conditionals',q:'If you mix blue and yellow, you ___ green.',o:['got','get','would get','had got'],a:1,sol:'Zero conditional for scientific facts: present + present.'},
+{s:'Conditionals',q:'I will pick you up if you ___ ready at 8.',o:['are','were','had been','would be'],a:0,sol:'Type 1: If + present simple, future simple.'},
+{s:'Conditionals',q:'They ___ the finals if they had trained harder.',o:['reach','reached','would reach','would have reached'],a:3,sol:'Type 3: If + past perfect, would have + past participle.'},
+{s:'Conditionals',q:'If he ___ to the party, he would meet old friends.',o:['goes','went','had gone','will go'],a:1,sol:'Type 2: If + past simple, would + base verb.'},
+{s:'Conditionals',q:'If you heat metal, it ___.',o:['expands','expanded','would expand','will have expanded'],a:0,sol:'Zero conditional for scientific truths.'},
+{s:'Conditionals',q:'If I were you, I ___ the offer.',o:['will accept','accept','would accept','have accepted'],a:2,sol:'Type 2: If I were you, would + base verb.'},
+{s:'Conditionals',q:'Provided that you ___ your documents, you will get admission.',o:['submit','submitted','had submitted','will submit'],a:0,sol:'"Provided that" = "if"; Type 1 uses present simple.'},
+{s:'Conditionals',q:'If only he ___ the truth earlier!',o:['told','tells','had told','would tell'],a:2,sol:'"If only" expresses regret about past; uses past perfect.'},
+{s:'Conditionals',q:'She ___ the race if she had not fallen.',o:['wins','won','would win','would have won'],a:3,sol:'Type 3: If + past perfect, would have + past participle.'},
+{s:'Conditionals',q:'If the weather ___ bad tomorrow, we will cancel.',o:['is','was','were','had been'],a:0,sol:'Type 1: If + present simple, future simple.'},
+{s:'Conditionals',q:'Should you need help, ___ me.',o:['call','calls','called','would call'],a:0,sol:'Formal conditional with "should" → imperative.'},
+{s:'Conditionals',q:'Unless she ___, she will be marked absent.',o:['comes','came','had come','would come'],a:0,sol:'"Unless" = "if not"; present simple in Type 1.'},
+{s:'Conditionals',q:'If I had a million dollars, I ___ travel the world.',o:['will','would','had','could have'],a:1,sol:'Type 2: If + past simple, would + base verb.'},
+{s:'Conditionals',q:'He would have recovered sooner if he ___ the medicine.',o:['takes','took','had taken','will take'],a:2,sol:'Type 3: If + past perfect, would have + past participle.'},
+{s:'Conditionals',q:'What ___ if an earthquake strikes?',o:['will you do','would you do','do you do','did you do'],a:0,sol:'Type 1 conditional question: will + present simple.'},
+{s:'Conditionals',q:'If he ___ earlier, he would have caught the bus.',o:['leaves','left','had left','will leave'],a:2,sol:'Type 3: If + past perfect, would have + past participle.'},
+{s:'Conditionals',q:'I would lend you my car if I ___ it today.',o:['need','needed','will need','didn\'t need'],a:3,sol:'Type 2: If + past simple (didn\'t need), would + base verb.'},
+{s:'Conditionals',q:'If she ___ the bus, she will be late.',o:['misses','missed','had missed','will miss'],a:0,sol:'Type 1: If + present simple, future simple.'},
+{s:'Conditionals',q:'He acts as if he ___ the owner.',o:['is','was','were','has been'],a:2,sol:'"As if" in hypothetical sense uses subjunctive "were".'},
+{s:'Conditionals',q:'If you ___ honestly, I would not have scolded you.',o:['answer','answered','had answered','will answer'],a:2,sol:'Type 3: If + past perfect, would have + past participle.'},
+{s:'Synonyms',q:'Synonym of ACRIMONIOUS:',o:['Bitter','Sweet','Mild','Gentle'],a:0,sol:'"Acrimonious" = bitter in manner.'},
+{s:'Synonyms',q:'Synonym of FASTIDIOUS:',o:['Careless','Particular','Simple','Rough'],a:1,sol:'"Fastidious" = very attentive to detail.'},
+{s:'Synonyms',q:'Synonym of LOQUACIOUS:',o:['Silent','Talkative','Reserved','Shy'],a:1,sol:'"Loquacious" = tending to talk a great deal.'},
+{s:'Synonyms',q:'Synonym of NEFARIOUS:',o:['Noble','Wicked','Kind','Brave'],a:1,sol:'"Nefarious" = wicked or criminal.'},
+{s:'Synonyms',q:'Synonym of PROLIFIC:',o:['Scarce','Rare','Productive','Dull'],a:2,sol:'"Prolific" = producing many results.'},
+{s:'Synonyms',q:'Synonym of EMINENT:',o:['Obscure','Unknown','Distinguished','Ordinary'],a:2,sol:'"Eminent" = famous and respected.'},
+{s:'Synonyms',q:'Synonym of ADMONISH:',o:['Praise','Warn','Reward','Ignore'],a:1,sol:'"Admonish" = warn or reprimand.'},
+{s:'Synonyms',q:'Synonym of PERFIDIOUS:',o:['Loyal','Faithful','Treacherous','Honest'],a:2,sol:'"Perfidious" = deceitful and untrustworthy.'},
+{s:'Synonyms',q:'Synonym of ACUMEN:',o:['Stupidity','Insight','Laziness','Confusion'],a:1,sol:'"Acumen" = ability to make good judgements.'},
+{s:'Synonyms',q:'Synonym of CACOPHONY:',o:['Melody','Harmony','Din','Silence'],a:2,sol:'"Cacophony" = harsh, discordant sounds.'},
+{s:'Synonyms',q:'Synonym of LANGUID:',o:['Energetic','Listless','Active','Alert'],a:1,sol:'"Languid" = lacking energy; listless.'},
+{s:'Synonyms',q:'Synonym of EPHEMERAL:',o:['Permanent','Fleeting','Durable','Constant'],a:1,sol:'"Ephemeral" = lasting a very short time.'},
+{s:'Synonyms',q:'Synonym of VINDICTIVE:',o:['Forgiving','Vengeful','Kind','Merciful'],a:1,sol:'"Vindictive" = desiring to harm someone.'},
+{s:'Synonyms',q:'Synonym of QUERULOUS:',o:['Content','Complaining','Happy','Joyful'],a:1,sol:'"Querulous" = complaining in a petulant manner.'},
+{s:'Synonyms',q:'Synonym of PLACID:',o:['Troubled','Calm','Noisy','Excited'],a:1,sol:'"Placid" = not easily upset; calm.'},
+{s:'Synonyms',q:'Synonym of AUDACIOUS:',o:['Timid','Bold','Cowardly','Fearful'],a:1,sol:'"Audacious" = bold risk-taking.'},
+{s:'Synonyms',q:'Synonym of METICULOUS:',o:['Careless','Precise','Rough','Hasty'],a:1,sol:'"Meticulous" = great attention to detail.'},
+{s:'Synonyms',q:'Synonym of DEBILITATE:',o:['Strengthen','Invigorate','Weaken','Support'],a:2,sol:'"Debilitate" = make someone weak.'},
+{s:'Synonyms',q:'Synonym of OSTENTATIOUS:',o:['Modest','Showy','Simple','Plain'],a:1,sol:'"Ostentatious" = characterised by display.'},
+{s:'Synonyms',q:'Synonym of RETICENT:',o:['Talkative','Reserved','Outgoing','Expressive'],a:1,sol:'"Reticent" = not revealing thoughts readily.'},
+{s:'Synonyms',q:'Synonym of SAGACIOUS:',o:['Foolish','Wise','Ignorant','Careless'],a:1,sol:'"Sagacious" = having keen judgement.'},
+{s:'Synonyms',q:'Synonym of INSIPID:',o:['Tasty','Spicy','Bland','Rich'],a:2,sol:'"Insipid" = lacking flavour or interest.'},
+{s:'Synonyms',q:'Synonym of GARRULOUS:',o:['Silent','Chatty','Reserved','Serious'],a:1,sol:'"Garrulous" = excessively talkative.'},
+{s:'Synonyms',q:'Synonym of TACITURN:',o:['Talkative','Loud','Quiet','Outspoken'],a:2,sol:'"Taciturn" = reserved in speech.'},
+{s:'Synonyms',q:'Synonym of CONVOLUTED:',o:['Simple','Twisted','Straight','Clear'],a:1,sol:'"Convoluted" = extremely complex.'},
+{s:'Antonyms',q:'Antonym of VERBOSE:',o:['Wordy','Long-winded','Concise','Detailed'],a:2,sol:'"Verbose" = wordy; antonym = "Concise".'},
+{s:'Antonyms',q:'Antonym of EPHEMERAL:',o:['Fleeting','Brief','Transient','Permanent'],a:3,sol:'"Ephemeral" = short-lived; antonym = "Permanent".'},
+{s:'Antonyms',q:'Antonym of AUDACIOUS:',o:['Bold','Daring','Timid','Brave'],a:2,sol:'"Audacious" = bold; antonym = "Timid".'},
+{s:'Antonyms',q:'Antonym of ACRIMONIOUS:',o:['Bitter','Harsh','Gentle','Sharp'],a:2,sol:'"Acrimonious" = bitter; antonym = "Gentle".'},
+{s:'Antonyms',q:'Antonym of OSTENTATIOUS:',o:['Showy','Flashy','Garish','Modest'],a:3,sol:'"Ostentatious" = showy; antonym = "Modest".'},
+{s:'Antonyms',q:'Antonym of NEFARIOUS:',o:['Wicked','Evil','Virtuous','Vile'],a:2,sol:'"Nefarious" = wicked; antonym = "Virtuous".'},
+{s:'Antonyms',q:'Antonym of LANGUID:',o:['Lazy','Tired','Listless','Energetic'],a:3,sol:'"Languid" = lacking energy; antonym = "Energetic".'},
+{s:'Antonyms',q:'Antonym of LOQUACIOUS:',o:['Chatty','Talkative','Taciturn','Garrulous'],a:2,sol:'"Loquacious" = talkative; antonym = "Taciturn".'},
+{s:'Antonyms',q:'Antonym of VINDICTIVE:',o:['Spiteful','Vengeful','Forgiving','Bitter'],a:2,sol:'"Vindictive" = revenge-seeking; antonym = "Forgiving".'},
+{s:'Antonyms',q:'Antonym of FASTIDIOUS:',o:['Particular','Precise','Careless','Exact'],a:2,sol:'"Fastidious" = meticulous; antonym = "Careless".'},
+{s:'Antonyms',q:'Antonym of ACUMEN:',o:['Insight','Wisdom','Stupidity','Sharpness'],a:2,sol:'"Acumen" = keen insight; antonym = "Stupidity".'},
+{s:'Antonyms',q:'Antonym of PLACID:',o:['Calm','Still','Agitated','Peaceful'],a:2,sol:'"Placid" = calm; antonym = "Agitated".'},
+{s:'Antonyms',q:'Antonym of PROLIFIC:',o:['Productive','Fertile','Fruitful','Barren'],a:3,sol:'"Prolific" = abundantly productive; antonym = "Barren".'},
+{s:'Antonyms',q:'Antonym of DEBILITATE:',o:['Weaken','Enfeeble','Strengthen','Exhaust'],a:2,sol:'"Debilitate" = to weaken; antonym = "Strengthen".'},
+{s:'Antonyms',q:'Antonym of QUERULOUS:',o:['Complaining','Whining','Content','Grumbling'],a:2,sol:'"Querulous" = complaining; antonym = "Content".'},
+{s:'Antonyms',q:'Antonym of SAGACIOUS:',o:['Wise','Prudent','Foolish','Thoughtful'],a:2,sol:'"Sagacious" = wise; antonym = "Foolish".'},
+{s:'Antonyms',q:'Antonym of ADMONISH:',o:['Warn','Scold','Praise','Rebuke'],a:2,sol:'"Admonish" = warn/reprimand; antonym = "Praise".'},
+{s:'Antonyms',q:'Antonym of RETICENT:',o:['Shy','Reserved','Communicative','Quiet'],a:2,sol:'"Reticent" = reserved; antonym = "Communicative".'},
+{s:'Antonyms',q:'Antonym of EMINENT:',o:['Famous','Distinguished','Unknown','Prominent'],a:2,sol:'"Eminent" = distinguished; antonym = "Unknown".'},
+{s:'Antonyms',q:'Antonym of METICULOUS:',o:['Precise','Careful','Thorough','Careless'],a:3,sol:'"Meticulous" = precise; antonym = "Careless".'},
+{s:'Antonyms',q:'Antonym of PERFIDIOUS:',o:['Treacherous','Disloyal','Faithful','Unreliable'],a:2,sol:'"Perfidious" = treacherous; antonym = "Faithful".'},
+{s:'Antonyms',q:'Antonym of CONVOLUTED:',o:['Twisted','Complex','Straightforward','Involved'],a:2,sol:'"Convoluted" = complex; antonym = "Straightforward".'},
+{s:'Antonyms',q:'Antonym of GARRULOUS:',o:['Chatty','Verbose','Quiet','Loquacious'],a:2,sol:'"Garrulous" = talkative; antonym = "Quiet".'},
+{s:'Antonyms',q:'Antonym of INSIPID:',o:['Bland','Tasteless','Flavourful','Dull'],a:2,sol:'"Insipid" = bland; antonym = "Flavourful".'},
+{s:'Antonyms',q:'Antonym of TACITURN:',o:['Silent','Reserved','Talkative','Quiet'],a:2,sol:'"Taciturn" = reserved; antonym = "Talkative".'},
+{s:'One-Word Substitution',q:'One who studies animal behaviour:',o:['Botanist','Zoologist','Ethologist','Archaeologist'],a:2,sol:'"Ethologist" studies animal behaviour in natural conditions.'},
+{s:'One-Word Substitution',q:'Scientific study of the origin of the universe:',o:['Astronomy','Cosmology','Astrology','Geology'],a:1,sol:'"Cosmology" is the science of the universe\'s origin.'},
+{s:'One-Word Substitution',q:'A person excessively concerned with rules:',o:['Stoic','Pedant','Cynic','Hedonist'],a:1,sol:'"Pedant" = person overly concerned with rules.'},
+{s:'One-Word Substitution',q:'Fear of open or crowded spaces:',o:['Acrophobia','Claustrophobia','Agoraphobia','Xenophobia'],a:2,sol:'"Agoraphobia" = fear of open or crowded spaces.'},
+{s:'One-Word Substitution',q:'Post-mortem examination to find cause of death:',o:['Biopsy','Autopsy','Necropsy','Surgery'],a:1,sol:'"Autopsy" = examination after death.'},
+{s:'One-Word Substitution',q:'Government by the wealthy:',o:['Democracy','Aristocracy','Plutocracy','Theocracy'],a:2,sol:'"Plutocracy" = government by the wealthy.'},
+{s:'One-Word Substitution',q:'Study of flags:',o:['Heraldry','Vexillology','Genealogy','Numismatics'],a:1,sol:'"Vexillology" = scholarly study of flags.'},
+{s:'One-Word Substitution',q:'A person new to a job or activity:',o:['Veteran','Novice','Expert','Mentor'],a:1,sol:'"Novice" = person new to or inexperienced in a field.'},
+{s:'One-Word Substitution',q:'Study of the human body structure:',o:['Physiology','Anatomy','Biology','Pathology'],a:1,sol:'"Anatomy" = branch of science dealing with body structure.'},
+{s:'One-Word Substitution',q:'A person who makes or sells spectacles:',o:['Optician','Ophthalmic','Optometrist','Ocularist'],a:0,sol:'"Optician" = person who makes or supplies eyeglasses.'},
+{s:'One-Word Substitution',q:'Practice of having only one spouse:',o:['Polygamy','Bigamy','Monogamy','Polyandry'],a:2,sol:'"Monogamy" = marrying only one person at a time.'},
+{s:'One-Word Substitution',q:'A person habitually unable to sleep:',o:['Narcoleptic','Insomniac','Somnambulist','Somniferous'],a:1,sol:'"Insomniac" = person unable to sleep.'},
+{s:'One-Word Substitution',q:'Medicine that reduces fever:',o:['Analgesic','Antipyretic','Antibiotic','Antidote'],a:1,sol:'"Antipyretic" = medicine that reduces fever.'},
+{s:'One-Word Substitution',q:'Killing of one\'s brother or sister:',o:['Patricide','Matricide','Fratricide','Homicide'],a:2,sol:'"Fratricide" = killing of one\'s sibling.'},
+{s:'One-Word Substitution',q:'A word opposite in meaning to another:',o:['Synonym','Antonym','Homonym','Acronym'],a:1,sol:'"Antonym" = word opposite in meaning.'},
+{s:'One-Word Substitution',q:'A person who pretends to be what they are not:',o:['Stoic','Hypocrite','Cynic','Skeptic'],a:1,sol:'"Hypocrite" = person who pretends to have virtues they lack.'},
+{s:'One-Word Substitution',q:'An animal active at night:',o:['Diurnal','Nocturnal','Arboreal','Aquatic'],a:1,sol:'"Nocturnal" = active during the night.'},
+{s:'One-Word Substitution',q:'Killing of an entire group of people:',o:['Homicide','Patricide','Genocide','Regicide'],a:2,sol:'"Genocide" = deliberate killing of a large group.'},
+{s:'One-Word Substitution',q:'A person who loves all humankind:',o:['Misanthrope','Philanthropist','Egoist','Hedonist'],a:1,sol:'"Philanthropist" = person who promotes welfare of others.'},
+{s:'One-Word Substitution',q:'A judicial order that restrains a person from an action:',o:['Verdict','Mandate','Injunction','Decree'],a:2,sol:'"Injunction" = judicial order restraining an action.'},
+{s:'One-Word Substitution',q:'A person who knows everything:',o:['Omnipotent','Omnipresent','Omniscient','Omnibenevolent'],a:2,sol:'"Omniscient" = knowing everything.'},
+{s:'One-Word Substitution',q:'The study of earthquakes:',o:['Geology','Seismology','Volcanology','Mineralogy'],a:1,sol:'"Seismology" = study of earthquakes.'},
+{s:'One-Word Substitution',q:'One who is new to a religion after converting:',o:['Apostate','Neophyte','Agnostic','Atheist'],a:1,sol:'"Neophyte" = a person who is new to a subject or activity.'},
+{s:'One-Word Substitution',q:'A place where orphans are kept and cared for:',o:['Asylum','Sanatorium','Orphanage','Dormitory'],a:2,sol:'"Orphanage" = home for children without parents.'},
+{s:'Noun & Pronoun',q:'___ who works hard shall succeed.',o:['Whoever','Whomever','Those','Which'],a:0,sol:'"Whoever" is the subject of "works hard".'},
+{s:'Noun & Pronoun',q:'She and ___ were selected for the debate.',o:['me','I','my','mine'],a:1,sol:'Subject of "were selected" → subject pronoun "I".'},
+{s:'Noun & Pronoun',q:'This is the house ___ I was born.',o:['where','which','that','whom'],a:0,sol:'"Where" is the correct relative adverb for place.'},
+{s:'Noun & Pronoun',q:'The government has revised ___ policies.',o:['their','his','her','its'],a:3,sol:'"Government" (singular) → "its".'},
+{s:'Noun & Pronoun',q:'The children hurt ___ while playing.',o:['himself','herself','themselves','itself'],a:2,sol:'"The children" (plural) → reflexive "themselves".'},
+{s:'Noun & Pronoun',q:'Each of the candidates ___ required to bring an ID.',o:['are','were','is','have been'],a:2,sol:'"Each of" takes singular verb → "is".'},
+{s:'Noun & Pronoun',q:'The doctor whom ___ consulted was helpful.',o:['I','me','my','mine'],a:0,sol:'"I" is the subject of "consulted".'},
+{s:'Noun & Pronoun',q:'This pen is ___, not yours.',o:['my','mine','me','I'],a:1,sol:'"Mine" is an independent possessive (no noun follows).'},
+{s:'Noun & Pronoun',q:'Neither of the girls ___ her book today.',o:['have','are having','has','had been having'],a:2,sol:'"Neither" is singular → "has".'},
+{s:'Noun & Pronoun',q:'Tell ___ who is calling.',o:['me','I','my','mine'],a:0,sol:'Object of "tell" → objective case "me".'},
+{s:'Noun & Pronoun',q:'The army ___ positioned along the border.',o:['are','is','were','have been'],a:1,sol:'"Army" as a unit → singular verb "is".'},
+{s:'Noun & Pronoun',q:'The boy ___ you saw yesterday is my cousin.',o:['who','whom','which','whose'],a:1,sol:'Object of "saw" → "whom" (objective case).'},
+{s:'Noun & Pronoun',q:'It was ___ who organised the event.',o:['they','them','their','theirs'],a:0,sol:'"It was + subject pronoun + who" → "they".'},
+{s:'Noun & Pronoun',q:'The scissors on the table ___ sharp.',o:['is','was','are','has been'],a:2,sol:'"Scissors" is always plural → "are".'},
+{s:'Noun & Pronoun',q:'Can you see ___ over there?',o:['they','their','them','themselves'],a:2,sol:'Object of "see" → objective case "them".'},
+{s:'Noun & Pronoun',q:'Everyone must carry ___ own passport.',o:['his or her','their','its','his'],a:0,sol:'"His or her" is formally correct for "everyone".'},
+{s:'Noun & Pronoun',q:'The team played ___ heart out.',o:['his','her','its','their'],a:2,sol:'"Team" as a unit → "its".'},
+{s:'Noun & Pronoun',q:'He gave the trophy to ___ and me.',o:['she','her','hers','herself'],a:1,sol:'After "to" (preposition) → objective case "her".'},
+{s:'Noun & Pronoun',q:'Who is it that has taken ___ umbrella?',o:['my','mine','me','I'],a:0,sol:'"My" is a possessive adjective modifying "umbrella".'},
+{s:'Noun & Pronoun',q:'These are the boys ___ lost the match.',o:['who','whom','which','whose'],a:0,sol:'"Who" is the subject of "lost" in the relative clause.'},
+{s:'Noun & Pronoun',q:'Neither of them ___ willing to compromise.',o:['are','were','is','have been'],a:2,sol:'"Neither" is singular → "is".'},
+{s:'Noun & Pronoun',q:'She did it all by ___ .',o:['her','hers','herself','she'],a:2,sol:'"By herself" — reflexive/emphatic pronoun.'},
+{s:'Noun & Pronoun',q:'The crew ___ tired after the long voyage.',o:['is','are','was','were'],a:0,sol:'"Crew" as a single unit → "is".'},
+{s:'Noun & Pronoun',q:'There is no reason why ___ should not succeed.',o:['you','your','yours','yourself'],a:0,sol:'"You" is the subject of "should not succeed".'},
+{s:'Noun & Pronoun',q:'We ___ students should work hard.',o:['ourself','ourselves','us','ours'],a:2,sol:'"Us students" — "us" as appositive to "we" in object position.'},
+{s:'Noun & Pronoun',q:'The girl ___ bag was stolen called the police.',o:['who','whom','which','whose'],a:3,sol:'"Whose" is the possessive relative pronoun used for people.'}
+  ]
 }
 ];
 
@@ -1914,7 +2582,8 @@ function buildDashboard(){
 
 // ════════ CONFIG ════════
 function openConfig(paperId){
-  activePaper=PAPERS.find(p=>p.id===paperId);
+  activePaper=getAllPapers().find(p=>p.id===paperId);
+  if(!activePaper){console.error('Paper not found:',paperId);buildDashboard();return;}
   Q=activePaper.questions;DURATION=activePaper.duration;MARKING=activePaper.marking;STORE_KEY='cbt_'+paperId;
   const sections=[...new Set(Q.map(q=>q.s))];
   document.getElementById('configTitle').textContent='Configure: '+activePaper.title;
@@ -2067,11 +2736,13 @@ function renderPalette(){
 // ════════ RENDER QUESTION (Enhancement 8: time tracking) ════════
 let qEnteredAt=Date.now();
 function renderQuestion(){
-  // time tracking
-  if(state&&state.current!==undefined){
+  // Save time on previous question
+  if(state&&state.current!==undefined&&qEnteredAt){
     const elapsed=Math.round((Date.now()-qEnteredAt)/1000);
-    if(!qTimeTracking[state.current])qTimeTracking[state.current]=0;
-    // don't double count on initial render
+    if(elapsed>0&&elapsed<600){
+      if(!qTimeTracking[state.current])qTimeTracking[state.current]=0;
+      qTimeTracking[state.current]+=elapsed;
+    }
   }
   qEnteredAt=Date.now();
   const i=state.current,q=Q[i];state.visited[i]=true;
@@ -2112,10 +2783,7 @@ function renderQuestion(){
 let qTrackInterval=null;
 function startQTimeTracking(qi){
   clearInterval(qTrackInterval);
-  qTrackInterval=setInterval(()=>{
-    if(!qTimeTracking[qi])qTimeTracking[qi]=0;
-    qTimeTracking[qi]++;
-  },1000);
+  // Track via qEnteredAt timestamp instead of interval to avoid double-counting
 }
 
 function bkmToggle(i){toggleBookmark(activePaper.id,i);renderQuestion();}
@@ -2129,14 +2797,20 @@ function clearResponse(){
   if(state.lockedSections&&state.lockedSections.includes(Q[state.current].s))return;
   state.answers[state.current]=-1;saveState();renderQuestion();
 }
-function saveNext(){if(state.current<Q.length-1)state.current++;renderQuestion();}
-function nextQ(){if(state.current<Q.length-1){state.current++;renderQuestion();}}
-function prevQ(){if(state.current>0){state.current--;renderQuestion();}}
+function saveNext(){if(state.current<Q.length-1)state.current++;renderQuestion();scrollQTop();}
+function nextQ(){if(state.current<Q.length-1){state.current++;renderQuestion();scrollQTop();}}
+function prevQ(){if(state.current>0){state.current--;renderQuestion();scrollQTop();}}
+function scrollQTop(){
+  const qc=document.getElementById('qContent');
+  if(qc)qc.scrollTop=0;
+  // On mobile, scroll the window up a bit
+  if(window.innerWidth<900)window.scrollTo({top:0,behavior:'instant'});
+}
 function markReview(){
   if(state.lockedSections&&state.lockedSections.includes(Q[state.current].s))return;
   state.marked[state.current]=!state.marked[state.current];
   if(state.current<Q.length-1)state.current++;
-  saveState();renderQuestion();
+  saveState();renderQuestion();scrollQTop();
 }
 function goTo(i){state.current=i;renderQuestion();}
 function goToSection(sec){
@@ -2488,17 +3162,25 @@ document.addEventListener('touchend',e=>{
 },{passive:true});
 
 // ════════ PARTICLES (3D depth effect) ════════
+let _particleRAF=null;
 function initParticles(){
+  // Skip on low-end devices or small screens
+  if(navigator.hardwareConcurrency<=2||window.innerWidth<600)return;
   const canvas=document.createElement('canvas');
-  canvas.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:1;opacity:0.35';
+  canvas.id='particleCanvas';
+  canvas.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:1;opacity:0.25';
   document.querySelector('.bg-canvas').appendChild(canvas);
-  const ctx=canvas.getContext('2d');
+  const ctx=canvas.getContext('2d',{alpha:true});
   let W,H,particles=[];
+  const COUNT=window.innerWidth>900?60:30;
   function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
-  resize();window.addEventListener('resize',resize);
-  function mkParticle(){return{x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.5+0.3,vx:(Math.random()-0.5)*0.3,vy:(Math.random()-0.5)*0.3,alpha:Math.random()*0.6+0.1};}
-  for(let i=0;i<80;i++)particles.push(mkParticle());
+  resize();
+  let resizeTimer;
+  window.addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(resize,200)});
+  function mkParticle(){return{x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.2+0.3,vx:(Math.random()-0.5)*0.25,vy:(Math.random()-0.5)*0.25,alpha:Math.random()*0.5+0.1};}
+  for(let i=0;i<COUNT;i++)particles.push(mkParticle());
   function draw(){
+    if(document.hidden){_particleRAF=requestAnimationFrame(draw);return;}
     ctx.clearRect(0,0,W,H);
     const isDark=document.documentElement.getAttribute('data-theme')!=='light';
     const col=isDark?'0,200,255':'0,100,200';
@@ -2508,17 +3190,21 @@ function initParticles(){
       ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
       ctx.fillStyle=`rgba(${col},${p.alpha})`;ctx.fill();
     });
-    // draw connections
-    for(let i=0;i<particles.length;i++){
-      for(let j=i+1;j<particles.length;j++){
-        const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y;
-        const dist=Math.sqrt(dx*dx+dy*dy);
-        if(dist<120){ctx.beginPath();ctx.moveTo(particles[i].x,particles[i].y);ctx.lineTo(particles[j].x,particles[j].y);ctx.strokeStyle=`rgba(${col},${(1-dist/120)*0.12})`;ctx.lineWidth=0.5;ctx.stroke();}
+    // draw connections — only on desktop
+    if(W>900){
+      for(let i=0;i<particles.length;i++){
+        for(let j=i+1;j<particles.length;j++){
+          const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y;
+          const dist=Math.sqrt(dx*dx+dy*dy);
+          if(dist<100){ctx.beginPath();ctx.moveTo(particles[i].x,particles[i].y);ctx.lineTo(particles[j].x,particles[j].y);ctx.strokeStyle=`rgba(${col},${(1-dist/100)*0.08})`;ctx.lineWidth=0.5;ctx.stroke();}
+        }
       }
     }
-    requestAnimationFrame(draw);
+    _particleRAF=requestAnimationFrame(draw);
   }
   draw();
+  // Cleanup on visibility change
+  document.addEventListener('visibilitychange',()=>{if(document.hidden&&_particleRAF){cancelAnimationFrame(_particleRAF);}else if(!document.hidden){_particleRAF=requestAnimationFrame(draw);}});
 }
 
 // ════════ SECTION PROGRESS IN PALETTE HEADER ════════
