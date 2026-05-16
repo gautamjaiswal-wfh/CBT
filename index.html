@@ -799,6 +799,18 @@ code{font-family:'JetBrains Mono';background:rgba(0,200,255,0.08);padding:1px 5p
 .sol-body{display:none;background:rgba(0,200,255,.04);border:1px solid var(--border);border-top:none;padding:12px;font-size:12px;color:var(--text);line-height:1.75;border-radius:0 0 8px 8px}
 .sol-body.open{display:block}
 
+/* ── HISTORY ANSWER REVIEW ── */
+.hist-rev-btn{
+  background:var(--surface3);border:1px solid var(--border);
+  color:var(--text2);padding:6px 12px;border-radius:6px;
+  cursor:pointer;font-size:11px;font-weight:600;
+  font-family:'Exo 2';letter-spacing:0.5px;
+  transition:all .2s;white-space:nowrap;
+}
+.hist-rev-btn:hover{border-color:var(--primary);color:var(--primary);box-shadow:var(--glow)}
+.hist-rev-btn.active{background:var(--primary);color:#000;border-color:var(--primary);font-weight:700}
+.hist-answer-review{margin-top:4px}
+
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 </head>
@@ -2876,7 +2888,10 @@ function buildAttemptRecord(){
   const timeTaken=Math.round((Date.now()-(state.startTime||Date.now()-60000))/1000);
   const score=+(correct*MARKING.correct+wrong*MARKING.wrong).toFixed(2);
   const maxScore=Q.length*MARKING.correct;
-  return{paperId:activePaper.id,paperTitle:activePaper.title,date:new Date().toISOString(),timerMode:state.mode||'full',score,maxScore,correct,wrong,skip,accuracy:correct+wrong>0?+((correct/(correct+wrong))*100).toFixed(1):0,timeTaken,totalTime:state.mode==='full'?(CONFIG.fullMins||180)*60:null,sections:secStats};
+  // Save answers & questions snapshot for history review
+  const answersSnapshot=[...state.answers];
+  const questionsSnapshot=Q.map(q=>({s:q.s,q:q.q,o:q.o,a:q.a,...(q.sol?{sol:q.sol}:{})}));
+  return{paperId:activePaper.id,paperTitle:activePaper.title,date:new Date().toISOString(),timerMode:state.mode||'full',score,maxScore,correct,wrong,skip,accuracy:correct+wrong>0?+((correct/(correct+wrong))*100).toFixed(1):0,timeTaken,totalTime:state.mode==='full'?(CONFIG.fullMins||180)*60:null,sections:secStats,answers:answersSnapshot,questions:questionsSnapshot};
 }
 
 // ════════ RESULTS ════════
@@ -3099,6 +3114,7 @@ function renderHistory(){
       const scoreColor=pct>=60?'var(--success)':pct>=40?'var(--orange)':'var(--danger)';
       const d=new Date(h.date);
       const dateStr=d.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})+' '+d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+      const hasAnswers=!!(h.answers&&h.questions&&h.questions.length);
       return`<div class="hist-item">
         <div class="hist-item-hdr" onclick="toggleHistDetail(this)">
           <div class="hi-date">${dateStr}</div>
@@ -3115,6 +3131,13 @@ function renderHistory(){
             <span>⏱ <b>${fmtTime(h.timeTaken||0)}</b> Time</span>
           </div>
           ${h.sections?h.sections.map(s=>{const p=s.total>0?((s.correct/s.total)*100):0;const col=p>=60?'var(--success)':p>=40?'var(--orange)':'var(--danger)';return`<div class="hist-sec-row"><span style="min-width:120px;font-weight:600">${s.name}</span><div class="hist-sec-bar"><div class="hist-sec-fill" style="width:${p}%;background:${col}"></div></div><span style="color:${col};font-weight:700;min-width:45px;text-align:right">${p.toFixed(0)}%</span><span style="color:var(--text3);font-size:11px;min-width:65px;text-align:right;font-family:'JetBrains Mono'">${s.correct}/${s.total}</span></div>`;}).join(''):''}
+          ${hasAnswers?`
+          <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+            <button class="hist-rev-btn" onclick="toggleHistReview(this,${realIdx},'all')">📋 All Questions</button>
+            <button class="hist-rev-btn" onclick="toggleHistReview(this,${realIdx},'wrong')">❌ Wrong Only</button>
+            <button class="hist-rev-btn" onclick="toggleHistReview(this,${realIdx},'correct')">✅ Correct Only</button>
+          </div>
+          <div class="hist-answer-review" id="har_${realIdx}"></div>`:'<div style="margin-top:8px;font-size:11px;color:var(--text3);font-family:\'JetBrains Mono\'">⚠ Answer details not available for old attempts.</div>'}
         </div>
       </div>`;
     }).join('');
@@ -3138,6 +3161,51 @@ function buildTrendChart(data){
 }
 
 function toggleHistDetail(hdr){hdr.nextElementSibling.classList.toggle('open');}
+
+function toggleHistReview(btn,idx,mode){
+  const container=document.getElementById('har_'+idx);
+  if(!container)return;
+  const btns=btn.parentElement.querySelectorAll('.hist-rev-btn');
+  // If already open with same mode, close it
+  if(container.dataset.mode===mode&&container.innerHTML!==''){
+    container.innerHTML='';container.dataset.mode='';
+    btns.forEach(b=>b.classList.remove('active'));return;
+  }
+  btns.forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  container.dataset.mode=mode;
+  renderHistAnswerReview(idx,mode);
+}
+
+function renderHistAnswerReview(idx,mode){
+  const h=getHistory()[idx];
+  if(!h||!h.answers||!h.questions)return;
+  const container=document.getElementById('har_'+idx);
+  if(!container)return;
+  const labels=['A','B','C','D'];
+  let qs=h.questions.map((q,i)=>({...q,i}));
+  if(mode==='wrong')qs=qs.filter(q=>h.answers[q.i]>=0&&h.answers[q.i]!==q.a);
+  else if(mode==='correct')qs=qs.filter(q=>h.answers[q.i]>=0&&h.answers[q.i]===q.a);
+  if(!qs.length){container.innerHTML=`<div style="text-align:center;padding:16px;color:var(--text3);font-size:12px;font-family:'JetBrains Mono'">No questions in this filter.</div>`;return;}
+  container.innerHTML=qs.map(q=>{
+    const ua=h.answers[q.i],ca=q.a;
+    const status=ua<0?'skip':ua===ca?'correct':'wrong';
+    const icons={correct:'✅',wrong:'❌',skip:'⬜'};
+    return`<div class="q-review" style="margin-top:10px">
+      <div class="qr-top">
+        <span class="qr-num">Q${q.i+1}</span>
+        <span style="font-size:10px;color:var(--text3);font-family:'JetBrains Mono'">[${q.s}]</span>
+        <span class="badge ${status}">${icons[status]} ${status==='correct'?'Correct':status==='wrong'?'Wrong':'Skipped'}</span>
+        ${ua>=0?`<span style="font-size:11px">Your: <b style="color:${ua===ca?'var(--success)':'var(--danger)'}">${labels[ua]}</b></span>`:''}
+        <span style="font-size:11px;color:var(--success)">Ans: <b>${labels[ca]}</b></span>
+      </div>
+      <div class="qr-q">${q.q}</div>
+      <div class="qr-opts-grid">${q.o.map((opt,oi)=>{let cls='';if(oi===ca&&oi===ua)cls='both';else if(oi===ca)cls='ca';else if(oi===ua)cls='ua';return`<div class="qr-opt ${cls}">${labels[oi]}. ${opt}</div>`;}).join('')}</div>
+      ${q.sol?`<div class="sol-block"><button class="sol-toggle" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">💡 EXPLANATION ▾</button><div class="sol-body">${q.sol}</div></div>`:''}
+    </div>`;
+  }).join('');
+}
+
 function setHistFilter(f){histFilter=f;renderHistory();}
 function clearAllHistory(){if(!confirm('Delete ALL history?'))return;localStorage.removeItem('cbt_history');renderHistory();}
 
